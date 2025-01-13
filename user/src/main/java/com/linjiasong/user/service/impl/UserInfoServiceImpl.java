@@ -26,7 +26,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     public UserBaseResponse signUp(UserInfoDTO userInfo) {
         checkSignUpInfo(userInfo);
 
-        if (!userGateWay.insert(UserInfoDtoToUserInfo(userInfo))) {
+        if (!userGateWay.insert(userInfoDtoToUserInfo(userInfo))) {
             throw new BizException("注册失败,服务异常");
         }
 
@@ -50,7 +50,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
     }
 
-    private UserInfo UserInfoDtoToUserInfo(UserInfoDTO userInfoDTO) {
+    private UserInfo userInfoDtoToUserInfo(UserInfoDTO userInfoDTO) {
         return UserInfo.builder()
                 .username(userInfoDTO.getUsername())
                 .password(userInfoDTO.getPassword())

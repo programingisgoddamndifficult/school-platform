@@ -4,9 +4,7 @@ import com.linjiasong.user.entity.dto.UserInfoDTO;
 import com.linjiasong.user.service.UserInfoService;
 import excepiton.UserBaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author linjiasong
@@ -21,7 +19,7 @@ public class UserController {
     UserInfoService userInfoService;
 
     @PostMapping("/signup")
-    public UserBaseResponse signUp(UserInfoDTO userInfoDTO){
+    public UserBaseResponse signUp(@RequestBody UserInfoDTO userInfoDTO){
         return userInfoService.signUp(userInfoDTO);
     }
 
