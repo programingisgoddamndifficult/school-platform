@@ -8,8 +8,12 @@ import com.linjiasong.user.mapper.UserInfoMapper;
 import com.linjiasong.user.service.UserInfoService;
 import excepiton.BizException;
 import excepiton.UserBaseResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * @author linjiasong
@@ -17,10 +21,21 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
+@Slf4j
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
 
     @Autowired
     private UserGateWay userGateWay;
+
+    private static final MessageDigest md5;
+
+    static {
+        try {
+            md5 = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public UserBaseResponse signUp(UserInfoDTO userInfo) {
@@ -34,6 +49,28 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     }
 
     private void checkSignUpInfo(UserInfoDTO userInfo) {
+        if(userInfo == null){
+            throw new BizException("注册失败,请传递参数");
+        }
+
+        if(userInfo.getUsername() == null){
+            throw new BizException("注册失败,请填写用户名");
+        }
+
+        if(userInfo.getPassword() == null){
+            throw new BizException("注册失败,请填写密码");
+        }
+
+        if(userInfo.getPhone() == null){
+            throw new BizException("注册失败,请填写手机号");
+        }
+
+        userInfo.setPassword(md5Digest(userInfo.getPassword()));
+        userInfo.setPhone(md5Digest(userInfo.getPhone()));
+        if(userInfo.getEmail() != null){
+            userInfo.setEmail(md5Digest(userInfo.getEmail()));
+        }
+
         UserInfo userInfoByUsername = userGateWay.selectByUsername(userInfo.getUsername());
         if (userInfoByUsername != null) {
             throw new BizException("注册失败，用户名重复");
@@ -57,5 +94,16 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
                 .phone(userInfoDTO.getPhone())
                 .email(userInfoDTO.getEmail())
                 .build();
+    }
+
+    private String md5Digest(String input){
+        byte[] digest = md5.digest(input.getBytes());
+
+        StringBuilder sb = new StringBuilder();
+        for (byte b : digest) {
+            sb.append(String.format("%02x", b));
+        }
+
+        return sb.toString();
     }
 }
