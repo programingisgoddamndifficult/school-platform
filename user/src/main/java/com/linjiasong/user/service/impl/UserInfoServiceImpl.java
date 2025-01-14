@@ -9,6 +9,7 @@ import com.linjiasong.user.excepiton.UserBaseResponse;
 import com.linjiasong.user.gateway.UserGateWay;
 import com.linjiasong.user.mapper.UserInfoMapper;
 import com.linjiasong.user.service.UserInfoService;
+import com.linjiasong.user.utils.TokenUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,8 +66,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             throw new BizException("密码不正确");
         }
 
-        //TODO 返回token
-        response.setHeader("Authorization", "token");
+        response.setHeader("Authorization", TokenUtil.generateToken(userInfoByUserName.toString()));
         return UserBaseResponse.builder().code("200").msg("success").build();
     }
 
