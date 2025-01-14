@@ -30,6 +30,13 @@ public class TokenFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        String path = exchange.getRequest().getURI().getPath();
+        // 检查路径中是否包含signup或login
+        if (path.contains("/signup") || path.contains("/login")) {
+            // 直接放行，不进行令牌验证
+            return chain.filter(exchange);
+        }
+
         HttpHeaders headers = exchange.getRequest().getHeaders();
         String bearerToken = headers.getFirst("Authorization");
 
