@@ -3,11 +3,13 @@ package com.linjiasong.user.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.linjiasong.user.entity.UserInfo;
 import com.linjiasong.user.entity.dto.UserInfoDTO;
+import com.linjiasong.user.entity.dto.UserLoginDTO;
+import com.linjiasong.user.excepiton.BizException;
+import com.linjiasong.user.excepiton.UserBaseResponse;
 import com.linjiasong.user.gateway.UserGateWay;
 import com.linjiasong.user.mapper.UserInfoMapper;
 import com.linjiasong.user.service.UserInfoService;
-import com.linjiasong.user.excepiton.BizException;
-import com.linjiasong.user.excepiton.UserBaseResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,54 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
 
         return UserBaseResponse.builder().code("200").msg("success").build();
+    }
+
+    @Override
+    public UserBaseResponse login(UserLoginDTO userLoginDTO, HttpServletResponse response) {
+        checkUserLoginParam(userLoginDTO);
+
+        userLoginDTO.setPassword(md5Digest(userLoginDTO.getPassword()));
+
+        UserInfo userInfoByUserName = userGateWay.selectByUsername(userLoginDTO.getUsername());
+        if(userInfoByUserName == null){
+            throw new BizException("登陆用户名有误或不存在");
+        }
+
+        if(!userInfoByUserName.getPassword().equals(userLoginDTO.getPassword())){
+            throw new BizException("密码不正确");
+        }
+
+        //TODO 返回token
+        response.setHeader("Authorization", "token");
+        return UserBaseResponse.builder().code("200").msg("success").build();
+    }
+
+    private void checkUserLoginParam(UserLoginDTO userLoginDTO){
+        if(userLoginDTO  == null || userLoginDTO.getLoginType() == null){
+            throw new BizException("入参异常");
+        }
+
+        String loginType = userLoginDTO.getLoginType();
+
+        switch (loginType) {
+            case "username":
+                checkUsernameLoginTypeParam(userLoginDTO);
+                break;
+            case "phone":
+                throw new BizException("手机号的登陆方式暂未开通");
+            default:
+                throw new BizException("登陆方式有误");
+        }
+    }
+
+    private void checkUsernameLoginTypeParam(UserLoginDTO userLoginDTO){
+        if(userLoginDTO.getUsername() == null){
+            throw new BizException("登陆用户名为空");
+        }
+
+        if(userLoginDTO.getPassword() == null){
+            throw new BizException("登陆密码为空");
+        }
     }
 
     private void checkSignUpInfo(UserInfoDTO userInfo) {

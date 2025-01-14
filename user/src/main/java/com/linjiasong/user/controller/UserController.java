@@ -1,10 +1,15 @@
 package com.linjiasong.user.controller;
 
 import com.linjiasong.user.entity.dto.UserInfoDTO;
-import com.linjiasong.user.service.UserInfoService;
+import com.linjiasong.user.entity.dto.UserLoginDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
+import com.linjiasong.user.service.UserInfoService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author linjiasong
@@ -21,6 +26,11 @@ public class UserController {
     @PostMapping("/signup")
     public UserBaseResponse signUp(@RequestBody UserInfoDTO userInfoDTO){
         return userInfoService.signUp(userInfoDTO);
+    }
+
+    @PostMapping("/login")
+    public UserBaseResponse login(@RequestBody UserLoginDTO userLoginDTO, HttpServletResponse response){
+        return userInfoService.login(userLoginDTO, response);
     }
 
 }
