@@ -1,5 +1,6 @@
 package com.linjiasong.user.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.linjiasong.user.entity.UserInfo;
 import com.linjiasong.user.entity.dto.UserInfoDTO;
@@ -66,7 +67,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             throw new BizException("密码不正确");
         }
 
-        response.setHeader("Authorization", "Bearer " + TokenUtil.generateToken(userInfoByUserName.toString()));
+        response.setHeader("Authorization", "Bearer " + TokenUtil.generateToken(JSON.toJSONString(userInfoByUserName)));
         return UserBaseResponse.builder().code("200").msg("success").build();
     }
 
