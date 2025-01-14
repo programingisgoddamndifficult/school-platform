@@ -2,7 +2,7 @@ spring:
     application:
         name: user-service
     datasource:
-        url: jdbc:mysql://175.178.152.16:3306/user?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+        url: jdbc:mysql://175.178.152.16:3306/user?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
         username: root
         password: 018418
 
