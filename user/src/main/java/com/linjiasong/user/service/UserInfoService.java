@@ -3,7 +3,7 @@ package com.linjiasong.user.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.linjiasong.user.entity.UserInfo;
 import com.linjiasong.user.entity.dto.UserInfoDTO;
-import excepiton.UserBaseResponse;
+import com.linjiasong.user.excepiton.UserBaseResponse;
 
 /**
  * @author linjiasong

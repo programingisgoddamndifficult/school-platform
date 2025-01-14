@@ -1,7 +1,7 @@
 package com.linjiasong.user.handler;
 
-import excepiton.BizException;
-import excepiton.UserBaseResponse;
+import com.linjiasong.user.excepiton.BizException;
+import com.linjiasong.user.excepiton.UserBaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;

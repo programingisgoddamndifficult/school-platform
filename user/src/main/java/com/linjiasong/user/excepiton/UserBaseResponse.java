@@ -1,4 +1,4 @@
-package excepiton;
+package com.linjiasong.user.excepiton;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

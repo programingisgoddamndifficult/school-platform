@@ -2,7 +2,7 @@ package com.linjiasong.user.controller;
 
 import com.linjiasong.user.entity.dto.UserInfoDTO;
 import com.linjiasong.user.service.UserInfoService;
-import excepiton.UserBaseResponse;
+import com.linjiasong.user.excepiton.UserBaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

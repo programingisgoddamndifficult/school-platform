@@ -1,4 +1,4 @@
-package excepiton;
+package com.linjiasong.user.excepiton;
 
 /**
  * @author linjiasong
