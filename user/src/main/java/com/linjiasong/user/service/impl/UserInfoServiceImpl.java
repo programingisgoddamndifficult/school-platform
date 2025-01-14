@@ -9,6 +9,7 @@ import com.linjiasong.user.excepiton.UserBaseResponse;
 import com.linjiasong.user.gateway.UserGateWay;
 import com.linjiasong.user.mapper.UserInfoMapper;
 import com.linjiasong.user.service.UserInfoService;
+import com.linjiasong.user.utils.TokenUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,21 +58,20 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         userLoginDTO.setPassword(md5Digest(userLoginDTO.getPassword()));
 
         UserInfo userInfoByUserName = userGateWay.selectByUsername(userLoginDTO.getUsername());
-        if(userInfoByUserName == null){
+        if (userInfoByUserName == null) {
             throw new BizException("登陆用户名有误或不存在");
         }
 
-        if(!userInfoByUserName.getPassword().equals(userLoginDTO.getPassword())){
+        if (!userInfoByUserName.getPassword().equals(userLoginDTO.getPassword())) {
             throw new BizException("密码不正确");
         }
 
-        //TODO 返回token
-        response.setHeader("Authorization", "token");
+        response.setHeader("Authorization", "Bearer " + TokenUtil.generateToken(userInfoByUserName.toString()));
         return UserBaseResponse.builder().code("200").msg("success").build();
     }
 
-    private void checkUserLoginParam(UserLoginDTO userLoginDTO){
-        if(userLoginDTO  == null || userLoginDTO.getLoginType() == null){
+    private void checkUserLoginParam(UserLoginDTO userLoginDTO) {
+        if (userLoginDTO == null || userLoginDTO.getLoginType() == null) {
             throw new BizException("入参异常");
         }
 
@@ -88,36 +88,36 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
     }
 
-    private void checkUsernameLoginTypeParam(UserLoginDTO userLoginDTO){
-        if(userLoginDTO.getUsername() == null){
+    private void checkUsernameLoginTypeParam(UserLoginDTO userLoginDTO) {
+        if (userLoginDTO.getUsername() == null) {
             throw new BizException("登陆用户名为空");
         }
 
-        if(userLoginDTO.getPassword() == null){
+        if (userLoginDTO.getPassword() == null) {
             throw new BizException("登陆密码为空");
         }
     }
 
     private void checkSignUpInfo(UserInfoDTO userInfo) {
-        if(userInfo == null){
+        if (userInfo == null) {
             throw new BizException("注册失败,请传递参数");
         }
 
-        if(userInfo.getUsername() == null){
+        if (userInfo.getUsername() == null) {
             throw new BizException("注册失败,请填写用户名");
         }
 
-        if(userInfo.getPassword() == null){
+        if (userInfo.getPassword() == null) {
             throw new BizException("注册失败,请填写密码");
         }
 
-        if(userInfo.getPhone() == null){
+        if (userInfo.getPhone() == null) {
             throw new BizException("注册失败,请填写手机号");
         }
 
         userInfo.setPassword(md5Digest(userInfo.getPassword()));
         userInfo.setPhone(md5Digest(userInfo.getPhone()));
-        if(userInfo.getEmail() != null){
+        if (userInfo.getEmail() != null) {
             userInfo.setEmail(md5Digest(userInfo.getEmail()));
         }
 
@@ -146,7 +146,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
                 .build();
     }
 
-    private String md5Digest(String input){
+    private String md5Digest(String input) {
         byte[] digest = md5.digest(input.getBytes());
 
         StringBuilder sb = new StringBuilder();
