@@ -19,6 +19,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class UserInfoInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String requestUri = request.getRequestURI();
+
+        if ("/api/user/signup".equals(requestUri) || "/api/user/login".equals(requestUri)) {
+            return true;
+        }
+
         // 获取请求头中的 Authorization 信息
         String token = request.getHeader("Authorization");
         if (token == null) {

@@ -1,6 +1,7 @@
 package com.linjiasong.user.entity.vo;
 
 import com.linjiasong.user.entity.UserInfo;
+import com.linjiasong.user.utils.DESUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,7 +36,7 @@ public class UserInfoVo {
         return UserInfoVo.builder()
                 .id(userInfo.getId())
                 .username(userInfo.getUsername())
-                .phone(userInfo.getPhone())
+                .phone(DESUtil.decrypt(userInfo.getPhone()))
                 .createTime(LocalDateTime.now())
                 .likeNums(likeNums)
                 .build();

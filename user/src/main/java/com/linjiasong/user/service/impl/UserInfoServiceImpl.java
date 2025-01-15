@@ -13,14 +13,13 @@ import com.linjiasong.user.gateway.UserGateWay;
 import com.linjiasong.user.gateway.UserLikeGateWay;
 import com.linjiasong.user.mapper.UserInfoMapper;
 import com.linjiasong.user.service.UserInfoService;
+import com.linjiasong.user.utils.DESUtil;
+import com.linjiasong.user.utils.MD5Util;
 import com.linjiasong.user.utils.TokenUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * @author linjiasong
@@ -37,16 +36,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Autowired
     private UserLikeGateWay userLikeGateWay;
 
-    private static final MessageDigest md5;
-
-    static {
-        try {
-            md5 = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Override
     public UserBaseResponse signUp(UserInfoDTO userInfo) {
         checkSignUpInfo(userInfo);
@@ -62,7 +51,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     public UserBaseResponse login(UserLoginDTO userLoginDTO, HttpServletResponse response) {
         checkUserLoginParam(userLoginDTO);
 
-        userLoginDTO.setPassword(md5Digest(userLoginDTO.getPassword()));
+        userLoginDTO.setPassword(MD5Util.md5Digest(userLoginDTO.getPassword()));
 
         UserInfo userInfoByUserName = userGateWay.selectByUsername(userLoginDTO.getUsername());
         if (userInfoByUserName == null) {
@@ -128,10 +117,14 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             throw new BizException("注册失败,请填写手机号");
         }
 
-        userInfo.setPassword(md5Digest(userInfo.getPassword()));
-        userInfo.setPhone(md5Digest(userInfo.getPhone()));
+        if(userInfo.getPhone().length() != 11){
+            throw new BizException("手机号码格式不正确");
+        }
+
+        userInfo.setPassword(MD5Util.md5Digest(userInfo.getPassword()));
+        userInfo.setPhone(DESUtil.encrypt(userInfo.getPhone()));
         if (userInfo.getEmail() != null) {
-            userInfo.setEmail(md5Digest(userInfo.getEmail()));
+            userInfo.setEmail(DESUtil.encrypt(userInfo.getEmail()));
         }
 
         UserInfo userInfoByUsername = userGateWay.selectByUsername(userInfo.getUsername());
@@ -159,14 +152,4 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
                 .build();
     }
 
-    private String md5Digest(String input) {
-        byte[] digest = md5.digest(input.getBytes());
-
-        StringBuilder sb = new StringBuilder();
-        for (byte b : digest) {
-            sb.append(String.format("%02x", b));
-        }
-
-        return sb.toString();
-    }
 }
