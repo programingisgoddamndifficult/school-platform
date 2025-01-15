@@ -22,20 +22,20 @@ import org.springframework.stereotype.Service;
 public class UserLikeServiceImpl extends ServiceImpl<UserLikeMapper, UserLike> implements UserLikeService {
 
     @Autowired
-    private UserLikeGateway userLikeGateWay;
+    private UserLikeGateway userLikeGateway;
 
     @Autowired
-    private UserGateway userGateWay;
+    private UserGateway userGateway;
 
     @Override
     public UserBaseResponse like(Long likedId) {
-        if (userGateWay.selectById(likedId) == null) {
+        if (userGateway.selectById(likedId) == null) {
             throw new BizException("被关注用户不存在");
         }
 
         Long id = UserInfoContext.get().getId();
 
-        if (userLikeGateWay.selectByUserIdAndLikedId(id, likedId) != null) {
+        if (userLikeGateway.selectByUserIdAndLikedId(id, likedId) != null) {
             if (!deleteLikeInfo(id, likedId)) {
                 throw new RuntimeException("服务异常");
             }
@@ -50,13 +50,13 @@ public class UserLikeServiceImpl extends ServiceImpl<UserLikeMapper, UserLike> i
 
     @Override
     public UserBaseResponse blackList(Long likedId) {
-        if (userGateWay.selectById(likedId) == null) {
+        if (userGateway.selectById(likedId) == null) {
             throw new BizException("被拉黑用户不存在");
         }
 
         Long id = UserInfoContext.get().getId();
 
-        if (userLikeGateWay.selectByUserIdAndLikedId(id, likedId) != null) {
+        if (userLikeGateway.selectByUserIdAndLikedId(id, likedId) != null) {
             if (!deleteLikeInfo(id, likedId)) {
                 throw new RuntimeException("服务异常");
             }
@@ -70,7 +70,7 @@ public class UserLikeServiceImpl extends ServiceImpl<UserLikeMapper, UserLike> i
     }
 
     private boolean likeInsert(Long id, Long likedId, short type) {
-        return userLikeGateWay.insert(UserLike.builder()
+        return userLikeGateway.insert(UserLike.builder()
                 .userId(id)
                 .beLikedId(likedId)
                 .type(type)
@@ -78,6 +78,6 @@ public class UserLikeServiceImpl extends ServiceImpl<UserLikeMapper, UserLike> i
     }
 
     private boolean deleteLikeInfo(Long id, Long likedId) {
-        return userLikeGateWay.deleteByUserIdAndLikedId(id, likedId);
+        return userLikeGateway.deleteByUserIdAndLikedId(id, likedId);
     }
 }

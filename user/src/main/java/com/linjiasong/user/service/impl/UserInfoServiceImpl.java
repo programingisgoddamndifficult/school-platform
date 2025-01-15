@@ -31,16 +31,16 @@ import org.springframework.stereotype.Service;
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
 
     @Autowired
-    private UserGateway userGateWay;
+    private UserGateway userGateway;
 
     @Autowired
-    private UserLikeGateway userLikeGateWay;
+    private UserLikeGateway userLikeGateway;
 
     @Override
     public UserBaseResponse signUp(UserInfoDTO userInfo) {
         checkSignUpInfo(userInfo);
 
-        if (!userGateWay.insert(userInfoDtoToUserInfo(userInfo))) {
+        if (!userGateway.insert(userInfoDtoToUserInfo(userInfo))) {
             throw new BizException("注册失败,服务异常");
         }
 
@@ -53,7 +53,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
         userLoginDTO.setPassword(MD5Util.md5Digest(userLoginDTO.getPassword()));
 
-        UserInfo userInfoByUserName = userGateWay.selectByUsername(userLoginDTO.getUsername());
+        UserInfo userInfoByUserName = userGateway.selectByUsername(userLoginDTO.getUsername());
         if (userInfoByUserName == null) {
             throw new BizException("登陆用户名有误或不存在");
         }
@@ -69,7 +69,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Override
     public UserBaseResponse getUserInfo() {
         UserInfo userInfo = UserInfoContext.get();
-        return UserBaseResponse.builder().code("200").msg("success").data(UserInfoVo.build(userInfo,userLikeGateWay.getLikeNums(userInfo.getId()))).build();
+        return UserBaseResponse.builder().code("200").msg("success").data(UserInfoVo.build(userInfo,userLikeGateway.getLikeNums(userInfo.getId()))).build();
     }
 
     private void checkUserLoginParam(UserLoginDTO userLoginDTO) {
@@ -127,17 +127,17 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             userInfo.setEmail(DESUtil.encrypt(userInfo.getEmail()));
         }
 
-        UserInfo userInfoByUsername = userGateWay.selectByUsername(userInfo.getUsername());
+        UserInfo userInfoByUsername = userGateway.selectByUsername(userInfo.getUsername());
         if (userInfoByUsername != null) {
             throw new BizException("注册失败，用户名重复");
         }
 
-        UserInfo userInfoByPhone = userGateWay.selectByPhone(userInfo.getPhone());
+        UserInfo userInfoByPhone = userGateway.selectByPhone(userInfo.getPhone());
         if (userInfoByPhone != null) {
             throw new BizException("注册失败，电话号码重复");
         }
 
-        UserInfo userInfoByEmail = userGateWay.selectByEmail(userInfo.getEmail());
+        UserInfo userInfoByEmail = userGateway.selectByEmail(userInfo.getEmail());
         if (userInfoByEmail != null) {
             throw new BizException("注册失败，邮箱号码重复");
         }
