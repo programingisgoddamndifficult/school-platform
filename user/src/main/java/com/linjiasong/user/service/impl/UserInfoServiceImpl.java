@@ -2,12 +2,15 @@ package com.linjiasong.user.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.linjiasong.user.constant.UserInfoContext;
 import com.linjiasong.user.entity.UserInfo;
 import com.linjiasong.user.entity.dto.UserInfoDTO;
 import com.linjiasong.user.entity.dto.UserLoginDTO;
+import com.linjiasong.user.entity.vo.UserInfoVo;
 import com.linjiasong.user.excepiton.BizException;
 import com.linjiasong.user.excepiton.UserBaseResponse;
 import com.linjiasong.user.gateway.UserGateWay;
+import com.linjiasong.user.gateway.UserLikeGateWay;
 import com.linjiasong.user.mapper.UserInfoMapper;
 import com.linjiasong.user.service.UserInfoService;
 import com.linjiasong.user.utils.TokenUtil;
@@ -30,6 +33,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
     @Autowired
     private UserGateWay userGateWay;
+
+    @Autowired
+    private UserLikeGateWay userLikeGateWay;
 
     private static final MessageDigest md5;
 
@@ -69,6 +75,12 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
         response.setHeader("Authorization", "Bearer " + TokenUtil.generateToken(JSON.toJSONString(userInfoByUserName)));
         return UserBaseResponse.builder().code("200").msg("success").build();
+    }
+
+    @Override
+    public UserBaseResponse getUserInfo() {
+        UserInfo userInfo = UserInfoContext.get();
+        return UserBaseResponse.builder().code("200").msg("success").data(UserInfoVo.build(userInfo,userLikeGateWay.getLikeNums(userInfo.getId()))).build();
     }
 
     private void checkUserLoginParam(UserLoginDTO userLoginDTO) {

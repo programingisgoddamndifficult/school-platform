@@ -3,6 +3,7 @@ package com.linjiasong.user.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.linjiasong.user.entity.UserLike;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @author linjiasong
@@ -10,4 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface UserLikeMapper extends BaseMapper<UserLike> {
+
+    int getLikeNums(@Param("beLikedId") Long beLikedId);
+
 }

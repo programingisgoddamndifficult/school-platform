@@ -30,4 +30,9 @@ public class UserController {
         return userInfoService.login(userLoginDTO, response);
     }
 
+    @GetMapping
+    public UserBaseResponse getUserInfo(){
+        return userInfoService.getUserInfo();
+    }
+
 }

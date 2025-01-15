@@ -26,4 +26,10 @@ public interface UserInfoService extends IService<UserInfo> {
      * @return UserBaseResponse
      */
     UserBaseResponse login(UserLoginDTO userLoginDTO, HttpServletResponse response);
+
+    /**
+     * 获取用户信息
+     * @return UserBaseResponse
+     */
+    UserBaseResponse getUserInfo();
 }
