@@ -12,6 +12,7 @@ public interface ArticleDetailGateway {
 
     boolean insert(ArticleDetail articleDetail);
 
+    boolean update(ArticleDetail articleDetail);
 
     List<ArticleDetail> getByUserId(Long userId);
 }

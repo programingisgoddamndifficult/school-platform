@@ -28,7 +28,7 @@ public class ArticleInterceptor  implements HandlerInterceptor {
         // 获取请求头中的 Authorization 信息
         String token = request.getHeader("Authorization");
         if (token == null) {
-            return true;
+            return false;
         }
         ArticleContext.set(JSON.parseObject(TokenUtil.parseToken(token.substring("Bearer ".length())), UserInfo.class));
         return true;
