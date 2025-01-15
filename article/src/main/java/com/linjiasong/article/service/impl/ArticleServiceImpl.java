@@ -1,10 +1,17 @@
 package com.linjiasong.article.service.impl;
 
+import com.linjiasong.article.constant.ArticleContext;
+import com.linjiasong.article.entity.ArticleBasicInfo;
+import com.linjiasong.article.entity.ArticleDetail;
+import com.linjiasong.article.entity.dto.ArticleCreateDTO;
+import com.linjiasong.article.excepiton.ArticleBaseResponse;
+import com.linjiasong.article.excepiton.BizException;
 import com.linjiasong.article.gateway.ArticleBasicInfoGateway;
 import com.linjiasong.article.gateway.ArticleDetailGateway;
 import com.linjiasong.article.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author linjiasong
@@ -19,4 +26,24 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     ArticleDetailGateway articleDetailGateway;
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ArticleBaseResponse createArticle(ArticleCreateDTO articleCreateDTO) {
+        if (articleCreateDTO.checkParam()) {
+            throw new BizException("参数不合法");
+        }
+
+        Long userId = ArticleContext.get().getId();
+
+        ArticleBasicInfo articleBasicInfo = ArticleBasicInfo.builder().userId(userId).articleTitle(articleCreateDTO.getTitle()).tag(articleCreateDTO.getTag()).build();
+        if(!articleBasicInfoGateway.insert(articleBasicInfo)){
+            throw new BizException("服务异常");
+        }
+
+        if(!articleDetailGateway.insert(ArticleDetail.builder().articleId(articleBasicInfo.getId()).content(articleCreateDTO.getContext()).imageUrl(ArticleDetail.toJsonImageUrl(articleCreateDTO.getImageUrl())).build())){
+            throw new BizException("服务异常");
+        }
+
+        return ArticleBaseResponse.builder().code("200").msg("success").build();
+    }
 }

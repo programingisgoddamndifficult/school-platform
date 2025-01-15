@@ -33,7 +33,7 @@ public class ArticleBasicInfo {
     /**
      * 文章分类
      */
-    private int tag;
+    private short tag;
 
     private LocalDateTime createTime;
 

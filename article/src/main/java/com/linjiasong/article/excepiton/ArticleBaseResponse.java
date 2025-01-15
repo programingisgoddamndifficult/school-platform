@@ -16,7 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserBaseResponse implements Serializable {
+public class ArticleBaseResponse implements Serializable {
     /**
      * 响应状态码
      */

@@ -45,4 +45,9 @@ public class ArticleDetail {
     public static List<String> getImageUrls(String imageUrl) {
         return JSON.parseObject(imageUrl, ImageUrl.class).getImageUrls();
     }
+
+    public static String toJsonImageUrl(List<String> imageUrls){
+        ImageUrl build = ImageUrl.builder().imageUrls(imageUrls).build();
+        return JSON.toJSONString(build);
+    }
 }

@@ -8,6 +8,10 @@ spring:
           uri: lb://user-service
           predicates:
             - Path=/api/user/**
+        - id: service-route
+          uri: lb://article-service
+          predicates:
+            - Path=/api/article/**
 
 
 eureka:
