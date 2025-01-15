@@ -16,4 +16,11 @@ public interface ArticleService {
      */
     ArticleBaseResponse createArticle(ArticleCreateDTO articleCreateDTO);
 
+
+    /**
+     * 获取用户的文章
+     * @param userId userId
+     * @return ArticleBaseResponse
+     */
+    ArticleBaseResponse getUserArticleBasic(Long userId);
 }

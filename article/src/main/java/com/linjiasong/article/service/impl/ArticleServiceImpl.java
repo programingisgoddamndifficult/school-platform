@@ -4,6 +4,7 @@ import com.linjiasong.article.constant.ArticleContext;
 import com.linjiasong.article.entity.ArticleBasicInfo;
 import com.linjiasong.article.entity.ArticleDetail;
 import com.linjiasong.article.entity.dto.ArticleCreateDTO;
+import com.linjiasong.article.entity.vo.ArticleBasicVo;
 import com.linjiasong.article.excepiton.ArticleBaseResponse;
 import com.linjiasong.article.excepiton.BizException;
 import com.linjiasong.article.gateway.ArticleBasicInfoGateway;
@@ -12,6 +13,8 @@ import com.linjiasong.article.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author linjiasong
@@ -45,5 +48,11 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         return ArticleBaseResponse.builder().code("200").msg("success").build();
+    }
+
+    @Override
+    public ArticleBaseResponse getUserArticleBasic(Long userId) {
+        List<ArticleBasicInfo> basicInfoList = articleBasicInfoGateway.getByUserId(userId);
+        return ArticleBaseResponse.builder().code("200").msg("success").data(ArticleBasicVo.build(basicInfoList)).build();
     }
 }

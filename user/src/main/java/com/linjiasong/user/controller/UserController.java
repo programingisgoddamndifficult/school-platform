@@ -3,6 +3,7 @@ package com.linjiasong.user.controller;
 import com.linjiasong.user.entity.dto.UserInfoDTO;
 import com.linjiasong.user.entity.dto.UserLoginDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
+import com.linjiasong.user.service.UserArticleService;
 import com.linjiasong.user.service.UserInfoService;
 import com.linjiasong.user.service.UserLikeService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,6 +24,9 @@ public class UserController {
 
     @Autowired
     UserLikeService userLikeService;
+
+    @Autowired
+    UserArticleService userArticleService;
 
     @PostMapping("/signup")
     public UserBaseResponse signUp(@RequestBody UserInfoDTO userInfoDTO){
@@ -47,6 +51,11 @@ public class UserController {
     @PostMapping("/black/{id}")
     public UserBaseResponse black(@PathVariable("id") Long id){
         return userLikeService.blackList(id);
+    }
+
+    @GetMapping("/article")
+    public UserBaseResponse getUserArticle(){
+        return userArticleService.getUserArticleBasic();
     }
 
 }

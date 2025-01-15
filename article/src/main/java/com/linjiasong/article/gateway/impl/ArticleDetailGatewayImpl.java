@@ -1,10 +1,13 @@
 package com.linjiasong.article.gateway.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.linjiasong.article.entity.ArticleDetail;
 import com.linjiasong.article.gateway.ArticleDetailGateway;
 import com.linjiasong.article.mapper.ArticleDetailMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author linjiasong
@@ -19,5 +22,10 @@ public class ArticleDetailGatewayImpl implements ArticleDetailGateway {
     @Override
     public boolean insert(ArticleDetail articleDetail) {
         return articleDetailMapper.insert(articleDetail) > 0;
+    }
+
+    @Override
+    public List<ArticleDetail> getByUserId(Long userId) {
+        return articleDetailMapper.selectList(new QueryWrapper<ArticleDetail>().eq("user_id", userId));
     }
 }

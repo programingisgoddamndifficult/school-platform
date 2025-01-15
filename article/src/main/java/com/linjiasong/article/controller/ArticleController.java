@@ -4,10 +4,7 @@ import com.linjiasong.article.entity.dto.ArticleCreateDTO;
 import com.linjiasong.article.excepiton.ArticleBaseResponse;
 import com.linjiasong.article.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author linjiasong
@@ -24,6 +21,11 @@ public class ArticleController {
     @PostMapping
     public ArticleBaseResponse createArticle(@RequestBody ArticleCreateDTO articleCreateDTO){
         return articleService.createArticle(articleCreateDTO);
+    }
+
+    @GetMapping("/basic")
+    public ArticleBaseResponse getArticleBasicByUserId(@RequestParam("userId") Long userId){
+        return articleService.getUserArticleBasic(userId);
     }
 
 }
