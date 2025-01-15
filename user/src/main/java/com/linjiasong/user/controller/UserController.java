@@ -4,6 +4,7 @@ import com.linjiasong.user.entity.dto.UserInfoDTO;
 import com.linjiasong.user.entity.dto.UserLoginDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
 import com.linjiasong.user.service.UserInfoService;
+import com.linjiasong.user.service.UserLikeService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,9 @@ public class UserController {
     @Autowired
     UserInfoService userInfoService;
 
+    @Autowired
+    UserLikeService userLikeService;
+
     @PostMapping("/signup")
     public UserBaseResponse signUp(@RequestBody UserInfoDTO userInfoDTO){
         return userInfoService.signUp(userInfoDTO);
@@ -33,6 +37,16 @@ public class UserController {
     @GetMapping
     public UserBaseResponse getUserInfo(){
         return userInfoService.getUserInfo();
+    }
+
+    @PostMapping("/like/{id}")
+    public UserBaseResponse like(@PathVariable("id") Long id){
+        return userLikeService.like(id);
+    }
+
+    @PostMapping("/black/{id}")
+    public UserBaseResponse black(@PathVariable("id") Long id){
+        return userLikeService.blackList(id);
     }
 
 }

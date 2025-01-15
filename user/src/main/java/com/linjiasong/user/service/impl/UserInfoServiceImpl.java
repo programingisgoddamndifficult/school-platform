@@ -9,8 +9,8 @@ import com.linjiasong.user.entity.dto.UserLoginDTO;
 import com.linjiasong.user.entity.vo.UserInfoVo;
 import com.linjiasong.user.excepiton.BizException;
 import com.linjiasong.user.excepiton.UserBaseResponse;
-import com.linjiasong.user.gateway.UserGateWay;
-import com.linjiasong.user.gateway.UserLikeGateWay;
+import com.linjiasong.user.gateway.UserGateway;
+import com.linjiasong.user.gateway.UserLikeGateway;
 import com.linjiasong.user.mapper.UserInfoMapper;
 import com.linjiasong.user.service.UserInfoService;
 import com.linjiasong.user.utils.DESUtil;
@@ -31,10 +31,10 @@ import org.springframework.stereotype.Service;
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
 
     @Autowired
-    private UserGateWay userGateWay;
+    private UserGateway userGateWay;
 
     @Autowired
-    private UserLikeGateWay userLikeGateWay;
+    private UserLikeGateway userLikeGateWay;
 
     @Override
     public UserBaseResponse signUp(UserInfoDTO userInfo) {
