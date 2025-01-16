@@ -1,5 +1,6 @@
 package com.linjiasong.user.service;
 
+import com.linjiasong.user.entity.dto.ArticleCreateDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
 
 /**
@@ -14,4 +15,10 @@ public interface UserArticleService {
      */
     UserBaseResponse getUserArticleBasic();
 
+    /**
+     * 创建文章
+     * @param articleCreateDTO articleCreateDTO
+     * @return UserBaseResponse
+     */
+    UserBaseResponse createArticle(ArticleCreateDTO articleCreateDTO);
 }

@@ -1,5 +1,6 @@
 package com.linjiasong.user.controller;
 
+import com.linjiasong.user.entity.dto.ArticleCreateDTO;
 import com.linjiasong.user.entity.dto.UserInfoDTO;
 import com.linjiasong.user.entity.dto.UserLoginDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
@@ -56,6 +57,11 @@ public class UserController {
     @GetMapping("/article")
     public UserBaseResponse getUserArticle(){
         return userArticleService.getUserArticleBasic();
+    }
+
+    @PostMapping("/article")
+    public UserBaseResponse createArticle(@RequestBody ArticleCreateDTO articleCreateDTO){
+        return userArticleService.createArticle(articleCreateDTO);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.linjiasong.user.service.impl;
 
 import com.linjiasong.user.constant.UserInfoContext;
+import com.linjiasong.user.entity.dto.ArticleCreateDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
 import com.linjiasong.user.feign.ArticleServiceClient;
 import com.linjiasong.user.service.UserArticleService;
@@ -20,5 +21,10 @@ public class UserArticleServiceImpl implements UserArticleService {
     @Override
     public UserBaseResponse getUserArticleBasic() {
         return articleServiceClient.getArticleBasicByUserId(UserInfoContext.get().getId());
+    }
+
+    @Override
+    public UserBaseResponse createArticle(ArticleCreateDTO articleCreateDTO) {
+        return articleServiceClient.createArticle(articleCreateDTO);
     }
 }
