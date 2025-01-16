@@ -34,4 +34,9 @@ public class ArticleController {
         return articleService.updateArticle(articleUpdateDTO);
     }
 
+    @PostMapping("/delete/{id}")
+    public ArticleBaseResponse deleteArticle(@PathVariable("id") Long id){
+        return articleService.deleteArticle(id);
+    }
+
 }

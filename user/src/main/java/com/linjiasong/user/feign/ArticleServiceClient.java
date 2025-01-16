@@ -23,4 +23,7 @@ public interface ArticleServiceClient {
 
     @PostMapping("/api/article/update")
     UserBaseResponse updateArticle(@RequestBody ArticleUpdateDTO articleUpdateDTO);
+
+    @PostMapping("/api/article/delete/{id}")
+    UserBaseResponse deleteArticle(@PathVariable("id") Long id);
 }

@@ -29,4 +29,11 @@ public interface UserArticleService {
      * @return UserBaseResponse
      */
     UserBaseResponse updateArticle(ArticleUpdateDTO articleUpdateDTO);
+
+    /**
+     * 删除文章
+     * @param id id
+     * @return UserBaseResponse
+     */
+    UserBaseResponse deleteArticle(Long id);
 }

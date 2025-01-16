@@ -69,4 +69,9 @@ public class UserController {
     public UserBaseResponse updateArticle(@RequestBody ArticleUpdateDTO articleUpdateDTO){
         return userArticleService.updateArticle(articleUpdateDTO);
     }
+
+    @PostMapping("/article/delete/{id}")
+    public UserBaseResponse deleteArticle(@PathVariable("id") Long id){
+        return userArticleService.deleteArticle(id);
+    }
 }

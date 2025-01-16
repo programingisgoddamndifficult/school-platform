@@ -87,4 +87,18 @@ public class ArticleServiceImpl implements ArticleService {
 
         return ArticleBaseResponse.builder().code("200").msg("success").build();
     }
+
+    //TODO fix 没有权限 代码 94行 检查
+    @Override
+    public ArticleBaseResponse deleteArticle(Long id) {
+        if(!articleBasicInfoGateway.isThisUserArticle(id)) {
+            throw new BizException("没有权限");
+        }
+
+        if (!articleBasicInfoGateway.deleteById(id)) {
+            throw new BizException("服务异常");
+        }
+
+        return ArticleBaseResponse.builder().code("200").msg("success").build();
+    }
 }

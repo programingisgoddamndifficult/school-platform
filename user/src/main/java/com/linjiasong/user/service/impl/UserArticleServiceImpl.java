@@ -33,4 +33,9 @@ public class UserArticleServiceImpl implements UserArticleService {
     public UserBaseResponse updateArticle(ArticleUpdateDTO articleUpdateDTO) {
         return articleServiceClient.updateArticle(articleUpdateDTO);
     }
+
+    @Override
+    public UserBaseResponse deleteArticle(Long id) {
+        return articleServiceClient.deleteArticle(id);
+    }
 }

@@ -31,4 +31,11 @@ public interface ArticleService {
      * @return ArticleBaseResponse
      */
     ArticleBaseResponse updateArticle(ArticleUpdateDTO articleUpdateDTO);
+
+    /**
+     * 删除文章
+     * @param id id
+     * @return ArticleBaseResponse
+     */
+    ArticleBaseResponse deleteArticle(Long id);
 }
