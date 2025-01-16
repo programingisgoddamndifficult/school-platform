@@ -7,6 +7,7 @@ import com.linjiasong.article.mapper.ArticleDetailMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Wrapper;
 import java.util.List;
 
 /**
@@ -22,6 +23,16 @@ public class ArticleDetailGatewayImpl implements ArticleDetailGateway {
     @Override
     public boolean insert(ArticleDetail articleDetail) {
         return articleDetailMapper.insert(articleDetail) > 0;
+    }
+
+    @Override
+    public boolean update(ArticleDetail articleDetail) {
+        return articleDetailMapper.updateById(articleDetail) > 0;
+    }
+
+    @Override
+    public boolean update(ArticleDetail articleDetail, QueryWrapper<ArticleDetail> queryWrapper) {
+        return articleDetailMapper.update(articleDetail, queryWrapper) > 0;
     }
 
     @Override

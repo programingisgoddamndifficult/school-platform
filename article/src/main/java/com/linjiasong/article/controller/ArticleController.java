@@ -1,6 +1,7 @@
 package com.linjiasong.article.controller;
 
 import com.linjiasong.article.entity.dto.ArticleCreateDTO;
+import com.linjiasong.article.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.article.excepiton.ArticleBaseResponse;
 import com.linjiasong.article.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,11 @@ public class ArticleController {
     @GetMapping("/basic")
     public ArticleBaseResponse getArticleBasicByUserId(@RequestParam("userId") Long userId){
         return articleService.getUserArticleBasic(userId);
+    }
+
+    @PostMapping("/update")
+    public ArticleBaseResponse updateArticle(@RequestBody ArticleUpdateDTO articleUpdateDTO){
+        return articleService.updateArticle(articleUpdateDTO);
     }
 
 }
