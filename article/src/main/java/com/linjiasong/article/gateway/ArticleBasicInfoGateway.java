@@ -12,8 +12,6 @@ public interface ArticleBasicInfoGateway {
 
     boolean insert(ArticleBasicInfo articleBasicInfo);
 
-    boolean update(ArticleBasicInfo articleBasicInfo);
-
     List<ArticleBasicInfo> getByUserId(Long userId);
 
 }

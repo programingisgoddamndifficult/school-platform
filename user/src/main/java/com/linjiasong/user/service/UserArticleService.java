@@ -1,6 +1,5 @@
 package com.linjiasong.user.service;
 
-import com.linjiasong.user.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
 
 /**
@@ -15,10 +14,4 @@ public interface UserArticleService {
      */
     UserBaseResponse getUserArticleBasic();
 
-    /**
-     * 修改文章
-     * @param articleUpdateDTO articleUpdateDTO
-     * @return UserBaseResponse
-     */
-    UserBaseResponse updateArticle(ArticleUpdateDTO articleUpdateDTO);
 }

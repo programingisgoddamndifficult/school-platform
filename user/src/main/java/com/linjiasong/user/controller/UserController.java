@@ -1,6 +1,5 @@
 package com.linjiasong.user.controller;
 
-import com.linjiasong.user.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.user.entity.dto.UserInfoDTO;
 import com.linjiasong.user.entity.dto.UserLoginDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
@@ -57,12 +56,6 @@ public class UserController {
     @GetMapping("/article")
     public UserBaseResponse getUserArticle(){
         return userArticleService.getUserArticleBasic();
-    }
-
-    //TODO openfeign设置header传递token
-    @PostMapping("/article/update")
-    public UserBaseResponse updateArticle(ArticleUpdateDTO articleUpdateDTO){
-        return userArticleService.updateArticle(articleUpdateDTO);
     }
 
 }

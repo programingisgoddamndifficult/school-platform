@@ -1,7 +1,6 @@
 package com.linjiasong.article.service;
 
 import com.linjiasong.article.entity.dto.ArticleCreateDTO;
-import com.linjiasong.article.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.article.excepiton.ArticleBaseResponse;
 
 /**
@@ -24,7 +23,4 @@ public interface ArticleService {
      * @return ArticleBaseResponse
      */
     ArticleBaseResponse getUserArticleBasic(Long userId);
-
-
-    ArticleBaseResponse updateArticle(ArticleUpdateDTO articleUpdateDTO);
 }

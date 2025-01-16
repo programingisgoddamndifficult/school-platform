@@ -25,11 +25,6 @@ public class ArticleDetailGatewayImpl implements ArticleDetailGateway {
     }
 
     @Override
-    public boolean update(ArticleDetail articleDetail) {
-        return articleDetailMapper.updateById(articleDetail) > 0;
-    }
-
-    @Override
     public List<ArticleDetail> getByUserId(Long userId) {
         return articleDetailMapper.selectList(new QueryWrapper<ArticleDetail>().eq("user_id", userId));
     }

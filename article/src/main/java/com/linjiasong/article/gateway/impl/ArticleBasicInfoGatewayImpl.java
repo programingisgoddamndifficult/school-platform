@@ -25,11 +25,6 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
     }
 
     @Override
-    public boolean update(ArticleBasicInfo articleBasicInfo) {
-        return articleBasicInfoMapper.updateById(articleBasicInfo) > 0;
-    }
-
-    @Override
     public List<ArticleBasicInfo> getByUserId(Long userId) {
         return articleBasicInfoMapper.selectList(new QueryWrapper<ArticleBasicInfo>().eq("user_id", userId));
     }
