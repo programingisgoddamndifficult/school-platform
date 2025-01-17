@@ -1,7 +1,9 @@
 package com.linjiasong.article.gateway.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.linjiasong.article.constant.ArticleContext;
 import com.linjiasong.article.entity.ArticleBasicInfo;
+import com.linjiasong.article.excepiton.BizException;
 import com.linjiasong.article.gateway.ArticleBasicInfoGateway;
 import com.linjiasong.article.mapper.ArticleBasicInfoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,7 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
 
     @Override
     public boolean isThisUserArticle(Long id) {
-        return articleBasicInfoMapper.selectById(id) != null;
+        Long userId = ArticleContext.get().getId();
+        return articleBasicInfoMapper.selectOne(new QueryWrapper<ArticleBasicInfo>().eq("id", id).eq("user_id", userId)) != null;
     }
 }
