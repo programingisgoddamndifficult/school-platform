@@ -58,6 +58,11 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             throw new BizException("登陆用户名有误或不存在");
         }
 
+        //封禁用户禁止登陆
+        if(userInfoByUserName.getIsBan() == 1){
+            throw new BizException("您的账号存在异常，暂时不允许使用");
+        }
+
         if (!userInfoByUserName.getPassword().equals(userLoginDTO.getPassword())) {
             throw new BizException("密码不正确");
         }

@@ -30,6 +30,8 @@ public class UserInfoInterceptor implements HandlerInterceptor {
         if (token == null) {
             return false;
         }
+
+        //TODO 对封禁后的用户做过滤
         UserInfoContext.set(JSON.parseObject(TokenUtil.parseToken(token.substring("Bearer ".length())), UserInfo.class));
         return true;
     }
