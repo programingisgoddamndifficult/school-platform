@@ -21,7 +21,7 @@ public class UserInfoInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String requestUri = request.getRequestURI();
 
-        if ("/api/user/signup".equals(requestUri) || "/api/user/login".equals(requestUri)) {
+        if ("/api/user/signup".equals(requestUri) || "/api/user/login".equals(requestUri) || requestUri.contains("/admin")) {
             return true;
         }
 

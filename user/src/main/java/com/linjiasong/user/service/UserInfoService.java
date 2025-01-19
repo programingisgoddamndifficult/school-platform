@@ -32,4 +32,11 @@ public interface UserInfoService extends IService<UserInfo> {
      * @return UserBaseResponse
      */
     UserBaseResponse getUserInfo();
+
+    /**
+     * 封禁用户
+     * @param userId userId
+     * @return UserBaseResponse
+     */
+    UserBaseResponse banUser(Long userId);
 }

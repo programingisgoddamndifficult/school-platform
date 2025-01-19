@@ -72,6 +72,14 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         return UserBaseResponse.builder().code("200").msg("success").data(UserInfoVo.build(userInfo,userLikeGateway.getLikeNums(userInfo.getId()))).build();
     }
 
+    @Override
+    public UserBaseResponse banUser(Long userId) {
+        if(!userGateway.banUser(userId)){
+            throw new BizException("服务异常");
+        }
+        return UserBaseResponse.builder().code("200").msg("success").build();
+    }
+
     private void checkUserLoginParam(UserLoginDTO userLoginDTO) {
         if (userLoginDTO == null || userLoginDTO.getLoginType() == null) {
             throw new BizException("入参异常");
