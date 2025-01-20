@@ -2,6 +2,7 @@ package com.linjiasong.user.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.linjiasong.user.entity.dto.UserInfoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,4 +37,13 @@ public class UserInfo {
     private Short isBan;
 
     private Short isDelete;
+
+    public static UserInfo userInfoDtoToUserInfo(UserInfoDTO userInfoDTO) {
+        return UserInfo.builder()
+                .username(userInfoDTO.getUsername())
+                .password(userInfoDTO.getPassword())
+                .phone(userInfoDTO.getPhone())
+                .email(userInfoDTO.getEmail())
+                .build();
+    }
 }

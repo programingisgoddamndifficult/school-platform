@@ -1,6 +1,7 @@
 package com.linjiasong.user.interceptor;
 
 import com.alibaba.fastjson.JSON;
+import com.linjiasong.user.constant.RedisKeyEnum;
 import com.linjiasong.user.constant.UserInfoContext;
 import com.linjiasong.user.entity.UserInfo;
 import com.linjiasong.user.utils.TokenUtil;
@@ -41,13 +42,11 @@ public class UserInfoInterceptor implements HandlerInterceptor {
 
         UserInfo userInfo = JSON.parseObject(TokenUtil.parseToken(token.substring("Bearer ".length())), UserInfo.class);
 
-        RBucket<Long> bucket = redissonClient.getBucket("user:ban:" + userInfo.getId());
-        if(bucket.isExists()){
+        RBucket<Long> bucket = redissonClient.getBucket(String.format(RedisKeyEnum.USER_BAN.getKey(), userInfo.getId()));
+        if (bucket.isExists()) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json;charset=UTF-8");
-
             String responseBody = JSON.toJSONString(Map.of("msg", "当前用户账号存在异常", "code", "401"));
-
             response.getWriter().write(responseBody);
 
             return false;

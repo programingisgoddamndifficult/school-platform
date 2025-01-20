@@ -1,5 +1,6 @@
 package com.linjiasong.user.entity.dto;
 
+import com.linjiasong.user.excepiton.BizException;
 import lombok.Data;
 
 /**
@@ -18,4 +19,14 @@ public class UserLoginDTO {
      * 登陆方式
      */
     private String loginType;
+
+    public void checkUsernameLoginTypeParam() {
+        if (this.getUsername() == null) {
+            throw new BizException("登陆用户名为空");
+        }
+
+        if (this.getPassword() == null) {
+            throw new BizException("登陆密码为空");
+        }
+    }
 }

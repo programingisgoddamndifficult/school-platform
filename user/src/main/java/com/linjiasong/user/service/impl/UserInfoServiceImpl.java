@@ -2,6 +2,7 @@ package com.linjiasong.user.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.linjiasong.user.constant.RedisKeyEnum;
 import com.linjiasong.user.constant.UserInfoContext;
 import com.linjiasong.user.entity.UserInfo;
 import com.linjiasong.user.entity.dto.UserInfoDTO;
@@ -45,7 +46,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     public UserBaseResponse signUp(UserInfoDTO userInfo) {
         checkSignUpInfo(userInfo);
 
-        if (!userGateway.insert(userInfoDtoToUserInfo(userInfo))) {
+        if (!userGateway.insert(UserInfo.userInfoDtoToUserInfo(userInfo))) {
             throw new BizException("注册失败,服务异常");
         }
 
@@ -88,7 +89,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             throw new BizException("服务异常");
         }
 
-        RBucket<Long> bucket = redissonClient.getBucket("user:ban:" + userId);
+        RBucket<Long> bucket = redissonClient.getBucket(String.format(RedisKeyEnum.USER_BAN.getKey(),userId));
         if(bucket.isExists()){
             bucket.delete();
         }else{
@@ -107,22 +108,12 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
         switch (loginType) {
             case "username":
-                checkUsernameLoginTypeParam(userLoginDTO);
+                userLoginDTO.checkUsernameLoginTypeParam();
                 break;
             case "phone":
                 throw new BizException("手机号的登陆方式暂未开通");
             default:
                 throw new BizException("登陆方式有误");
-        }
-    }
-
-    private void checkUsernameLoginTypeParam(UserLoginDTO userLoginDTO) {
-        if (userLoginDTO.getUsername() == null) {
-            throw new BizException("登陆用户名为空");
-        }
-
-        if (userLoginDTO.getPassword() == null) {
-            throw new BizException("登陆密码为空");
         }
     }
 
@@ -168,14 +159,4 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             throw new BizException("注册失败，邮箱号码重复");
         }
     }
-
-    private UserInfo userInfoDtoToUserInfo(UserInfoDTO userInfoDTO) {
-        return UserInfo.builder()
-                .username(userInfoDTO.getUsername())
-                .password(userInfoDTO.getPassword())
-                .phone(userInfoDTO.getPhone())
-                .email(userInfoDTO.getEmail())
-                .build();
-    }
-
 }
