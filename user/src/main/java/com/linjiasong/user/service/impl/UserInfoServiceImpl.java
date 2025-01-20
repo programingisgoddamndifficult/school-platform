@@ -18,6 +18,8 @@ import com.linjiasong.user.utils.MD5Util;
 import com.linjiasong.user.utils.TokenUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RBucket;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
     @Autowired
     private UserLikeGateway userLikeGateway;
+
+    @Autowired
+    private RedissonClient redissonClient;
 
     @Override
     public UserBaseResponse signUp(UserInfoDTO userInfo) {
@@ -82,6 +87,14 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         if(!userGateway.banUser(userId)){
             throw new BizException("服务异常");
         }
+
+        RBucket<Long> bucket = redissonClient.getBucket("user:ban:" + userId);
+        if(bucket.isExists()){
+            bucket.delete();
+        }else{
+            bucket.set(userId);
+        }
+
         return UserBaseResponse.builder().code("200").msg("success").build();
     }
 

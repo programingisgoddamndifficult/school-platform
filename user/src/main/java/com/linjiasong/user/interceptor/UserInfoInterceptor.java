@@ -7,8 +7,13 @@ import com.linjiasong.user.utils.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RBucket;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+
+import java.util.Map;
 
 /**
  * @author linjiasong
@@ -17,6 +22,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 @Slf4j
 public class UserInfoInterceptor implements HandlerInterceptor {
+    @Autowired
+    private RedissonClient redissonClient;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String requestUri = request.getRequestURI();
@@ -31,8 +39,21 @@ public class UserInfoInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        //TODO 对封禁后的用户做过滤
-        UserInfoContext.set(JSON.parseObject(TokenUtil.parseToken(token.substring("Bearer ".length())), UserInfo.class));
+        UserInfo userInfo = JSON.parseObject(TokenUtil.parseToken(token.substring("Bearer ".length())), UserInfo.class);
+
+        RBucket<Long> bucket = redissonClient.getBucket("user:ban:" + userInfo.getId());
+        if(bucket.isExists()){
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+
+            String responseBody = JSON.toJSONString(Map.of("msg", "当前用户账号存在异常", "code", "401"));
+
+            response.getWriter().write(responseBody);
+
+            return false;
+        }
+
+        UserInfoContext.set(userInfo);
         return true;
     }
 
