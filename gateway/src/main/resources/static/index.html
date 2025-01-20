@@ -37,12 +37,50 @@
 <body>
 <button id="fetchDataButton">Fetch Data</button>
 <div id="response-container" class="response-container"></div>
+<button id="loginButton" style="position: absolute; top: 20px; right: 20px;">Go to Login</button>
+<button id="logoutButton" style="position: absolute; top: 60px; right: 20px;">Logout</button>
 
 <script>
+    document.getElementById('loginButton').addEventListener('click', function () {
+        window.location.href = 'login.html';
+    });
+
+    document.getElementById('logoutButton').addEventListener('click', function () {
+        if (confirm("Are you sure you want to log out?")) {
+            var authorization = localStorage.getItem('authorization');
+            if (!authorization) {
+                alert('Authorization not found. Please log in first.');
+                window.location.href = 'login.html';
+                return;
+            }
+            fetch('http://127.0.0.1/api/user/loginout', {
+                method: 'POST',
+                headers: {
+                    'Authorization': authorization,
+                    'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        localStorage.removeItem('authorization');
+                        alert("You have been logged out successfully.");
+                    } else {
+                        console.error('Logout failed');
+                        alert("Logout failed. Please try again.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred during logout.");
+                });
+        }
+    });
+
     document.getElementById('fetchDataButton').addEventListener('click', function () {
         var authorization = localStorage.getItem('authorization');
         if (!authorization) {
             alert('Authorization not found. Please log in first.');
+            window.location.href = 'login.html';
             return;
         }
 
@@ -55,9 +93,13 @@
         })
             .then(response => response.json())
             .then(data => {
-                var responseContainer = document.getElementById('response-container');
-                responseContainer.style.display = 'block';
-                responseContainer.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                if (data.msg && (data.msg === "用户尚未登陆或登陆信息过期")) {
+                    window.location.href = 'login.html';
+                } else {
+                    var responseContainer = document.getElementById('response-container');
+                    responseContainer.style.display = 'block';
+                    responseContainer.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                }
             })
             .catch(error => {
                 console.error('Error:', error);

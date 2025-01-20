@@ -25,6 +25,8 @@ public class UserInfoVo {
 
     private String phone;
 
+    private String email;
+
     private LocalDateTime createTime;
 
     /**
@@ -33,10 +35,15 @@ public class UserInfoVo {
     private int likeNums;
 
     public static UserInfoVo build(UserInfo userInfo, int likeNums){
+        if(userInfo.getEmail() != null){
+            userInfo.setEmail(DESUtil.decrypt(userInfo.getEmail()));
+        }
+
         return UserInfoVo.builder()
                 .id(userInfo.getId())
                 .username(userInfo.getUsername())
                 .phone(DESUtil.decrypt(userInfo.getPhone()))
+                .email(userInfo.getEmail())
                 .createTime(userInfo.getCreateTime())
                 .likeNums(likeNums)
                 .build();

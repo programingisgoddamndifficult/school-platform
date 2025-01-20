@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Signup Page</title>
     <style>
         body {
             display: flex;
@@ -15,7 +15,7 @@
             background-color: #f4f4f4;
         }
 
-        .login-container {
+        .signup-container {
             background-color: #fff;
             padding: 20px;
             border-radius: 5px;
@@ -60,36 +60,42 @@
 </head>
 
 <body>
-<div class="login-container">
-    <h2>Login</h2>
-    <form id="loginForm">
+<div class="signup-container">
+    <h2>Signup</h2>
+    <form id="signupForm">
         <label for="username">Username:</label>
         <input type="text" id="username" required>
         <label for="password">Password:</label>
         <input type="password" id="password" required>
-        <button type="submit">Login</button>
-        <button type="button" id="registerButton">Register</button>
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email"> <!-- 移除 required 属性 -->
+        <button type="submit">Signup</button>
     </form>
     <div id="response-container" class="response-container"></div>
 </div>
 
 <script>
-    document.getElementById('registerButton').addEventListener('click', function () {
-        window.location.href ='signup.html';
-    });
-
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
+    document.getElementById('signupForm').addEventListener('submit', function (e) {
         e.preventDefault();
         var username = document.getElementById('username').value;
         var password = document.getElementById('password').value;
+        var phone = document.getElementById('phone').value;
+        var email = document.getElementById('email').value;
+        // 检查 email 输入框是否为空
+        if (email === '') {
+            email = null; // 或 email = '';
+        }
 
         var data = {
             "username": username,
             "password": password,
-            "loginType": "username"
+            "phone": phone,
+            "email": email
         };
 
-        fetch('http://127.0.0.1/api/user/login', {
+        fetch('http://127.0.0.1/api/user/signup', {
             method: 'POST',
             headers: {
                 'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
@@ -97,25 +103,20 @@
             },
             body: JSON.stringify(data)
         })
-            .then(response => {
-                if (response.status === 200) {
-                    var authorization = response.headers.get('authorization');
-                    localStorage.setItem('authorization', authorization);
-                    return response.json();
-                } else {
-                    throw new Error('Login failed');
-                }
-            })
+            .then(response => response.json())
             .then(data => {
                 if (data.code === '200') {
+                    alert('Registration successful!');
                     window.location.href = 'index.html';
                 } else {
-                    alert('Login failed:' + data.msg);
+                    var responseContainer = document.getElementById('response-container');
+                    responseContainer.style.display = 'block';
+                    responseContainer.innerHTML = data.msg;
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred during login');
+                alert('An error occurred during registration');
             });
     });
 </script>
