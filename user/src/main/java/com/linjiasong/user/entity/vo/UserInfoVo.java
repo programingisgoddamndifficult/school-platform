@@ -37,7 +37,7 @@ public class UserInfoVo {
                 .id(userInfo.getId())
                 .username(userInfo.getUsername())
                 .phone(DESUtil.decrypt(userInfo.getPhone()))
-                .createTime(LocalDateTime.now())
+                .createTime(userInfo.getCreateTime())
                 .likeNums(likeNums)
                 .build();
     }

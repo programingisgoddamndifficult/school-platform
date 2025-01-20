@@ -65,7 +65,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
 
         //封禁用户禁止登陆
-        if(userInfoByUserName.getIsBan() == 1){
+        if (userInfoByUserName.getIsBan() == 1) {
             throw new BizException("您的账号存在异常，暂时不允许使用");
         }
 
@@ -80,19 +80,19 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Override
     public UserBaseResponse getUserInfo() {
         UserInfo userInfo = UserInfoContext.get();
-        return UserBaseResponse.builder().code("200").msg("success").data(UserInfoVo.build(userInfo,userLikeGateway.getLikeNums(userInfo.getId()))).build();
+        return UserBaseResponse.builder().code("200").msg("success").data(UserInfoVo.build(userInfo, userLikeGateway.getLikeNums(userInfo.getId()))).build();
     }
 
     @Override
     public UserBaseResponse banUser(Long userId) {
-        if(!userGateway.banUser(userId)){
+        if (!userGateway.banUser(userId)) {
             throw new BizException("服务异常");
         }
 
-        RBucket<Long> bucket = redissonClient.getBucket(String.format(RedisKeyEnum.USER_BAN.getKey(),userId));
-        if(bucket.isExists()){
+        RBucket<Long> bucket = redissonClient.getBucket(String.format(RedisKeyEnum.USER_BAN.getKey(), userId));
+        if (bucket.isExists()) {
             bucket.delete();
-        }else{
+        } else {
             bucket.set(userId);
         }
 
@@ -134,7 +134,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             throw new BizException("注册失败,请填写手机号");
         }
 
-        if(userInfo.getPhone().length() != 11){
+        if (userInfo.getPhone().length() != 11) {
             throw new BizException("手机号码格式不正确");
         }
 
