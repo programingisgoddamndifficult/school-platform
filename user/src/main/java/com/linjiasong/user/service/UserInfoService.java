@@ -21,11 +21,17 @@ public interface UserInfoService extends IService<UserInfo> {
     UserBaseResponse signUp(UserInfoDTO userInfo);
 
     /**
-     * 用户注册
+     * 用户登陆
      * @param userLoginDTO dto
      * @return UserBaseResponse
      */
     UserBaseResponse login(UserLoginDTO userLoginDTO, HttpServletResponse response);
+
+    /**
+     * 用户登出
+     * @return UserBaseResponse
+     */
+    UserBaseResponse loginOut();
 
     /**
      * 获取用户信息

@@ -73,7 +73,23 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             throw new BizException("密码不正确");
         }
 
-        response.setHeader("Authorization", "Bearer " + TokenUtil.generateToken(JSON.toJSONString(userInfoByUserName)));
+        String token = "Bearer " + TokenUtil.generateToken(JSON.toJSONString(userInfoByUserName));
+
+        RBucket<String> bucket = redissonClient.getBucket(String.format(RedisKeyEnum.USER_LOGIN.getKey(), userInfoByUserName.getId()));
+        if(bucket.isExists()){
+            return UserBaseResponse.builder().code("200").msg("success").build();
+        }else{
+            bucket.set(token);
+        }
+
+        response.setHeader("Authorization", token);
+        return UserBaseResponse.builder().code("200").msg("success").build();
+    }
+
+    @Override
+    public UserBaseResponse loginOut() {
+        RBucket<String> bucket = redissonClient.getBucket(String.format(RedisKeyEnum.USER_LOGIN.getKey(), UserInfoContext.get().getId()));
+        bucket.delete();
         return UserBaseResponse.builder().code("200").msg("success").build();
     }
 

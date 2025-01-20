@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -42,12 +43,16 @@ public class UserInfoInterceptor implements HandlerInterceptor {
 
         UserInfo userInfo = JSON.parseObject(TokenUtil.parseToken(token.substring("Bearer ".length())), UserInfo.class);
 
-        RBucket<Long> bucket = redissonClient.getBucket(String.format(RedisKeyEnum.USER_BAN.getKey(), userInfo.getId()));
-        if (bucket.isExists()) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json;charset=UTF-8");
-            String responseBody = JSON.toJSONString(Map.of("msg", "当前用户账号存在异常", "code", "401"));
-            response.getWriter().write(responseBody);
+        RBucket<String> loginBucket = redissonClient.getBucket(String.format(RedisKeyEnum.USER_LOGIN.getKey(), userInfo.getId()));
+        if (!loginBucket.isExists()) {
+            setResponse(response, "用户尚未登陆或登陆信息过期");
+
+            return false;
+        }
+
+        RBucket<Long> banBucket = redissonClient.getBucket(String.format(RedisKeyEnum.USER_BAN.getKey(), userInfo.getId()));
+        if (banBucket.isExists()) {
+            setResponse(response, "当前用户账号存在异常");
 
             return false;
         }
@@ -59,5 +64,12 @@ public class UserInfoInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         UserInfoContext.remove();
+    }
+
+    private void setResponse(HttpServletResponse response, String msg) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json;charset=UTF-8");
+        String responseBody = JSON.toJSONString(Map.of("msg", msg, "code", "401"));
+        response.getWriter().write(responseBody);
     }
 }

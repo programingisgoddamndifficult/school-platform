@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .response-container {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-color: #f9f9f9;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+<div class="login-container">
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" required>
+        <button type="submit">Login</button>
+        <button type="button" onclick="window.location.href ='signup.index'">Register</button>
+    </form>
+    <div id="response-container" class="response-container"></div>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var username = document.getElementById('username').value;
+        // 正确获取密码元素的值
+        var password = document.getElementById('password').value;
+
+        var data = {
+            "username": username,
+            "password": password,
+            "loginType": "username"
+        };
+
+        fetch('http://127.0.0.1/api/user/login', {
+            method: 'POST',
+            headers: {
+                'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    var authorization = response.headers.get('authorization');
+                    localStorage.setItem('authorization', authorization);
+                    return response.json();
+                } else {
+                    throw new Error('Login failed');
+                }
+            })
+            .then(data => {
+                if (data.code === '200') {
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Login failed:' + data.msg);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during login');
+            });
+    });
+</script>
+</body>
+
+</html>

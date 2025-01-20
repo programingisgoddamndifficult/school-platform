@@ -40,6 +40,11 @@ public class UserController {
         return userInfoService.login(userLoginDTO, response);
     }
 
+    @PostMapping("/loginout")
+    public UserBaseResponse loginOut(){
+        return userInfoService.loginOut();
+    }
+
     @GetMapping
     public UserBaseResponse getUserInfo(){
         return userInfoService.getUserInfo();
