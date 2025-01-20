@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .response-container {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+
+<body>
+<button id="fetchDataButton">Fetch Data</button>
+<div id="response-container" class="response-container"></div>
+
+<script>
+    document.getElementById('fetchDataButton').addEventListener('click', function () {
+        var authorization = localStorage.getItem('authorization');
+        if (!authorization) {
+            alert('Authorization not found. Please log in first.');
+            return;
+        }
+
+        fetch('http://127.0.0.1/api/user', {
+            method: 'GET',
+            headers: {
+                'Authorization': authorization,
+                'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                var responseContainer = document.getElementById('response-container');
+                responseContainer.style.display = 'block';
+                responseContainer.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while fetching data');
+            });
+    });
+</script>
+</body>
+
+</html>
