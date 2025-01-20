@@ -76,12 +76,11 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         String token = "Bearer " + TokenUtil.generateToken(JSON.toJSONString(userInfoByUserName));
 
         RBucket<String> bucket = redissonClient.getBucket(String.format(RedisKeyEnum.USER_LOGIN.getKey(), userInfoByUserName.getId()));
-        if(bucket.isExists()){
-            return UserBaseResponse.builder().code("200").msg("success").build();
-        }else{
-            bucket.set(token);
+        if (bucket.isExists()) {
+            bucket.delete();
         }
 
+        bucket.set(token);
         response.setHeader("Authorization", token);
         return UserBaseResponse.builder().code("200").msg("success").build();
     }
