@@ -36,4 +36,11 @@ public interface UserArticleService {
      * @return UserBaseResponse
      */
     UserBaseResponse deleteArticle(Long id);
+
+    /**
+     * 收藏/取消收藏文章
+     * @param articleId articleId
+     * @return UserBaseResponse
+     */
+    UserBaseResponse collect(Long articleId);
 }

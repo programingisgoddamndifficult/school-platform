@@ -79,4 +79,9 @@ public class UserController {
     public UserBaseResponse deleteArticle(@PathVariable("id") Long id){
         return userArticleService.deleteArticle(id);
     }
+
+    @PostMapping("/article/collect/{articleId}")
+    public UserBaseResponse collectArticle(@PathVariable("articleId") Long articleId){
+        return userArticleService.collect(articleId);
+    }
 }

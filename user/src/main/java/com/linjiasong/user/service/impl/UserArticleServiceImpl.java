@@ -38,4 +38,9 @@ public class UserArticleServiceImpl implements UserArticleService {
     public UserBaseResponse deleteArticle(Long id) {
         return articleServiceClient.deleteArticle(id);
     }
+
+    @Override
+    public UserBaseResponse collect(Long articleId) {
+        return articleServiceClient.collect(articleId);
+    }
 }

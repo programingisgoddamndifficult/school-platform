@@ -26,4 +26,11 @@ public class ArticleCollect {
     private Long userId;
 
     private LocalDateTime collectTime;
+
+    public static ArticleCollect build(Long articleId, Long userId){
+        return ArticleCollect.builder()
+                .articleId(articleId)
+                .userId(userId)
+                .build();
+    }
 }

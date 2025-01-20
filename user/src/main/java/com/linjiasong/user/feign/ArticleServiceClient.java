@@ -26,4 +26,7 @@ public interface ArticleServiceClient {
 
     @PostMapping("/api/article/delete/{id}")
     UserBaseResponse deleteArticle(@PathVariable("id") Long id);
+
+    @PostMapping("/api/article/collect/{articleId}")
+    UserBaseResponse collect(@PathVariable("articleId") Long articleId);
 }
