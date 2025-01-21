@@ -29,4 +29,7 @@ public interface ArticleServiceClient {
 
     @PostMapping("/api/article/collect/{articleId}")
     UserBaseResponse collect(@PathVariable("articleId") Long articleId);
+
+    @PostMapping("/api/article/like/{articleId}")
+    UserBaseResponse like(@PathVariable("articleId") Long articleId);
 }

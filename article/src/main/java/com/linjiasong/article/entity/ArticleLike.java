@@ -26,4 +26,8 @@ public class ArticleLike {
     private Long userId;
 
     private LocalDateTime likeTime;
+
+    public static ArticleLike build(Long articleId, Long userId){
+        return ArticleLike.builder().articleId(articleId).userId(userId).build();
+    }
 }

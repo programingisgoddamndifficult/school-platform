@@ -43,4 +43,9 @@ public class UserArticleServiceImpl implements UserArticleService {
     public UserBaseResponse collect(Long articleId) {
         return articleServiceClient.collect(articleId);
     }
+
+    @Override
+    public UserBaseResponse like(Long articleId) {
+        return articleServiceClient.like(articleId);
+    }
 }

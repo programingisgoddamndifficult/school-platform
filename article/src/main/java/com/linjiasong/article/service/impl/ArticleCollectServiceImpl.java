@@ -22,8 +22,6 @@ public class ArticleCollectServiceImpl extends ServiceImpl<ArticleCollectMapper,
 
     @Override
     public ArticleBaseResponse collect(Long articleId) {
-
-
         if(!articleCollectGateway.collect(articleId)){
             throw new BizException("服务异常");
         }

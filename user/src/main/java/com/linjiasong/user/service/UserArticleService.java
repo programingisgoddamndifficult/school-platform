@@ -43,4 +43,11 @@ public interface UserArticleService {
      * @return UserBaseResponse
      */
     UserBaseResponse collect(Long articleId);
+
+    /**
+     * 点赞/取消点赞
+     * @param articleId articleId
+     * @return UserBaseResponse
+     */
+    UserBaseResponse like(Long articleId);
 }

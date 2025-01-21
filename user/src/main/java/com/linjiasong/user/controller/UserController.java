@@ -84,4 +84,9 @@ public class UserController {
     public UserBaseResponse collectArticle(@PathVariable("articleId") Long articleId){
         return userArticleService.collect(articleId);
     }
+
+    @PostMapping("/article/like/{articleId}")
+    public UserBaseResponse likeArticle(@PathVariable("articleId") Long articleId){
+        return userArticleService.like(articleId);
+    }
 }
