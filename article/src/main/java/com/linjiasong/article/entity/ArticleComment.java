@@ -2,6 +2,7 @@ package com.linjiasong.article.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.linjiasong.article.constant.ArticleContext;
 import com.linjiasong.article.entity.dto.ArticleCommentDTO;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,7 @@ public class ArticleComment {
 
     private LocalDateTime createTime;
 
+    @TableLogic
     private short is_delete;
 
     public static ArticleComment build(ArticleCommentDTO articleCommentDTO){

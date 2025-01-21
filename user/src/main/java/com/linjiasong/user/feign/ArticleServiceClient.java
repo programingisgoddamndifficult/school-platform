@@ -39,4 +39,7 @@ public interface ArticleServiceClient {
 
     @PostMapping("/api/article/comment")
     UserBaseResponse comment(@RequestBody ArticleCommentDTO articleCommentDTO);
+
+    @PostMapping("/api/article/comment/delete/{id}")
+    UserBaseResponse deleteComment(@PathVariable("id") Long id);
 }

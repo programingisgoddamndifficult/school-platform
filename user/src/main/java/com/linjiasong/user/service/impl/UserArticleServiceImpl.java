@@ -59,4 +59,9 @@ public class UserArticleServiceImpl implements UserArticleService {
     public UserBaseResponse comment(ArticleCommentDTO articleCommentDTO) {
         return articleServiceClient.comment(articleCommentDTO);
     }
+
+    @Override
+    public UserBaseResponse deleteComment(Long id) {
+        return articleServiceClient.deleteComment(id);
+    }
 }

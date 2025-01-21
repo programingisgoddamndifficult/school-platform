@@ -1,6 +1,8 @@
 package com.linjiasong.article.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.linjiasong.article.constant.ArticleContext;
 import com.linjiasong.article.entity.ArticleComment;
 import com.linjiasong.article.entity.dto.ArticleCommentDTO;
 import com.linjiasong.article.excepiton.ArticleBaseResponse;
@@ -26,6 +28,21 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
         if(!articleCommentGateway.comment(ArticleComment.build(articleCommentDTO))){
             throw new BizException("服务异常");
         }
+        return ArticleBaseResponse.success();
+    }
+
+    @Override
+    public ArticleBaseResponse deleteComment(Long id) {
+        ArticleComment articleComment = articleCommentGateway.selectOne(new QueryWrapper<ArticleComment>()
+                .eq("id", id).eq("user_id", ArticleContext.get().getId()));
+        if(articleComment == null){
+            throw new BizException("评论不存在或无权限");
+        }
+
+        if(!articleCommentGateway.deleteComment(id)){
+            throw new BizException("服务异常");
+        }
+
         return ArticleBaseResponse.success();
     }
 }

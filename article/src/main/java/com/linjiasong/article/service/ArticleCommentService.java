@@ -13,4 +13,5 @@ public interface ArticleCommentService extends IService<ArticleComment> {
 
     ArticleBaseResponse comment(ArticleCommentDTO articleCommentDTO);
 
+    ArticleBaseResponse deleteComment(Long id);
 }

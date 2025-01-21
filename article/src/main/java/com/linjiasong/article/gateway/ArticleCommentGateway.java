@@ -1,5 +1,6 @@
 package com.linjiasong.article.gateway;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.linjiasong.article.entity.ArticleComment;
 
 /**
@@ -10,4 +11,7 @@ public interface ArticleCommentGateway {
 
     boolean comment(ArticleComment articleComment);
 
+    boolean deleteComment(Long id);
+
+    ArticleComment selectOne(QueryWrapper<ArticleComment> queryWrapper);
 }

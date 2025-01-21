@@ -65,4 +65,11 @@ public interface UserArticleService {
      * @return UserBaseResponse
      */
     UserBaseResponse comment(ArticleCommentDTO articleCommentDTO);
+
+    /**
+     *
+     * @param id id
+     * @return UserBaseResponse
+     */
+    UserBaseResponse deleteComment(Long id);
 }

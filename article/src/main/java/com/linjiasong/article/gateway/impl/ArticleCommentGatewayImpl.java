@@ -1,6 +1,8 @@
 package com.linjiasong.article.gateway.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.linjiasong.article.entity.ArticleComment;
+import com.linjiasong.article.excepiton.BizException;
 import com.linjiasong.article.gateway.ArticleCommentGateway;
 import com.linjiasong.article.mapper.ArticleCommentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,5 +21,15 @@ public class ArticleCommentGatewayImpl implements ArticleCommentGateway {
     @Override
     public boolean comment(ArticleComment articleComment) {
         return articleCommentMapper.insert(articleComment) > 0;
+    }
+
+    @Override
+    public boolean deleteComment(Long id) {
+        return articleCommentMapper.deleteById(id) > 0;
+    }
+
+    @Override
+    public ArticleComment selectOne(QueryWrapper<ArticleComment> queryWrapper) {
+        return articleCommentMapper.selectOne(queryWrapper);
     }
 }
