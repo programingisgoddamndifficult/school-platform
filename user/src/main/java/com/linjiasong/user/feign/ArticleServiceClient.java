@@ -1,6 +1,7 @@
 package com.linjiasong.user.feign;
 
 import com.linjiasong.user.config.FeignConfiguration;
+import com.linjiasong.user.entity.dto.ArticleCommentDTO;
 import com.linjiasong.user.entity.dto.ArticleCreateDTO;
 import com.linjiasong.user.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
@@ -35,4 +36,7 @@ public interface ArticleServiceClient {
 
     @GetMapping("/api/article/detail")
     UserBaseResponse getArticleDetail(@RequestParam("articleId") Long articleId);
+
+    @PostMapping("/api/article/comment")
+    UserBaseResponse comment(@RequestBody ArticleCommentDTO articleCommentDTO);
 }

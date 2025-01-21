@@ -1,5 +1,6 @@
 package com.linjiasong.user.service;
 
+import com.linjiasong.user.entity.dto.ArticleCommentDTO;
 import com.linjiasong.user.entity.dto.ArticleCreateDTO;
 import com.linjiasong.user.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
@@ -57,4 +58,11 @@ public interface UserArticleService {
      * @return UserBaseResponse
      */
     UserBaseResponse getArticleDetail(Long articleId);
+
+    /**
+     * 评论
+     * @param articleCommentDTO articleCommentDTO
+     * @return UserBaseResponse
+     */
+    UserBaseResponse comment(ArticleCommentDTO articleCommentDTO);
 }

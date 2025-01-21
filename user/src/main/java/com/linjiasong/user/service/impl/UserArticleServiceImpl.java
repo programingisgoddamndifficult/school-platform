@@ -1,6 +1,7 @@
 package com.linjiasong.user.service.impl;
 
 import com.linjiasong.user.constant.UserInfoContext;
+import com.linjiasong.user.entity.dto.ArticleCommentDTO;
 import com.linjiasong.user.entity.dto.ArticleCreateDTO;
 import com.linjiasong.user.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
@@ -52,5 +53,10 @@ public class UserArticleServiceImpl implements UserArticleService {
     @Override
     public UserBaseResponse getArticleDetail(Long articleId) {
         return articleServiceClient.getArticleDetail(articleId);
+    }
+
+    @Override
+    public UserBaseResponse comment(ArticleCommentDTO articleCommentDTO) {
+        return articleServiceClient.comment(articleCommentDTO);
     }
 }

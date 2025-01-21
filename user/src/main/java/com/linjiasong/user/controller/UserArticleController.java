@@ -1,5 +1,6 @@
 package com.linjiasong.user.controller;
 
+import com.linjiasong.user.entity.dto.ArticleCommentDTO;
 import com.linjiasong.user.entity.dto.ArticleCreateDTO;
 import com.linjiasong.user.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
@@ -51,6 +52,11 @@ public class UserArticleController {
     @GetMapping("/detail")
     public UserBaseResponse getArticleDetail(@RequestParam("articleId") Long articleId){
         return userArticleService.getArticleDetail(articleId);
+    }
+
+    @PostMapping("/comment")
+    public UserBaseResponse comment(@RequestBody ArticleCommentDTO articleCommentDTO){
+        return userArticleService.comment(articleCommentDTO);
     }
 
 }

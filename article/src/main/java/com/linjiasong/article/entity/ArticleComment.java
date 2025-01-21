@@ -2,10 +2,14 @@ package com.linjiasong.article.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.linjiasong.article.constant.ArticleContext;
+import com.linjiasong.article.entity.dto.ArticleCommentDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 /**
  * @author linjiasong
@@ -26,9 +30,19 @@ public class ArticleComment {
     private String comment;
 
     /**
-     * 评论的等级，最多二级
+     * 评论等级 目前仅一级
      */
     private short level;
 
+    private LocalDateTime createTime;
+
     private short is_delete;
+
+    public static ArticleComment build(ArticleCommentDTO articleCommentDTO){
+        return ArticleComment.builder()
+                .articleId(articleCommentDTO.getArticleId())
+                .userId(ArticleContext.get().getId())
+                .comment(articleCommentDTO.getComment())
+                .build();
+    }
 }
