@@ -56,4 +56,9 @@ public class UserController {
     public UserBaseResponse black(@PathVariable("id") Long id){
         return userLikeService.blackList(id);
     }
+
+    @PostMapping("/delete")
+    public UserBaseResponse delete(){
+        return userInfoService.userDelete();
+    }
 }

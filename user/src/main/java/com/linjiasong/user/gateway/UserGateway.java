@@ -19,4 +19,6 @@ public interface UserGateway {
     UserInfo selectById(Long id);
 
     boolean banUser(Long id);
+
+    boolean userDelete();
 }

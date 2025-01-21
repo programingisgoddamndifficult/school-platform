@@ -45,4 +45,10 @@ public interface UserInfoService extends IService<UserInfo> {
      * @return UserBaseResponse
      */
     UserBaseResponse banUser(Long userId);
+
+    /**
+     * 用户注销
+     * @return UserBaseResponse
+     */
+    UserBaseResponse userDelete();
 }

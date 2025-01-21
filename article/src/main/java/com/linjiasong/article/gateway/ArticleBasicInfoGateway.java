@@ -21,4 +21,6 @@ public interface ArticleBasicInfoGateway {
     boolean isThisUserArticle(Long id);
 
     ArticleBasicInfo selectById(Long id);
+
+    boolean deleteByUserId(Long userId);
 }

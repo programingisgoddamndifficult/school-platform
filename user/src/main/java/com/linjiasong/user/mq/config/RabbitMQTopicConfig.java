@@ -1,4 +1,4 @@
-package com.linjiasong.user.mq;
+package com.linjiasong.user.mq.config;
 
 import org.springframework.context.annotation.Configuration;
 

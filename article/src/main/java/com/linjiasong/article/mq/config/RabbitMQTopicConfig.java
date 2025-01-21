@@ -1,4 +1,4 @@
-package com.linjiasong.article.mq;
+package com.linjiasong.article.mq.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

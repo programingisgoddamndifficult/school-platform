@@ -51,4 +51,9 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
     public ArticleBasicInfo selectById(Long id) {
         return articleBasicInfoMapper.selectById(id);
     }
+
+    @Override
+    public boolean deleteByUserId(Long userId) {
+        return articleBasicInfoMapper.delete(new QueryWrapper<ArticleBasicInfo>().eq("user_id", userId)) > 0;
+    }
 }

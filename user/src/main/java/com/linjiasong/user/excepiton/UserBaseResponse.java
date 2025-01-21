@@ -31,4 +31,12 @@ public class UserBaseResponse implements Serializable {
      * 响应业务数据
      */
     private Object data;
+
+    public static UserBaseResponse success(){
+        return UserBaseResponse.builder().msg("success").code("200").build();
+    }
+
+    public static UserBaseResponse success(Object data){
+        return UserBaseResponse.builder().msg("success").code("200").data(data).build();
+    }
 }

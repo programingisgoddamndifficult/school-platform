@@ -1,6 +1,7 @@
 package com.linjiasong.user.gateway.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.linjiasong.user.constant.UserInfoContext;
 import com.linjiasong.user.entity.UserInfo;
 import com.linjiasong.user.excepiton.BizException;
 import com.linjiasong.user.gateway.UserGateway;
@@ -57,5 +58,10 @@ public class UserGatewayImpl implements UserGateway {
         }
 
         return userInfoMapper.updateById(userInfo) >= 1;
+    }
+
+    @Override
+    public boolean userDelete() {
+        return userInfoMapper.deleteById(UserInfoContext.get().getId()) >= 1;
     }
 }

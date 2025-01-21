@@ -2,6 +2,7 @@ package com.linjiasong.user.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.linjiasong.user.entity.dto.UserInfoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +39,7 @@ public class UserInfo {
 
     private Short isBan;
 
+    @TableLogic
     private Short isDelete;
 
     public static UserInfo userInfoDtoToUserInfo(UserInfoDTO userInfoDTO) {

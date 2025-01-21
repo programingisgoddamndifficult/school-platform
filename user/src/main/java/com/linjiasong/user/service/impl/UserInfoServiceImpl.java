@@ -13,6 +13,11 @@ import com.linjiasong.user.excepiton.UserBaseResponse;
 import com.linjiasong.user.gateway.UserGateway;
 import com.linjiasong.user.gateway.UserLikeGateway;
 import com.linjiasong.user.mapper.UserInfoMapper;
+import com.linjiasong.user.mq.RabbitMQProducer;
+import com.linjiasong.user.mq.config.RabbitMQTopicConfig;
+import com.linjiasong.user.mq.dto.MqBaseExchangeDTO;
+import com.linjiasong.user.mq.dto.UserDeleteDTO;
+import com.linjiasong.user.mq.enums.MqExchangeTypeEnum;
 import com.linjiasong.user.service.UserInfoService;
 import com.linjiasong.user.utils.DESUtil;
 import com.linjiasong.user.utils.MD5Util;
@@ -41,6 +46,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
     @Autowired
     private RedissonClient redissonClient;
+
+    @Autowired
+    private RabbitMQProducer rabbitMQProducer;
 
     @Override
     public UserBaseResponse signUp(UserInfoDTO userInfo) {
@@ -112,6 +120,20 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
 
         return UserBaseResponse.builder().code("200").msg("success").build();
+    }
+
+    @Override
+    public UserBaseResponse userDelete() {
+        if (!userGateway.userDelete()) {
+            throw new BizException("服务异常");
+        }
+
+        rabbitMQProducer.sendMessage(RabbitMQTopicConfig.TOPIC_EXCHANGE_USER_ARTICLE, RabbitMQTopicConfig.TOPIC_USER_ARTICLE,
+                MqBaseExchangeDTO.build(MqExchangeTypeEnum.USER_DELETE, UserDeleteDTO.build(UserInfoContext.get().getId())));
+
+        redissonClient.getBucket(String.format(RedisKeyEnum.USER_LOGIN.getKey(), UserInfoContext.get().getId())).delete();
+
+        return UserBaseResponse.success();
     }
 
     private void checkUserLoginParam(UserLoginDTO userLoginDTO) {
