@@ -27,6 +27,7 @@ public class UserDeleteMqService extends AbstractMqService {
 
         if (!articleBasicInfoGateway.deleteByUserId(userDeleteDTO.getUserId())) {
             log.info(String.format("USER_DELETE 消费MQ消息失败 mqData:%s", mqData));
+            throw new RuntimeException();
         }
         log.info(String.format("USER_DELETE 消费MQ消息成功 mqData:%s", mqData));
     }
