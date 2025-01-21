@@ -19,4 +19,8 @@ public interface ArticleDetailGateway {
     boolean update(ArticleDetail articleDetail, QueryWrapper<ArticleDetail> queryWrapper);
 
     List<ArticleDetail> getByUserId(Long userId);
+
+    ArticleDetail selectById(Long id);
+
+    ArticleDetail selectOne(QueryWrapper<ArticleDetail> queryWrapper);
 }

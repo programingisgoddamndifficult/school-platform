@@ -32,4 +32,7 @@ public interface ArticleServiceClient {
 
     @PostMapping("/api/article/like/{articleId}")
     UserBaseResponse like(@PathVariable("articleId") Long articleId);
+
+    @GetMapping("/api/article/detail")
+    UserBaseResponse getArticleDetail(@RequestParam("articleId") Long articleId);
 }

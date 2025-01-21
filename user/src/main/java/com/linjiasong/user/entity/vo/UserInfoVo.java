@@ -27,6 +27,8 @@ public class UserInfoVo {
 
     private String email;
 
+    private String image;
+
     private LocalDateTime createTime;
 
     /**
@@ -44,6 +46,7 @@ public class UserInfoVo {
                 .username(userInfo.getUsername())
                 .phone(DESUtil.decrypt(userInfo.getPhone()))
                 .email(userInfo.getEmail())
+                .image(userInfo.getImage())
                 .createTime(userInfo.getCreateTime())
                 .likeNums(likeNums)
                 .build();

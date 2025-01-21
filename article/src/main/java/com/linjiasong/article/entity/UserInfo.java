@@ -28,6 +28,8 @@ public class UserInfo {
 
     private String email;
 
+    private String image;
+
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;

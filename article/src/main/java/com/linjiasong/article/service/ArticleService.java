@@ -38,4 +38,11 @@ public interface ArticleService {
      * @return ArticleBaseResponse
      */
     ArticleBaseResponse deleteArticle(Long id);
+
+    /**
+     * 获取文章详情
+     * @param articleId articleId
+     * @return ArticleBaseResponse
+     */
+    ArticleBaseResponse getArticleDetail(Long articleId);
 }

@@ -27,9 +27,6 @@ public class UserController {
     @Autowired
     UserLikeService userLikeService;
 
-    @Autowired
-    UserArticleService userArticleService;
-
     @PostMapping("/signup")
     public UserBaseResponse signUp(@RequestBody UserInfoDTO userInfoDTO){
         return userInfoService.signUp(userInfoDTO);
@@ -58,35 +55,5 @@ public class UserController {
     @PostMapping("/black/{id}")
     public UserBaseResponse black(@PathVariable("id") Long id){
         return userLikeService.blackList(id);
-    }
-
-    @GetMapping("/article")
-    public UserBaseResponse getUserArticle(){
-        return userArticleService.getUserArticleBasic();
-    }
-
-    @PostMapping("/article")
-    public UserBaseResponse createArticle(@RequestBody ArticleCreateDTO articleCreateDTO){
-        return userArticleService.createArticle(articleCreateDTO);
-    }
-
-    @PostMapping("/article/update")
-    public UserBaseResponse updateArticle(@RequestBody ArticleUpdateDTO articleUpdateDTO){
-        return userArticleService.updateArticle(articleUpdateDTO);
-    }
-
-    @PostMapping("/article/delete/{id}")
-    public UserBaseResponse deleteArticle(@PathVariable("id") Long id){
-        return userArticleService.deleteArticle(id);
-    }
-
-    @PostMapping("/article/collect/{articleId}")
-    public UserBaseResponse collectArticle(@PathVariable("articleId") Long articleId){
-        return userArticleService.collect(articleId);
-    }
-
-    @PostMapping("/article/like/{articleId}")
-    public UserBaseResponse likeArticle(@PathVariable("articleId") Long articleId){
-        return userArticleService.like(articleId);
     }
 }

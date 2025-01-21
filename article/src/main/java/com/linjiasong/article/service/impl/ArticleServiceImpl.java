@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.linjiasong.article.constant.ArticleContext;
 import com.linjiasong.article.entity.ArticleBasicInfo;
 import com.linjiasong.article.entity.ArticleDetail;
+import com.linjiasong.article.entity.UserInfo;
 import com.linjiasong.article.entity.dto.ArticleCreateDTO;
 import com.linjiasong.article.entity.dto.ArticleUpdateDTO;
-import com.linjiasong.article.entity.vo.ArticleBasicVo;
+import com.linjiasong.article.entity.vo.ArticleBasicVO;
+import com.linjiasong.article.entity.vo.ArticleDetailVO;
 import com.linjiasong.article.excepiton.ArticleBaseResponse;
 import com.linjiasong.article.excepiton.BizException;
 import com.linjiasong.article.gateway.ArticleBasicInfoGateway;
@@ -54,9 +56,9 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleBaseResponse getUserArticleBasic(Long userId) {
+    public ArticleBaseResponse  getUserArticleBasic(Long userId) {
         List<ArticleBasicInfo> basicInfoList = articleBasicInfoGateway.getByUserId(userId);
-        return ArticleBaseResponse.builder().code("200").msg("success").data(ArticleBasicVo.build(basicInfoList)).build();
+        return ArticleBaseResponse.builder().code("200").msg("success").data(ArticleBasicVO.build(basicInfoList)).build();
     }
 
     @Override
@@ -99,5 +101,20 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         return ArticleBaseResponse.builder().code("200").msg("success").build();
+    }
+
+    @Override
+    public ArticleBaseResponse getArticleDetail(Long articleId) {
+        if(!articleBasicInfoGateway.isThisUserArticle(articleId)) {
+            throw new BizException("没有权限或文章不存在");
+        }
+
+        ArticleBasicInfo articleBasicInfo = articleBasicInfoGateway.selectById(articleId);
+
+        ArticleDetail articleDetail = articleDetailGateway.selectOne(new QueryWrapper<ArticleDetail>().eq("article_id", articleId));
+
+        UserInfo userInfo = ArticleContext.get();
+
+        return ArticleBaseResponse.success(ArticleDetailVO.build(articleBasicInfo, articleDetail, userInfo));
     }
 }

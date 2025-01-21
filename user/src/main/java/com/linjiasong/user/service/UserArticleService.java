@@ -50,4 +50,11 @@ public interface UserArticleService {
      * @return UserBaseResponse
      */
     UserBaseResponse like(Long articleId);
+
+    /**
+     * 获取文章详情
+     * @param articleId articleId
+     * @return UserBaseResponse
+     */
+    UserBaseResponse getArticleDetail(Long articleId);
 }

@@ -39,4 +39,8 @@ public class ArticleController {
         return articleService.deleteArticle(id);
     }
 
+    @GetMapping("/detail")
+    public ArticleBaseResponse getArticleDetail(@RequestParam("articleId") Long articleId){
+        return articleService.getArticleDetail(articleId);
+    }
 }

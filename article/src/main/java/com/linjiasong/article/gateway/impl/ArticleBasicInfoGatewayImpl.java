@@ -46,4 +46,9 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
         Long userId = ArticleContext.get().getId();
         return articleBasicInfoMapper.selectOne(new QueryWrapper<ArticleBasicInfo>().eq("id", id).eq("user_id", userId)) != null;
     }
+
+    @Override
+    public ArticleBasicInfo selectById(Long id) {
+        return articleBasicInfoMapper.selectById(id);
+    }
 }

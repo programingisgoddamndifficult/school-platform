@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ArticleBasicVo {
+public class ArticleBasicVO {
     private Long id;
 
     private String title;
@@ -34,8 +34,8 @@ public class ArticleBasicVo {
 
     private LocalDateTime updateTime;
 
-    public static List<ArticleBasicVo> build(List<ArticleBasicInfo> articleBasicInfos) {
-        return articleBasicInfos.stream().map(basic -> ArticleBasicVo.builder()
+    public static List<ArticleBasicVO> build(List<ArticleBasicInfo> articleBasicInfos) {
+        return articleBasicInfos.stream().map(basic -> ArticleBasicVO.builder()
                 .id(basic.getId())
                 .title(basic.getArticleTitle())
                 .likesNum(basic.getLikesNum())

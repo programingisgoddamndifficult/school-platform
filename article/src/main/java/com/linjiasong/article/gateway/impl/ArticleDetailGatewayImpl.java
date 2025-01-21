@@ -39,4 +39,14 @@ public class ArticleDetailGatewayImpl implements ArticleDetailGateway {
     public List<ArticleDetail> getByUserId(Long userId) {
         return articleDetailMapper.selectList(new QueryWrapper<ArticleDetail>().eq("user_id", userId));
     }
+
+    @Override
+    public ArticleDetail selectById(Long id) {
+        return articleDetailMapper.selectById(id);
+    }
+
+    @Override
+    public ArticleDetail selectOne(QueryWrapper<ArticleDetail> queryWrapper) {
+        return articleDetailMapper.selectOne(queryWrapper);
+    }
 }
