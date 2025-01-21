@@ -9,6 +9,11 @@ spring:
         host: 175.178.152.16
         port: 6379
         password: 018418
+    rabbitmq:
+        host: 175.178.152.16
+        port: 5672
+        username: guest
+        password: guest
 
 feign:
     client:
