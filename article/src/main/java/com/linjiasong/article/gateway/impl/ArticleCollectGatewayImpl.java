@@ -10,6 +10,7 @@ import com.linjiasong.article.mapper.ArticleBasicInfoMapper;
 import com.linjiasong.article.mapper.ArticleCollectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author linjiasong
@@ -25,6 +26,7 @@ public class ArticleCollectGatewayImpl implements ArticleCollectGateway {
     ArticleBasicInfoMapper articleBasicInfoMapper;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean collect(Long articleId) {
         Long userId = ArticleContext.get().getId();
 
@@ -35,14 +37,16 @@ public class ArticleCollectGatewayImpl implements ArticleCollectGateway {
 
         ArticleCollect articleCollect = articleCollectMapper.selectOne(new QueryWrapper<ArticleCollect>().eq("article_id", articleId).eq("user_id", userId));
 
-        if(articleCollect == null){
+        if (articleCollect == null) {
+            updateCollectNum(articleInfo, articleInfo.getCollectNum() + 1);
             return doCollect(articleId);
         }
 
+        updateCollectNum(articleInfo, articleInfo.getCollectNum() - 1);
         return doUnCollect(articleCollect.getId());
     }
 
-    private boolean doCollect(Long articleId){
+    private boolean doCollect(Long articleId) {
         return articleCollectMapper.insert(ArticleCollect.build(articleId, ArticleContext.get().getId())) > 0;
     }
 
@@ -56,5 +60,12 @@ public class ArticleCollectGatewayImpl implements ArticleCollectGateway {
             throw new BizException("帖子不存在");
         }
         return articleInfo;
+    }
+
+    private void updateCollectNum(ArticleBasicInfo articleInfo, Long collectNum) {
+        articleInfo.setCollectNum(collectNum);
+        if (articleBasicInfoMapper.updateById(articleInfo) < 1) {
+            throw new BizException("系统异常");
+        }
     }
 }

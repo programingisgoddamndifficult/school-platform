@@ -10,6 +10,7 @@ import com.linjiasong.article.mapper.ArticleBasicInfoMapper;
 import com.linjiasong.article.mapper.ArticleLikeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author linjiasong
@@ -25,6 +26,7 @@ public class ArticleLikeGatewayImpl implements ArticleLikeGateway {
     ArticleBasicInfoMapper articleBasicInfoMapper;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean like(Long articleId) {
         Long userId = ArticleContext.get().getId();
 
@@ -35,14 +37,16 @@ public class ArticleLikeGatewayImpl implements ArticleLikeGateway {
 
         ArticleLike articleLike = articleLikeMapper.selectOne(new QueryWrapper<ArticleLike>().eq("article_id", articleId).eq("user_id", userId));
 
-        if(articleLike == null){
+        if (articleLike == null) {
+            updateLikeNum(articleInfo, articleInfo.getLikesNum() + 1);
             return doLike(articleId);
         }
 
+        updateLikeNum(articleInfo, articleInfo.getLikesNum() - 1);
         return doUnlike(articleLike.getId());
     }
 
-    private boolean doLike(Long articleId){
+    private boolean doLike(Long articleId) {
         return articleLikeMapper.insert(ArticleLike.build(articleId, ArticleContext.get().getId())) > 0;
     }
 
@@ -56,5 +60,12 @@ public class ArticleLikeGatewayImpl implements ArticleLikeGateway {
             throw new BizException("帖子不存在");
         }
         return articleInfo;
+    }
+
+    private void updateLikeNum(ArticleBasicInfo articleInfo, Long likeNum) {
+        articleInfo.setLikesNum(likeNum);
+        if (articleBasicInfoMapper.updateById(articleInfo) < 1) {
+            throw new BizException("系统异常");
+        }
     }
 }

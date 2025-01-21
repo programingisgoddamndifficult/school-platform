@@ -20,7 +20,6 @@ public class ArticleCollectController {
     @Autowired
     private ArticleCollectService articleCollectService;
 
-    //TODO 收藏点赞都要更新basic表
     @PostMapping("/{articleId}")
     public ArticleBaseResponse collect(@PathVariable("articleId") Long articleId){
         return articleCollectService.collect(articleId);
