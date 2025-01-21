@@ -20,7 +20,7 @@ public class ArticleLikeController {
     private ArticleLikeService articleLikeService;
 
     @PostMapping("/{articleId}")
-    public ArticleBaseResponse like(@PathVariable("articleId") Long articleId){
+    public ArticleBaseResponse<?> like(@PathVariable("articleId") Long articleId) {
         return articleLikeService.like(articleId);
     }
 

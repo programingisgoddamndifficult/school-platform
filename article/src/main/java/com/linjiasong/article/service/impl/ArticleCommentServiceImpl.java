@@ -1,10 +1,12 @@
 package com.linjiasong.article.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.linjiasong.article.constant.ArticleContext;
 import com.linjiasong.article.entity.ArticleComment;
 import com.linjiasong.article.entity.dto.ArticleCommentDTO;
+import com.linjiasong.article.entity.vo.ArticleCommentVO;
 import com.linjiasong.article.excepiton.ArticleBaseResponse;
 import com.linjiasong.article.excepiton.BizException;
 import com.linjiasong.article.gateway.ArticleCommentGateway;
@@ -12,6 +14,8 @@ import com.linjiasong.article.mapper.ArticleCommentMapper;
 import com.linjiasong.article.service.ArticleCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author linjiasong
@@ -24,7 +28,7 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
     private ArticleCommentGateway articleCommentGateway;
 
     @Override
-    public ArticleBaseResponse comment(ArticleCommentDTO articleCommentDTO) {
+    public ArticleBaseResponse<?> comment(ArticleCommentDTO articleCommentDTO) {
         if(!articleCommentGateway.comment(ArticleComment.build(articleCommentDTO))){
             throw new BizException("服务异常");
         }
@@ -32,7 +36,7 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
     }
 
     @Override
-    public ArticleBaseResponse deleteComment(Long id) {
+    public ArticleBaseResponse<?> deleteComment(Long id) {
         ArticleComment articleComment = articleCommentGateway.selectOne(new QueryWrapper<ArticleComment>()
                 .eq("id", id).eq("user_id", ArticleContext.get().getId()));
         if(articleComment == null){
@@ -44,5 +48,12 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
         }
 
         return ArticleBaseResponse.success();
+    }
+
+    @Override
+    public ArticleBaseResponse<?> getArticleComment(Long articleId) {
+        List<ArticleComment> articleComments = articleCommentGateway.selectList(new QueryWrapper<ArticleComment>()
+                .eq("article_id", articleId));
+        return ArticleBaseResponse.success(JSON.toJSONString(ArticleCommentVO.build(articleComments)));
     }
 }

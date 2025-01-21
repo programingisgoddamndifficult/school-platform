@@ -8,6 +8,9 @@ import com.linjiasong.article.mapper.ArticleCommentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author linjiasong
  * @date 2025/1/21 下午6:00
@@ -31,5 +34,14 @@ public class ArticleCommentGatewayImpl implements ArticleCommentGateway {
     @Override
     public ArticleComment selectOne(QueryWrapper<ArticleComment> queryWrapper) {
         return articleCommentMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public List<ArticleComment> selectList(QueryWrapper<ArticleComment> queryWrapper) {
+        List<ArticleComment> articleComments = articleCommentMapper.selectList(queryWrapper);
+        if(articleComments == null){
+            return new ArrayList<>();
+        }
+        return articleComments;
     }
 }

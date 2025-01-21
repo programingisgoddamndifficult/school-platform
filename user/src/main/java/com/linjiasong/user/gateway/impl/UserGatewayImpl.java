@@ -9,6 +9,8 @@ import com.linjiasong.user.mapper.UserInfoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author linjiasong
  * @date 2025/1/13 下午5:37
@@ -63,5 +65,10 @@ public class UserGatewayImpl implements UserGateway {
     @Override
     public boolean userDelete() {
         return userInfoMapper.deleteById(UserInfoContext.get().getId()) >= 1;
+    }
+
+    @Override
+    public List<UserInfo> selectByIds(List<Long> ids) {
+        return userInfoMapper.selectBatchIds(ids);
     }
 }

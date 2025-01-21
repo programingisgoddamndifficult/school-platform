@@ -16,7 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ArticleBaseResponse implements Serializable {
+public class ArticleBaseResponse<T> implements Serializable {
     /**
      * 响应状态码
      */
@@ -32,11 +32,11 @@ public class ArticleBaseResponse implements Serializable {
      */
     private Object data;
 
-    public static ArticleBaseResponse success(){
-        return ArticleBaseResponse.builder().msg("success").code("200").build();
+    public static <T> ArticleBaseResponse<T> success(){
+        return ArticleBaseResponse.<T>builder().msg("success").code("200").build();
     }
 
-    public static ArticleBaseResponse success(Object data){
-        return ArticleBaseResponse.builder().msg("success").code("200").data(data).build();
+    public static <T> ArticleBaseResponse<T> success(T data){
+        return ArticleBaseResponse.<T>builder().msg("success").code("200").data(data).build();
     }
 }

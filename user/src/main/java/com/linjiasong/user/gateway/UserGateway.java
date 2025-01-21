@@ -2,6 +2,8 @@ package com.linjiasong.user.gateway;
 
 import com.linjiasong.user.entity.UserInfo;
 
+import java.util.List;
+
 /**
  * @author linjiasong
  * @date 2025/1/13 下午5:35
@@ -21,4 +23,6 @@ public interface UserGateway {
     boolean banUser(Long id);
 
     boolean userDelete();
+
+    List<UserInfo> selectByIds(List<Long> ids);
 }

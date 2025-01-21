@@ -28,7 +28,7 @@ public class UserLikeServiceImpl extends ServiceImpl<UserLikeMapper, UserLike> i
     private UserGateway userGateway;
 
     @Override
-    public UserBaseResponse like(Long likedId) {
+    public UserBaseResponse<?> like(Long likedId) {
         if (userGateway.selectById(likedId) == null) {
             throw new BizException("被关注用户不存在");
         }
@@ -49,7 +49,7 @@ public class UserLikeServiceImpl extends ServiceImpl<UserLikeMapper, UserLike> i
     }
 
     @Override
-    public UserBaseResponse blackList(Long likedId) {
+    public UserBaseResponse<?> blackList(Long likedId) {
         if (userGateway.selectById(likedId) == null) {
             throw new BizException("被拉黑用户不存在");
         }

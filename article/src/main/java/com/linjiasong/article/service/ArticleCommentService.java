@@ -11,7 +11,9 @@ import com.linjiasong.article.excepiton.ArticleBaseResponse;
  */
 public interface ArticleCommentService extends IService<ArticleComment> {
 
-    ArticleBaseResponse comment(ArticleCommentDTO articleCommentDTO);
+    ArticleBaseResponse<?> comment(ArticleCommentDTO articleCommentDTO);
 
-    ArticleBaseResponse deleteComment(Long id);
+    ArticleBaseResponse<?> deleteComment(Long id);
+
+    ArticleBaseResponse<?> getArticleComment(Long articleId);
 }

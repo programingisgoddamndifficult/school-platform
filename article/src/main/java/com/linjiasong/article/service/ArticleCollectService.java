@@ -15,6 +15,6 @@ public interface ArticleCollectService extends IService<ArticleCollect> {
      * @param articleId articleId
      * @return ArticleBaseResponse
      */
-    ArticleBaseResponse collect(Long articleId);
+    ArticleBaseResponse<?> collect(Long articleId);
 
 }

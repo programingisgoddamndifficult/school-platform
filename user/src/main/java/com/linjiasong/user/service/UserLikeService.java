@@ -16,7 +16,7 @@ public interface UserLikeService extends IService<UserLike> {
      * @param likedId 被关注人id
      * @return UserBaseResponse
      */
-    UserBaseResponse like(Long likedId);
+    UserBaseResponse<?> like(Long likedId);
 
     /**
      * 拉黑
@@ -24,5 +24,5 @@ public interface UserLikeService extends IService<UserLike> {
      * @param likedId 被拉黑人id
      * @return UserBaseResponse
      */
-    UserBaseResponse blackList(Long likedId);
+    UserBaseResponse<?> blackList(Long likedId);
 }

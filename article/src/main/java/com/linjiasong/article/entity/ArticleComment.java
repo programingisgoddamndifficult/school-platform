@@ -38,7 +38,7 @@ public class ArticleComment {
     private LocalDateTime createTime;
 
     @TableLogic
-    private short is_delete;
+    private short isDelete;
 
     public static ArticleComment build(ArticleCommentDTO articleCommentDTO){
         return ArticleComment.builder()

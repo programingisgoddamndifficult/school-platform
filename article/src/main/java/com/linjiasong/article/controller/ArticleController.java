@@ -20,27 +20,27 @@ public class ArticleController {
     private ArticleService articleService;
 
     @PostMapping
-    public ArticleBaseResponse createArticle(@RequestBody ArticleCreateDTO articleCreateDTO){
+    public ArticleBaseResponse<?> createArticle(@RequestBody ArticleCreateDTO articleCreateDTO) {
         return articleService.createArticle(articleCreateDTO);
     }
 
     @GetMapping("/basic")
-    public ArticleBaseResponse getArticleBasicByUserId(@RequestParam("userId") Long userId){
+    public ArticleBaseResponse<?> getArticleBasicByUserId(@RequestParam("userId") Long userId) {
         return articleService.getUserArticleBasic(userId);
     }
 
     @PostMapping("/update")
-    public ArticleBaseResponse updateArticle(@RequestBody ArticleUpdateDTO articleUpdateDTO){
+    public ArticleBaseResponse<?> updateArticle(@RequestBody ArticleUpdateDTO articleUpdateDTO) {
         return articleService.updateArticle(articleUpdateDTO);
     }
 
     @PostMapping("/delete/{id}")
-    public ArticleBaseResponse deleteArticle(@PathVariable("id") Long id){
+    public ArticleBaseResponse<?> deleteArticle(@PathVariable("id") Long id) {
         return articleService.deleteArticle(id);
     }
 
     @GetMapping("/detail")
-    public ArticleBaseResponse getArticleDetail(@RequestParam("articleId") Long articleId){
+    public ArticleBaseResponse<?> getArticleDetail(@RequestParam("articleId") Long articleId) {
         return articleService.getArticleDetail(articleId);
     }
 }

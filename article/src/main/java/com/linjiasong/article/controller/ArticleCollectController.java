@@ -21,7 +21,7 @@ public class ArticleCollectController {
     private ArticleCollectService articleCollectService;
 
     @PostMapping("/{articleId}")
-    public ArticleBaseResponse collect(@PathVariable("articleId") Long articleId){
+    public ArticleBaseResponse<?> collect(@PathVariable("articleId") Long articleId){
         return articleCollectService.collect(articleId);
     }
 

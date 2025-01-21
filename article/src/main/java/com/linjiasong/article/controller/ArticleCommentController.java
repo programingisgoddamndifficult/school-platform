@@ -19,13 +19,18 @@ public class ArticleCommentController {
     private ArticleCommentService articleCommentService;
 
     @PostMapping
-    public ArticleBaseResponse comment(@RequestBody ArticleCommentDTO articleCommentDTO) {
+    public ArticleBaseResponse<?> comment(@RequestBody ArticleCommentDTO articleCommentDTO) {
         return articleCommentService.comment(articleCommentDTO);
     }
 
     @PostMapping("/delete/{id}")
-    public ArticleBaseResponse delete(@PathVariable("id") Long id) {
+    public ArticleBaseResponse<?> delete(@PathVariable("id") Long id) {
         return articleCommentService.deleteComment(id);
     }
 
+
+    @GetMapping("/{articleId}")
+    public ArticleBaseResponse<?> getArticleComments(@PathVariable("articleId") Long articleId) {
+        return articleCommentService.getArticleComment(articleId);
+    }
 }

@@ -17,7 +17,7 @@ public class AdminUserController {
     UserInfoService userInfoService;
 
     @PostMapping("/ban/{id}")
-    public UserBaseResponse banUser(@PathVariable("id") Long id) {
+    public UserBaseResponse<?> banUser(@PathVariable("id") Long id) {
         return userInfoService.banUser(id);
     }
 

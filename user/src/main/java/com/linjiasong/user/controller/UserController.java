@@ -28,37 +28,37 @@ public class UserController {
     UserLikeService userLikeService;
 
     @PostMapping("/signup")
-    public UserBaseResponse signUp(@RequestBody UserInfoDTO userInfoDTO){
+    public UserBaseResponse<?> signUp(@RequestBody UserInfoDTO userInfoDTO) {
         return userInfoService.signUp(userInfoDTO);
     }
 
     @PostMapping("/login")
-    public UserBaseResponse login(@RequestBody UserLoginDTO userLoginDTO, HttpServletResponse response){
+    public UserBaseResponse<?> login(@RequestBody UserLoginDTO userLoginDTO, HttpServletResponse response) {
         return userInfoService.login(userLoginDTO, response);
     }
 
     @PostMapping("/loginout")
-    public UserBaseResponse loginOut(){
+    public UserBaseResponse<?> loginOut() {
         return userInfoService.loginOut();
     }
 
     @GetMapping
-    public UserBaseResponse getUserInfo(){
+    public UserBaseResponse<?> getUserInfo() {
         return userInfoService.getUserInfo();
     }
 
     @PostMapping("/like/{id}")
-    public UserBaseResponse like(@PathVariable("id") Long id){
+    public UserBaseResponse<?> like(@PathVariable("id") Long id) {
         return userLikeService.like(id);
     }
 
     @PostMapping("/black/{id}")
-    public UserBaseResponse black(@PathVariable("id") Long id){
+    public UserBaseResponse<?> black(@PathVariable("id") Long id) {
         return userLikeService.blackList(id);
     }
 
     @PostMapping("/delete")
-    public UserBaseResponse delete(){
+    public UserBaseResponse<?> delete() {
         return userInfoService.userDelete();
     }
 }

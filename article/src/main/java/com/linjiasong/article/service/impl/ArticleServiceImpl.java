@@ -36,7 +36,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ArticleBaseResponse createArticle(ArticleCreateDTO articleCreateDTO) {
+    public ArticleBaseResponse<?> createArticle(ArticleCreateDTO articleCreateDTO) {
         if (articleCreateDTO.checkParam()) {
             throw new BizException("参数不合法");
         }
@@ -56,14 +56,14 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleBaseResponse  getUserArticleBasic(Long userId) {
+    public ArticleBaseResponse<?>  getUserArticleBasic(Long userId) {
         List<ArticleBasicInfo> basicInfoList = articleBasicInfoGateway.getByUserId(userId);
         return ArticleBaseResponse.builder().code("200").msg("success").data(ArticleBasicVO.build(basicInfoList)).build();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ArticleBaseResponse updateArticle(ArticleUpdateDTO articleUpdateDTO) {
+    public ArticleBaseResponse<?> updateArticle(ArticleUpdateDTO articleUpdateDTO) {
         Long userId = ArticleContext.get().getId();
         if(!userId.equals(articleUpdateDTO.getUserId())){
             throw new BizException("没有权限");
@@ -91,7 +91,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleBaseResponse deleteArticle(Long id) {
+    public ArticleBaseResponse<?> deleteArticle(Long id) {
         if(!articleBasicInfoGateway.isThisUserArticle(id)) {
             throw new BizException("没有权限或文章不存在");
         }
@@ -104,7 +104,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleBaseResponse getArticleDetail(Long articleId) {
+    public ArticleBaseResponse<?> getArticleDetail(Long articleId) {
         if(!articleBasicInfoGateway.isThisUserArticle(articleId)) {
             throw new BizException("没有权限或文章不存在");
         }

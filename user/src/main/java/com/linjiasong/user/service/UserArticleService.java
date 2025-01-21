@@ -15,61 +15,68 @@ public interface UserArticleService {
      * 获取文章基础信息
      * @return UserBaseResponse
      */
-    UserBaseResponse getUserArticleBasic();
+    UserBaseResponse<?> getUserArticleBasic();
 
     /**
      * 创建文章
      * @param articleCreateDTO articleCreateDTO
      * @return UserBaseResponse
      */
-    UserBaseResponse createArticle(ArticleCreateDTO articleCreateDTO);
+    UserBaseResponse<?> createArticle(ArticleCreateDTO articleCreateDTO);
 
     /**
      * 修改文章
      * @param articleUpdateDTO articleUpdateDTO
      * @return UserBaseResponse
      */
-    UserBaseResponse updateArticle(ArticleUpdateDTO articleUpdateDTO);
+    UserBaseResponse<?> updateArticle(ArticleUpdateDTO articleUpdateDTO);
 
     /**
      * 删除文章
      * @param id id
      * @return UserBaseResponse
      */
-    UserBaseResponse deleteArticle(Long id);
+    UserBaseResponse<?> deleteArticle(Long id);
 
     /**
      * 收藏/取消收藏文章
      * @param articleId articleId
      * @return UserBaseResponse
      */
-    UserBaseResponse collect(Long articleId);
+    UserBaseResponse<?> collect(Long articleId);
 
     /**
      * 点赞/取消点赞
      * @param articleId articleId
      * @return UserBaseResponse
      */
-    UserBaseResponse like(Long articleId);
+    UserBaseResponse<?> like(Long articleId);
 
     /**
      * 获取文章详情
      * @param articleId articleId
      * @return UserBaseResponse
      */
-    UserBaseResponse getArticleDetail(Long articleId);
+    UserBaseResponse<?> getArticleDetail(Long articleId);
 
     /**
      * 评论
      * @param articleCommentDTO articleCommentDTO
      * @return UserBaseResponse
      */
-    UserBaseResponse comment(ArticleCommentDTO articleCommentDTO);
+    UserBaseResponse<?> comment(ArticleCommentDTO articleCommentDTO);
 
     /**
      *
      * @param id id
      * @return UserBaseResponse
      */
-    UserBaseResponse deleteComment(Long id);
+    UserBaseResponse<?> deleteComment(Long id);
+
+    /**
+     * 获取文章的评论
+     * @param articleId articleId
+     * @return UserBaseResponse
+     */
+    UserBaseResponse<?> getArticleComments(Long articleId);
 }

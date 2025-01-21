@@ -18,37 +18,37 @@ public interface UserInfoService extends IService<UserInfo> {
      * @param userInfo 用户注册DTO
      * @return UserBaseResponse
      */
-    UserBaseResponse signUp(UserInfoDTO userInfo);
+    UserBaseResponse<?> signUp(UserInfoDTO userInfo);
 
     /**
      * 用户登陆
      * @param userLoginDTO dto
      * @return UserBaseResponse
      */
-    UserBaseResponse login(UserLoginDTO userLoginDTO, HttpServletResponse response);
+    UserBaseResponse<?> login(UserLoginDTO userLoginDTO, HttpServletResponse response);
 
     /**
      * 用户登出
      * @return UserBaseResponse
      */
-    UserBaseResponse loginOut();
+    UserBaseResponse<?> loginOut();
 
     /**
      * 获取用户信息
      * @return UserBaseResponse
      */
-    UserBaseResponse getUserInfo();
+    UserBaseResponse<?> getUserInfo();
 
     /**
      * 封禁用户
      * @param userId userId
      * @return UserBaseResponse
      */
-    UserBaseResponse banUser(Long userId);
+    UserBaseResponse<?> banUser(Long userId);
 
     /**
      * 用户注销
      * @return UserBaseResponse
      */
-    UserBaseResponse userDelete();
+    UserBaseResponse<?> userDelete();
 }

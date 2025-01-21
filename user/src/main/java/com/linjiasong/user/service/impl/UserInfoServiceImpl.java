@@ -51,7 +51,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     private RabbitMQProducer rabbitMQProducer;
 
     @Override
-    public UserBaseResponse signUp(UserInfoDTO userInfo) {
+    public UserBaseResponse<?> signUp(UserInfoDTO userInfo) {
         checkSignUpInfo(userInfo);
 
         if (!userGateway.insert(UserInfo.userInfoDtoToUserInfo(userInfo))) {
@@ -62,7 +62,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     }
 
     @Override
-    public UserBaseResponse login(UserLoginDTO userLoginDTO, HttpServletResponse response) {
+    public UserBaseResponse<?> login(UserLoginDTO userLoginDTO, HttpServletResponse response) {
         checkUserLoginParam(userLoginDTO);
 
         userLoginDTO.setPassword(MD5Util.md5Digest(userLoginDTO.getPassword()));
@@ -94,20 +94,20 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     }
 
     @Override
-    public UserBaseResponse loginOut() {
+    public UserBaseResponse<?> loginOut() {
         RBucket<String> bucket = redissonClient.getBucket(String.format(RedisKeyEnum.USER_LOGIN.getKey(), UserInfoContext.get().getId()));
         bucket.delete();
         return UserBaseResponse.builder().code("200").msg("success").build();
     }
 
     @Override
-    public UserBaseResponse getUserInfo() {
+    public UserBaseResponse<?> getUserInfo() {
         UserInfo userInfo = UserInfoContext.get();
         return UserBaseResponse.builder().code("200").msg("success").data(UserInfoVo.build(userInfo, userLikeGateway.getLikeNums(userInfo.getId()))).build();
     }
 
     @Override
-    public UserBaseResponse banUser(Long userId) {
+    public UserBaseResponse<?> banUser(Long userId) {
         if (!userGateway.banUser(userId)) {
             throw new BizException("服务异常");
         }
@@ -123,7 +123,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     }
 
     @Override
-    public UserBaseResponse userDelete() {
+    public UserBaseResponse<?> userDelete() {
         if (!userGateway.userDelete()) {
             throw new BizException("服务异常");
         }

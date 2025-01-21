@@ -17,29 +17,32 @@ import org.springframework.web.bind.annotation.*;
 public interface ArticleServiceClient {
 
     @GetMapping("/api/article/basic")
-    UserBaseResponse getArticleBasicByUserId(@RequestParam("userId") Long userId);
+    UserBaseResponse<?> getArticleBasicByUserId(@RequestParam("userId") Long userId);
 
     @PostMapping("/api/article")
-    UserBaseResponse createArticle(@RequestBody ArticleCreateDTO articleCreateDTO);
+    UserBaseResponse<?> createArticle(@RequestBody ArticleCreateDTO articleCreateDTO);
 
     @PostMapping("/api/article/update")
-    UserBaseResponse updateArticle(@RequestBody ArticleUpdateDTO articleUpdateDTO);
+    UserBaseResponse<?> updateArticle(@RequestBody ArticleUpdateDTO articleUpdateDTO);
 
     @PostMapping("/api/article/delete/{id}")
-    UserBaseResponse deleteArticle(@PathVariable("id") Long id);
+    UserBaseResponse<?> deleteArticle(@PathVariable("id") Long id);
 
     @PostMapping("/api/article/collect/{articleId}")
-    UserBaseResponse collect(@PathVariable("articleId") Long articleId);
+    UserBaseResponse<?> collect(@PathVariable("articleId") Long articleId);
 
     @PostMapping("/api/article/like/{articleId}")
-    UserBaseResponse like(@PathVariable("articleId") Long articleId);
+    UserBaseResponse<?> like(@PathVariable("articleId") Long articleId);
 
     @GetMapping("/api/article/detail")
-    UserBaseResponse getArticleDetail(@RequestParam("articleId") Long articleId);
+    UserBaseResponse<?> getArticleDetail(@RequestParam("articleId") Long articleId);
 
     @PostMapping("/api/article/comment")
-    UserBaseResponse comment(@RequestBody ArticleCommentDTO articleCommentDTO);
+    UserBaseResponse<?> comment(@RequestBody ArticleCommentDTO articleCommentDTO);
 
     @PostMapping("/api/article/comment/delete/{id}")
-    UserBaseResponse deleteComment(@PathVariable("id") Long id);
+    UserBaseResponse<?> deleteComment(@PathVariable("id") Long id);
+
+    @GetMapping("/api/article/comment/{articleId}")
+    UserBaseResponse<?> getArticleComments(@PathVariable("articleId") Long articleId);
 }

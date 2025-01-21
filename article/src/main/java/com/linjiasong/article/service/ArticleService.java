@@ -15,7 +15,7 @@ public interface ArticleService {
      * @param articleCreateDTO articleCreateDTO
      * @return ArticleBaseResponse
      */
-    ArticleBaseResponse createArticle(ArticleCreateDTO articleCreateDTO);
+    ArticleBaseResponse<?> createArticle(ArticleCreateDTO articleCreateDTO);
 
 
     /**
@@ -23,26 +23,26 @@ public interface ArticleService {
      * @param userId userId
      * @return ArticleBaseResponse
      */
-    ArticleBaseResponse getUserArticleBasic(Long userId);
+    ArticleBaseResponse<?> getUserArticleBasic(Long userId);
 
     /**
      * 修改文章
      * @param articleUpdateDTO articleUpdateDTO
      * @return ArticleBaseResponse
      */
-    ArticleBaseResponse updateArticle(ArticleUpdateDTO articleUpdateDTO);
+    ArticleBaseResponse<?> updateArticle(ArticleUpdateDTO articleUpdateDTO);
 
     /**
      * 删除文章
      * @param id id
      * @return ArticleBaseResponse
      */
-    ArticleBaseResponse deleteArticle(Long id);
+    ArticleBaseResponse<?> deleteArticle(Long id);
 
     /**
      * 获取文章详情
      * @param articleId articleId
      * @return ArticleBaseResponse
      */
-    ArticleBaseResponse getArticleDetail(Long articleId);
+    ArticleBaseResponse<?> getArticleDetail(Long articleId);
 }

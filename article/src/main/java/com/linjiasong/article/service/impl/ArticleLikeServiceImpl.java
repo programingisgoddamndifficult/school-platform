@@ -21,7 +21,7 @@ public class ArticleLikeServiceImpl extends ServiceImpl<ArticleLikeMapper, Artic
     private ArticleLikeGateway articleLikeGateway;
 
     @Override
-    public ArticleBaseResponse like(Long articleId) {
+    public ArticleBaseResponse<?> like(Long articleId) {
         if(!articleLikeGateway.like(articleId)){
             throw new BizException("服务异常");
         }

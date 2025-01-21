@@ -16,7 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserBaseResponse implements Serializable {
+public class UserBaseResponse<T> implements Serializable {
     /**
      * 响应状态码
      */
@@ -30,13 +30,13 @@ public class UserBaseResponse implements Serializable {
     /**
      * 响应业务数据
      */
-    private Object data;
+    private T data;
 
-    public static UserBaseResponse success(){
-        return UserBaseResponse.builder().msg("success").code("200").build();
+    public static <T> UserBaseResponse<T> success(){
+        return UserBaseResponse.<T>builder().msg("success").code("200").build();
     }
 
-    public static UserBaseResponse success(Object data){
-        return UserBaseResponse.builder().msg("success").code("200").data(data).build();
+    public static <T> UserBaseResponse<T> success(T data){
+        return UserBaseResponse.<T>builder().msg("success").code("200").data(data).build();
     }
 }
