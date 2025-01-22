@@ -5,6 +5,10 @@ spring:
     url: jdbc:mysql://175.178.152.16:3306/platform?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: root
     password: 018418
+  redis:
+    host: 175.178.152.16
+    port: 6379
+    password: 018418
   rabbitmq:
     host: 175.178.152.16
     port: 5672

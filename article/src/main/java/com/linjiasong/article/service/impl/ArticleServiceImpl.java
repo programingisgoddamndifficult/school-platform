@@ -2,6 +2,8 @@ package com.linjiasong.article.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.linjiasong.article.constant.ArticleContext;
+import com.linjiasong.article.constant.RedisKeyEnum;
+import com.linjiasong.article.constant.ThreadPoolContext;
 import com.linjiasong.article.entity.ArticleBasicInfo;
 import com.linjiasong.article.entity.ArticleDetail;
 import com.linjiasong.article.entity.UserInfo;
@@ -14,6 +16,7 @@ import com.linjiasong.article.excepiton.BizException;
 import com.linjiasong.article.gateway.ArticleBasicInfoGateway;
 import com.linjiasong.article.gateway.ArticleDetailGateway;
 import com.linjiasong.article.service.ArticleService;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +36,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     ArticleDetailGateway articleDetailGateway;
+
+    @Autowired
+    RedissonClient redissonClient;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -112,6 +118,12 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleBasicInfo articleBasicInfo = articleBasicInfoGateway.selectById(articleId);
 
         ArticleDetail articleDetail = articleDetailGateway.selectOne(new QueryWrapper<ArticleDetail>().eq("article_id", articleId));
+
+        ThreadPoolContext.execute(()->{
+            long readNum = redissonClient.getAtomicLong(String.format(RedisKeyEnum.POINT_ARTICLE.getKey(), articleBasicInfo.getId())).get();
+            articleBasicInfo.setReadNum(readNum);
+            articleBasicInfoGateway.update(articleBasicInfo);
+        });
 
         UserInfo userInfo = ArticleContext.get();
 
