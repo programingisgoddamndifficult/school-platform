@@ -45,4 +45,11 @@ public interface ArticleService {
      * @return ArticleBaseResponse
      */
     ArticleBaseResponse<?> getArticleDetail(Long articleId);
+
+    /**
+     * 开放文章
+     * @param articleId articleId
+     * @return ArticleBaseResponse
+     */
+    ArticleBaseResponse<?> openArticle(Long articleId);
 }

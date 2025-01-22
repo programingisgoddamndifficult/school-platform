@@ -79,4 +79,11 @@ public interface UserArticleService {
      * @return UserBaseResponse
      */
     UserBaseResponse<?> getArticleComments(Long articleId);
+
+    /**
+     * 开放/私密文章
+     * @param articleId articleId
+     * @return UserBaseResponse
+     */
+    UserBaseResponse<?> openArticle(Long articleId);
 }

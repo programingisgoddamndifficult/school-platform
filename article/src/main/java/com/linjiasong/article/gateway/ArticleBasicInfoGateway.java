@@ -25,4 +25,6 @@ public interface ArticleBasicInfoGateway {
     ArticleBasicInfo selectById(Long id);
 
     boolean deleteByUserId(Long userId);
+
+    boolean canOpen(Long articleId);
 }

@@ -43,4 +43,9 @@ public class ArticleController {
     public ArticleBaseResponse<?> getArticleDetail(@RequestParam("articleId") Long articleId) {
         return articleService.getArticleDetail(articleId);
     }
+
+    @PostMapping("/open/{articleId}")
+    public ArticleBaseResponse<?> openArticle(@PathVariable("articleId") Long articleId){
+        return articleService.openArticle(articleId);
+    }
 }

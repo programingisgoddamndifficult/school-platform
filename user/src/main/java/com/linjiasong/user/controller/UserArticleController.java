@@ -69,4 +69,9 @@ public class UserArticleController {
         return userArticleService.getArticleComments(articleId);
     }
 
+    @PostMapping("/open/{articleId}")
+    public UserBaseResponse<?> openArticle(@PathVariable("articleId") Long articleId) {
+        return userArticleService.openArticle(articleId);
+    }
+
 }

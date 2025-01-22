@@ -129,4 +129,24 @@ public class ArticleServiceImpl implements ArticleService {
 
         return ArticleBaseResponse.success(ArticleDetailVO.build(articleBasicInfo, articleDetail, userInfo));
     }
+
+    @Override
+    public ArticleBaseResponse<?> openArticle(Long articleId) {
+        if(!articleBasicInfoGateway.canOpen(articleId)) {
+            throw new BizException("没有权限或文章不存在");
+        }
+
+        ArticleBasicInfo articleBasicInfo = articleBasicInfoGateway.selectById(articleId);
+        if(articleBasicInfo.isOpen()){
+            articleBasicInfo.setIsOpen((short) 0);
+        }else{
+            articleBasicInfo.setIsOpen((short) 1);
+        }
+
+        if(!articleBasicInfoGateway.update(articleBasicInfo)){
+            throw new BizException("服务异常");
+        }
+
+        return ArticleBaseResponse.success();
+    }
 }

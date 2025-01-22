@@ -69,8 +69,12 @@ public class UserArticleServiceImpl implements UserArticleService {
 
     @Override
     public UserBaseResponse<?> getArticleDetail(Long articleId) {
-        pointService.execute(PointTypeEnum.POINT_ARTICLE, PointArticleDTO.build(articleId));
-        return articleServiceClient.getArticleDetail(articleId);
+        UserBaseResponse<?> response = articleServiceClient.getArticleDetail(articleId);
+        if(response.getCode().equals("200")){
+            pointService.execute(PointTypeEnum.POINT_ARTICLE, PointArticleDTO.build(articleId));
+        }
+
+        return response;
     }
 
     @Override
@@ -91,5 +95,10 @@ public class UserArticleServiceImpl implements UserArticleService {
         List<UserInfo> userInfos = userGateway.selectByIds(articleCommentVO.getArticleCommentInfoList().stream().map(ArticleCommentVO.ArticleCommentInfo::getUserId).distinct().collect(Collectors.toList()));
 
         return UserBaseResponse.success(ArticleUserCommentVO.build(articleCommentVO.getArticleCommentInfoList(), userInfos));
+    }
+
+    @Override
+    public UserBaseResponse<?> openArticle(Long articleId) {
+        return articleServiceClient.openArticle(articleId);
     }
 }
