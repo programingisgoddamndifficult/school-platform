@@ -1,6 +1,6 @@
 package com.linjiasong.user.point.service;
 
-import com.linjiasong.user.point.service.enums.PointTypeEnum;
+import com.linjiasong.user.point.enums.PointTypeEnum;
 
 /**
  * @author linjiasong

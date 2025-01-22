@@ -1,7 +1,7 @@
 package com.linjiasong.user.point.service.point;
 
 import com.linjiasong.user.point.service.PointService;
-import com.linjiasong.user.point.service.enums.PointTypeEnum;
+import com.linjiasong.user.point.enums.PointTypeEnum;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

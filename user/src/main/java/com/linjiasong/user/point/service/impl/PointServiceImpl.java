@@ -3,7 +3,7 @@ package com.linjiasong.user.point.service.impl;
 import com.linjiasong.user.config.SpringContext;
 import com.linjiasong.user.point.config.PointConfig;
 import com.linjiasong.user.point.service.PointService;
-import com.linjiasong.user.point.service.enums.PointTypeEnum;
+import com.linjiasong.user.point.enums.PointTypeEnum;
 import com.linjiasong.user.point.service.point.AbstractPointService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.linjiasong.user.point.dto;
 
-import com.linjiasong.user.point.service.enums.PointTypeEnum;
+import com.linjiasong.user.point.enums.PointTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

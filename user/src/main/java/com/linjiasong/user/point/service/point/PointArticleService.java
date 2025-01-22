@@ -2,9 +2,8 @@ package com.linjiasong.user.point.service.point;
 
 import com.linjiasong.user.constant.RedisKeyEnum;
 import com.linjiasong.user.point.dto.PointArticleDTO;
-import com.linjiasong.user.point.service.enums.PointTypeEnum;
+import com.linjiasong.user.point.enums.PointTypeEnum;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jsqlparser.statement.select.KSQLWindow;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RScoredSortedSet;
 import org.springframework.stereotype.Service;

@@ -2,7 +2,7 @@ package com.linjiasong.user.point.service.impl;
 
 import com.linjiasong.user.point.dto.PointArticleDTO;
 import com.linjiasong.user.point.service.PointService;
-import com.linjiasong.user.point.service.enums.PointTypeEnum;
+import com.linjiasong.user.point.enums.PointTypeEnum;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

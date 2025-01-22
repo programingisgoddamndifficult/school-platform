@@ -1,4 +1,4 @@
-package com.linjiasong.user.point.service.enums;
+package com.linjiasong.user.point.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
