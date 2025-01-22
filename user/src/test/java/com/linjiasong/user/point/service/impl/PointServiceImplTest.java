@@ -1,11 +1,11 @@
 package com.linjiasong.user.point.service.impl;
 
+import com.linjiasong.user.point.dto.PointArticleDTO;
 import com.linjiasong.user.point.service.PointService;
+import com.linjiasong.user.point.service.enums.PointTypeEnum;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author linjiasong
@@ -19,23 +19,7 @@ class PointServiceImplTest {
 
     @Test
     void testExecute(){
-        pointService.execute(()->{
-            System.out.println("线程池测试成功1");
-        });
-        pointService.execute(()->{
-            System.out.println("线程池测试成功2");
-        });
-        pointService.execute(()->{
-            System.out.println("线程池测试成功3");
-        });
-        pointService.execute(()->{
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println("线程池测试成功3");
-        });
+        pointService.execute(PointTypeEnum.POINT_ARTICLE, PointArticleDTO.builder().articleId(213L).build());
     }
 
 }

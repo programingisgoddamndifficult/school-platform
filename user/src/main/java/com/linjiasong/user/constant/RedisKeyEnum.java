@@ -15,7 +15,9 @@ public enum RedisKeyEnum {
 
     USER_BAN("user:ban:%s", "封禁用户id", 0L, TimeUnit.MINUTES),
 
-    USER_LOGIN("user:login:%s","用户登陆标识", 7L, TimeUnit.DAYS),
+    USER_LOGIN("user:login:%s", "用户登陆标识", 7L, TimeUnit.DAYS),
+
+    POINT_ARTICLE("user:point_article:%s", "用户点击文章", 7L, TimeUnit.DAYS),
     ;
 
     /**

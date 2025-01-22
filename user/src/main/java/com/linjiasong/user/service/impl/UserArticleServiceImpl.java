@@ -11,13 +11,14 @@ import com.linjiasong.user.entity.vo.ArticleUserCommentVO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
 import com.linjiasong.user.feign.ArticleServiceClient;
 import com.linjiasong.user.gateway.UserGateway;
+import com.linjiasong.user.point.dto.PointArticleDTO;
+import com.linjiasong.user.point.service.PointService;
+import com.linjiasong.user.point.service.enums.PointTypeEnum;
 import com.linjiasong.user.service.UserArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +33,9 @@ public class UserArticleServiceImpl implements UserArticleService {
 
     @Autowired
     UserGateway userGateway;
+
+    @Autowired
+    PointService pointService;
 
     @Override
     public UserBaseResponse<?> getUserArticleBasic() {
@@ -65,6 +69,7 @@ public class UserArticleServiceImpl implements UserArticleService {
 
     @Override
     public UserBaseResponse<?> getArticleDetail(Long articleId) {
+        pointService.execute(PointTypeEnum.POINT_ARTICLE, PointArticleDTO.build(articleId));
         return articleServiceClient.getArticleDetail(articleId);
     }
 

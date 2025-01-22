@@ -1,9 +1,6 @@
 package com.linjiasong.user.point.service;
 
-import org.springframework.stereotype.Service;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
+import com.linjiasong.user.point.service.enums.PointTypeEnum;
 
 /**
  * @author linjiasong
@@ -12,16 +9,15 @@ import java.util.concurrent.Future;
 public interface PointService {
 
     /**
-     * 提交Runnable任务
+     * execute
+     * @param pointType pointType
+     */
+     <T> void execute(PointTypeEnum pointType, T dto);
+
+    /**
+     * execute
      * @param task task
      */
     void execute(Runnable task);
 
-    /**
-     * 提交Callable任务并获取Future
-     * @param task task
-     * @return <T>
-     * @param <T> <T>
-     */
-    <T> Future<T> submit(Callable<T> task);
 }
