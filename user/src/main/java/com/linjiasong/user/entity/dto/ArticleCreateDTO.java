@@ -17,4 +17,6 @@ public class ArticleCreateDTO {
     private String context;
 
     private List<String> imageUrl;
+
+    private short isOpen;
 }
