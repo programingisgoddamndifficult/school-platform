@@ -42,8 +42,14 @@ public class ArticleBasicInfo {
 
     private LocalDateTime updateTime;
 
+    private short isOpen;
+
     private short isBan;
 
     @TableLogic
     private short isDelete;
+
+    public boolean isOpen(){
+        return isOpen == 1;
+    }
 }

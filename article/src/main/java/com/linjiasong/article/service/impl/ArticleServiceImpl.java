@@ -98,7 +98,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleBaseResponse<?> deleteArticle(Long id) {
-        if(!articleBasicInfoGateway.isThisUserArticle(id)) {
+        if(!articleBasicInfoGateway.canDelete(id)) {
             throw new BizException("没有权限或文章不存在");
         }
 

@@ -32,6 +32,8 @@ public class ArticleBasicVO {
 
     private short tag;
 
+    private short isOpen;
+
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
@@ -44,6 +46,7 @@ public class ArticleBasicVO {
                 .collectNum(basic.getCollectNum())
                 .readNum(basic.getReadNum())
                 .tag(basic.getTag())
+                .isOpen(basic.getIsOpen())
                 .createTime(basic.getCreateTime())
                 .updateTime(basic.getUpdateTime()).build()).collect(Collectors.toList());
     }

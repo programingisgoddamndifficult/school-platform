@@ -43,6 +43,21 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
 
     @Override
     public boolean isThisUserArticle(Long id) {
+        ArticleBasicInfo articleBasicInfo = articleBasicInfoMapper.selectOne(new QueryWrapper<ArticleBasicInfo>().eq("id", id));
+        if(articleBasicInfo == null){
+            return false;
+        }
+
+        if(articleBasicInfo.isOpen()){
+            return true;
+        }
+
+        Long userId = ArticleContext.get().getId();
+        return userId.equals(articleBasicInfo.getUserId());
+    }
+
+    @Override
+    public boolean canDelete(Long id) {
         Long userId = ArticleContext.get().getId();
         return articleBasicInfoMapper.selectOne(new QueryWrapper<ArticleBasicInfo>().eq("id", id).eq("user_id", userId)) != null;
     }
