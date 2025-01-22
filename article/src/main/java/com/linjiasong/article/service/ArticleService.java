@@ -52,4 +52,10 @@ public interface ArticleService {
      * @return ArticleBaseResponse
      */
     ArticleBaseResponse<?> openArticle(Long articleId);
+
+    /**
+     * 获取热门文章
+     * @return ArticleBaseResponse
+     */
+    ArticleBaseResponse<?> getHotArticle();
 }

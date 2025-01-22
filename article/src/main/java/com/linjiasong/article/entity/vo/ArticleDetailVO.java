@@ -55,7 +55,7 @@ public class ArticleDetailVO {
         private String image;
     }
 
-    public static ArticleDetailVO build(ArticleBasicInfo basicInfo, ArticleDetail articleDetail, com.linjiasong.article.entity.UserInfo userInfo) {
+    public static ArticleDetailVO build(ArticleBasicInfo basicInfo, ArticleDetail articleDetail) {
         return ArticleDetailVO.builder()
                 .articleId(basicInfo.getId())
                 .likesNum(basicInfo.getLikesNum())
@@ -65,9 +65,7 @@ public class ArticleDetailVO {
                 .content(articleDetail.getContent())
                 .imageUrl(ArticleDetail.getImageUrls(articleDetail.getImageUrl()))
                 .userInfo(UserInfo.builder()
-                        .userId(userInfo.getId())
-                        .username(userInfo.getUsername())
-                        .image(userInfo.getImage())
+                        .userId(basicInfo.getUserId())
                         .build())
                 .title(basicInfo.getArticleTitle())
                 .createTime(basicInfo.getCreateTime())

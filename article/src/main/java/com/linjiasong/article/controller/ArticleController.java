@@ -48,4 +48,9 @@ public class ArticleController {
     public ArticleBaseResponse<?> openArticle(@PathVariable("articleId") Long articleId){
         return articleService.openArticle(articleId);
     }
+
+    @GetMapping("/hot")
+    public ArticleBaseResponse<?> getArticleHot() {
+        return articleService.getHotArticle();
+    }
 }

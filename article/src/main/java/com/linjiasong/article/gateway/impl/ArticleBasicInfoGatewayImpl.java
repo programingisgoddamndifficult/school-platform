@@ -44,11 +44,11 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
     @Override
     public boolean isThisUserArticle(Long id) {
         ArticleBasicInfo articleBasicInfo = articleBasicInfoMapper.selectOne(new QueryWrapper<ArticleBasicInfo>().eq("id", id));
-        if(articleBasicInfo == null){
+        if (articleBasicInfo == null) {
             return false;
         }
 
-        if(articleBasicInfo.isOpen()){
+        if (articleBasicInfo.isOpen()) {
             return true;
         }
 
@@ -76,5 +76,10 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
     public boolean canOpen(Long articleId) {
         Long userId = ArticleContext.get().getId();
         return articleBasicInfoMapper.selectOne(new QueryWrapper<ArticleBasicInfo>().eq("id", articleId).eq("user_id", userId)) != null;
+    }
+
+    @Override
+    public List<ArticleBasicInfo> selectByIdsList(List<Long> ids) {
+        return articleBasicInfoMapper.selectBatchIds(ids);
     }
 }

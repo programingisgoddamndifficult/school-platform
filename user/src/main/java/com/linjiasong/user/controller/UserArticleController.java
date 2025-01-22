@@ -74,4 +74,8 @@ public class UserArticleController {
         return userArticleService.openArticle(articleId);
     }
 
+    @GetMapping("/hot")
+    public UserBaseResponse<?> getArticleHot() {
+        return userArticleService.hotArticle();
+    }
 }

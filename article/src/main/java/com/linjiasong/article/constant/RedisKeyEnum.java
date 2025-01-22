@@ -13,7 +13,8 @@ import java.util.concurrent.TimeUnit;
 @Getter
 public enum RedisKeyEnum {
 
-    POINT_ARTICLE("user:point_article:%s", "用户点击文章", 7L, TimeUnit.DAYS);
+    POINT_ARTICLE("user:point_article:%s", "用户点击文章", 7L, TimeUnit.DAYS),
+    POINT_ARTICLE_SCORED("user:point_article_scored", "用户点击文章排序", 7L, TimeUnit.DAYS);
 
     /**
      * redis key

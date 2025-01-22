@@ -48,4 +48,7 @@ public interface ArticleServiceClient {
 
     @PostMapping("/api/article/open/{articleId}")
     UserBaseResponse<?> openArticle(@PathVariable("articleId") Long articleId);
+
+    @GetMapping("/api/article/hot")
+    UserBaseResponse<?> hotArticle();
 }

@@ -86,4 +86,10 @@ public interface UserArticleService {
      * @return UserBaseResponse
      */
     UserBaseResponse<?> openArticle(Long articleId);
+
+    /**
+     * 文章hot100
+     * @return UserBaseResponse
+     */
+    UserBaseResponse<?> hotArticle();
 }

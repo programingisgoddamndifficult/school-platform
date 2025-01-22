@@ -6,6 +6,7 @@ import com.linjiasong.user.point.service.enums.PointTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.statement.select.KSQLWindow;
 import org.redisson.api.RAtomicLong;
+import org.redisson.api.RScoredSortedSet;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,9 +24,21 @@ public class PointArticleService extends AbstractPointService {
         pointService.execute(() -> {
             RAtomicLong atomicLong = redissonClient.getAtomicLong(String.format(RedisKeyEnum.POINT_ARTICLE.getKey(), articleDTO.getArticleId()));
             atomicLong.incrementAndGet();
-            String scoredKey = String.format(RedisKeyEnum.POINT_ARTICLE_SCORED.getKey(), articleDTO.getArticleId());
-            redissonClient.getScoredSortedSet(scoredKey).addScore(scoredKey, 1.0);
+
+            hotArticle(articleDTO.getArticleId());
         });
+    }
+
+    private void hotArticle(Long articleId){
+        RScoredSortedSet<Long> scoredSortedSet = redissonClient.getScoredSortedSet(RedisKeyEnum.POINT_ARTICLE_SCORED.getKey());
+        if (scoredSortedSet.contains(articleId)) {
+            Double score = scoredSortedSet.getScore(articleId);
+            score = score + 1;
+            scoredSortedSet.remove(articleId);
+            scoredSortedSet.add(score, articleId);
+        }else{
+            scoredSortedSet.add(1, articleId);
+        }
     }
 
 }

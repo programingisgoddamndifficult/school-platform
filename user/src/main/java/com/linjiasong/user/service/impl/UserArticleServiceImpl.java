@@ -7,6 +7,7 @@ import com.linjiasong.user.entity.dto.ArticleCommentDTO;
 import com.linjiasong.user.entity.dto.ArticleCreateDTO;
 import com.linjiasong.user.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.user.entity.vo.ArticleCommentVO;
+import com.linjiasong.user.entity.vo.ArticleDetailVO;
 import com.linjiasong.user.entity.vo.ArticleUserCommentVO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
 import com.linjiasong.user.feign.ArticleServiceClient;
@@ -70,11 +71,17 @@ public class UserArticleServiceImpl implements UserArticleService {
     @Override
     public UserBaseResponse<?> getArticleDetail(Long articleId) {
         UserBaseResponse<?> response = articleServiceClient.getArticleDetail(articleId);
-        if(response.getCode().equals("200")){
+        if (!response.getCode().equals("200")) {
+            return response;
+        }
+        ArticleDetailVO articleDetailVO = JSON.parseObject(JSON.toJSONString(response.getData()), ArticleDetailVO.class);
+        setArticleDetailVOUserInfo(articleDetailVO);
+
+        if (!articleDetailVO.getUserInfo().getUserId().equals(UserInfoContext.get().getId())) {
             pointService.execute(PointTypeEnum.POINT_ARTICLE, PointArticleDTO.build(articleId));
         }
 
-        return response;
+        return UserBaseResponse.success(articleDetailVO);
     }
 
     @Override
@@ -100,5 +107,20 @@ public class UserArticleServiceImpl implements UserArticleService {
     @Override
     public UserBaseResponse<?> openArticle(Long articleId) {
         return articleServiceClient.openArticle(articleId);
+    }
+
+    @Override
+    public UserBaseResponse<?> hotArticle() {
+        return articleServiceClient.hotArticle();
+    }
+
+    private void setArticleDetailVOUserInfo(ArticleDetailVO articleDetailVO) {
+        UserInfo userInfo = userGateway.selectById(articleDetailVO.getUserInfo().getUserId());
+
+        ArticleDetailVO.UserInfo userInfo1 = articleDetailVO.getUserInfo();
+        userInfo1.setUsername(userInfo.getUsername());
+        userInfo1.setImage(userInfo.getImage());
+
+        articleDetailVO.setUserInfo(userInfo1);
     }
 }
