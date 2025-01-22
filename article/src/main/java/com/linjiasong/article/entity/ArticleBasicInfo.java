@@ -31,6 +31,8 @@ public class ArticleBasicInfo {
 
     private Long collectNum;
 
+    private Long readNum;
+
     /**
      * 文章分类
      */

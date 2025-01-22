@@ -29,6 +29,8 @@ public class ArticleDetailVO {
 
     private Long collectNum;
 
+    private Long readNum;
+
     private short tag;
 
     private String content;
@@ -58,6 +60,7 @@ public class ArticleDetailVO {
                 .articleId(basicInfo.getId())
                 .likesNum(basicInfo.getLikesNum())
                 .collectNum(basicInfo.getCollectNum())
+                .readNum(basicInfo.getReadNum())
                 .tag(basicInfo.getTag())
                 .content(articleDetail.getContent())
                 .imageUrl(ArticleDetail.getImageUrls(articleDetail.getImageUrl()))

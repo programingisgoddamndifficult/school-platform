@@ -28,6 +28,8 @@ public class ArticleBasicVO {
 
     private Long collectNum;
 
+    private Long readNum;
+
     private short tag;
 
     private LocalDateTime createTime;
@@ -40,6 +42,7 @@ public class ArticleBasicVO {
                 .title(basic.getArticleTitle())
                 .likesNum(basic.getLikesNum())
                 .collectNum(basic.getCollectNum())
+                .readNum(basic.getReadNum())
                 .tag(basic.getTag())
                 .createTime(basic.getCreateTime())
                 .updateTime(basic.getUpdateTime()).build()).collect(Collectors.toList());
