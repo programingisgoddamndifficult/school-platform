@@ -42,6 +42,8 @@ public class ArticleBasicInfo {
 
     private LocalDateTime updateTime;
 
+    private short isCheck;
+
     private short isOpen;
 
     private short isBan;
@@ -51,5 +53,13 @@ public class ArticleBasicInfo {
 
     public boolean isOpen(){
         return isOpen == 1;
+    }
+
+    public boolean isCheck(){
+        return isCheck == 1;
+    }
+
+    public boolean isBan(){
+        return isBan == 1;
     }
 }

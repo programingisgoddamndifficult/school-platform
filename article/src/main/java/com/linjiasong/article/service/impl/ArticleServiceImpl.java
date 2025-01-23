@@ -119,6 +119,15 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         ArticleBasicInfo articleBasicInfo = articleBasicInfoGateway.selectById(articleId);
+        //如果非本人文章，则要判断是否已检查或封禁
+        if(!articleBasicInfo.getUserId().equals(ArticleContext.get().getId())){
+            if(!articleBasicInfo.isCheck()){
+                throw new BizException("没有权限或文章不存在");
+            }
+            if(!articleBasicInfo.isBan()){
+                throw new BizException("没有权限或文章不存在");
+            }
+        }
 
         ArticleDetail articleDetail = articleDetailGateway.selectOne(new QueryWrapper<ArticleDetail>().eq("article_id", articleId));
 
@@ -159,6 +168,6 @@ public class ArticleServiceImpl implements ArticleService {
                 .entryRangeReversed(0, 150)
                 .stream().limit(100).map(ScoredEntry::getValue).toList();
 
-        return ArticleBaseResponse.success(ArticleBasicVO.build(articleBasicInfoGateway.selectByIdsList(articleIds)));
+        return ArticleBaseResponse.success(ArticleBasicVO.build(articleBasicInfoGateway.selectByIdsList(articleIds).stream().filter(articleBasicInfo -> !articleBasicInfo.isBan()).toList()));
     }
 }
