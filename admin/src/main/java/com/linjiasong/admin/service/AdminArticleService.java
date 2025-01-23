@@ -1,5 +1,6 @@
 package com.linjiasong.admin.service;
 
+import com.linjiasong.admin.entity.dto.ArticleCheckDTO;
 import com.linjiasong.admin.excepiton.AdminBaseResponse;
 
 /**
@@ -14,4 +15,5 @@ public interface AdminArticleService {
      */
     AdminBaseResponse getCheckArticleListFirst();
 
+    AdminBaseResponse checkArticle(ArticleCheckDTO articleCheckDTO);
 }
