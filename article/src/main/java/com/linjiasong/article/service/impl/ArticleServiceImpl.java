@@ -7,6 +7,7 @@ import com.linjiasong.article.constant.ThreadPoolContext;
 import com.linjiasong.article.entity.ArticleBasicInfo;
 import com.linjiasong.article.entity.ArticleDetail;
 import com.linjiasong.article.entity.UserInfo;
+import com.linjiasong.article.entity.dto.ArticleCheckDTO;
 import com.linjiasong.article.entity.dto.ArticleCreateDTO;
 import com.linjiasong.article.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.article.entity.vo.ArticleBasicVO;
@@ -16,6 +17,7 @@ import com.linjiasong.article.excepiton.BizException;
 import com.linjiasong.article.gateway.ArticleBasicInfoGateway;
 import com.linjiasong.article.gateway.ArticleDetailGateway;
 import com.linjiasong.article.service.ArticleService;
+import org.redisson.api.RList;
 import org.redisson.api.RScoredSortedSet;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.protocol.ScoredEntry;
@@ -60,6 +62,8 @@ public class ArticleServiceImpl implements ArticleService {
         if (!articleDetailGateway.insert(ArticleDetail.builder().articleId(articleBasicInfo.getId()).content(articleCreateDTO.getContext()).imageUrl(ArticleDetail.toJsonImageUrl(articleCreateDTO.getImageUrl())).build())) {
             throw new BizException("服务异常");
         }
+
+        createArticleToCheck(articleCreateDTO, articleBasicInfo.getId());
 
         return ArticleBaseResponse.builder().code("200").msg("success").build();
     }
@@ -120,11 +124,11 @@ public class ArticleServiceImpl implements ArticleService {
 
         ArticleBasicInfo articleBasicInfo = articleBasicInfoGateway.selectById(articleId);
         //如果非本人文章，则要判断是否已检查或封禁
-        if(!articleBasicInfo.getUserId().equals(ArticleContext.get().getId())){
-            if(!articleBasicInfo.isCheck()){
+        if (!articleBasicInfo.getUserId().equals(ArticleContext.get().getId())) {
+            if (!articleBasicInfo.isCheck()) {
                 throw new BizException("没有权限或文章不存在");
             }
-            if(!articleBasicInfo.isBan()){
+            if (!articleBasicInfo.isBan()) {
                 throw new BizException("没有权限或文章不存在");
             }
         }
@@ -169,5 +173,12 @@ public class ArticleServiceImpl implements ArticleService {
                 .stream().limit(100).map(ScoredEntry::getValue).toList();
 
         return ArticleBaseResponse.success(ArticleBasicVO.build(articleBasicInfoGateway.selectByIdsList(articleIds).stream().filter(articleBasicInfo -> !articleBasicInfo.isBan()).toList()));
+    }
+
+    private void createArticleToCheck(ArticleCreateDTO articleDetailVO, Long id) {
+        ThreadPoolContext.execute(() -> {
+            RList<ArticleCheckDTO> articleCheckList = redissonClient.getList(RedisKeyEnum.ARTICLE_CHECK_LIST.getKey());
+            articleCheckList.add(ArticleCheckDTO.build(articleDetailVO, id));
+        });
     }
 }

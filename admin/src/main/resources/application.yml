@@ -5,6 +5,10 @@ spring:
     url: jdbc:mysql://175.178.152.16:3306/admin?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
     password: 018418
+  redis:
+    host: 175.178.152.16
+    port: 6379
+    password: 018418
 
 feign:
   client:

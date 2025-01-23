@@ -1,4 +1,4 @@
-package com.linjiasong.article.constant;
+package com.linjiasong.admin.constant;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,14 +7,12 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author linjiasong
- * @date 2025/1/22 下午3:04
+ * @date 2025/1/23 下午5:35
  */
 @AllArgsConstructor
 @Getter
 public enum RedisKeyEnum {
 
-    POINT_ARTICLE("user:point_article:%s", "用户点击文章", 7L, TimeUnit.DAYS),
-    POINT_ARTICLE_SCORED("user:point_article_scored", "用户点击文章排序", 7L, TimeUnit.DAYS),
     ARTICLE_CHECK_LIST("article:check_list", "管理员check文章list", 14L, TimeUnit.DAYS),
     ;
 

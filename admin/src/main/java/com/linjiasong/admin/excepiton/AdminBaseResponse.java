@@ -31,4 +31,12 @@ public class AdminBaseResponse implements Serializable {
      * 响应业务数据
      */
     private Object data;
+
+    public static AdminBaseResponse success() {
+        return AdminBaseResponse.builder().code("200").msg("success").build();
+    }
+
+    public static AdminBaseResponse success(Object obj) {
+        return AdminBaseResponse.builder().code("200").data(obj).msg("success").build();
+    }
 }
