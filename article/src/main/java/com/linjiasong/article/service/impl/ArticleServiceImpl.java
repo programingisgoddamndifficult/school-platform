@@ -129,7 +129,7 @@ public class ArticleServiceImpl implements ArticleService {
             if (!articleBasicInfo.isCheck()) {
                 throw new BizException("没有权限或文章不存在");
             }
-            if (!articleBasicInfo.isBan()) {
+            if (articleBasicInfo.isBan()) {
                 throw new BizException("没有权限或文章不存在");
             }
         }

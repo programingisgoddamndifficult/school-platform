@@ -22,18 +22,31 @@ import java.io.IOException;
 @Slf4j
 public class RabbitMQTopicConsumer {
 
-    //TODO 添加消费者
-
     @RabbitListener(queues = RabbitMQTopicConfig.TOPIC_QUEUE_USER_ARTICLE, ackMode = "MANUAL")
     public void userArticleTopicQueue(MqBaseExchangeDTO mqBaseExchangeDTO, Channel channel, Message message) {
-        log.info(String.format("队列: %s 收到消息 [%s] 准备执行消费", RabbitMQTopicConfig.TOPIC_QUEUE_USER_ARTICLE,
+        AbstractMqService mqService = getMqService(RabbitMQTopicConfig.TOPIC_QUEUE_USER_ARTICLE, mqBaseExchangeDTO);
+        doConsume(mqService, mqBaseExchangeDTO, channel, message);
+    }
+
+    @RabbitListener(queues = RabbitMQTopicConfig.TOPIC_QUEUE_ADMIN_ARTICLE, ackMode = "MANUAL")
+    public void articleCheckTopicQueue(MqBaseExchangeDTO mqBaseExchangeDTO, Channel channel, Message message) {
+        AbstractMqService mqService = getMqService(RabbitMQTopicConfig.TOPIC_EXCHANGE_ADMIN_ARTICLE, mqBaseExchangeDTO);
+        doConsume(mqService, mqBaseExchangeDTO, channel, message);
+    }
+
+    private AbstractMqService getMqService(String msgType, MqBaseExchangeDTO mqBaseExchangeDTO) {
+        log.info(String.format("队列: %s 收到消息 [%s] 准备执行消费", msgType,
                 JSON.toJSONString(mqBaseExchangeDTO)));
         MqExchangeTypeEnum exchangeType = mqBaseExchangeDTO.getExchangeType();
-        AbstractMqService mqService = SpringContext.getBean(exchangeType.getType(), AbstractMqService.class);
+        return SpringContext.getBean(exchangeType.getType(), AbstractMqService.class);
+    }
+
+    private void doConsume(AbstractMqService mqService, MqBaseExchangeDTO mqBaseExchangeDTO,
+                           Channel channel, Message message) {
         try {
             mqService.consume(mqBaseExchangeDTO.getJsonData());
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-        }catch (Exception e) {
+        } catch (Exception e) {
             try {
                 channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, true);
             } catch (IOException ex) {

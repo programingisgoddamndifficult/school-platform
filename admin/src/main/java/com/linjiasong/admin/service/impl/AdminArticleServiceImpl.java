@@ -48,7 +48,6 @@ public class AdminArticleServiceImpl implements AdminArticleService {
 
         removeArticleCheckList();
 
-        //TODO 发个事件 告诉article文章是被ban还是no ban
         rabbitMQProducer.sendMessage(RabbitMQTopicConfig.TOPIC_EXCHANGE_ADMIN_ARTICLE,
                 RabbitMQTopicConfig.TOPIC_ADMIN_ARTICLE,
                 MqBaseExchangeDTO.build(MqExchangeTypeEnum.ARTICLE_CHECK, ArticleMqCheckDTO.build(articleCheckDTO)));

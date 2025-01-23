@@ -19,7 +19,7 @@ public class AdminArticleController {
     @Autowired
     private AdminArticleService adminArticleService;
 
-    //TODO check之后，怎么从list移出去，怎么保证只能check一次，update后也要check
+    //TODO update后也要check
     @GetMapping
     public AdminBaseResponse getArticleCheckListFirst(){
         return adminArticleService.getCheckArticleListFirst();
