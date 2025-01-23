@@ -1,5 +1,6 @@
 package com.linjiasong.article.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.linjiasong.article.constant.ArticleContext;
 import com.linjiasong.article.constant.RedisKeyEnum;
@@ -177,8 +178,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     private void createArticleToCheck(ArticleCreateDTO articleDetailVO, Long id) {
         ThreadPoolContext.execute(() -> {
-            RList<ArticleCheckDTO> articleCheckList = redissonClient.getList(RedisKeyEnum.ARTICLE_CHECK_LIST.getKey());
-            articleCheckList.add(ArticleCheckDTO.build(articleDetailVO, id));
+            RList<String> articleCheckList = redissonClient.getList(RedisKeyEnum.ARTICLE_CHECK_LIST.getKey());
+            articleCheckList.add(JSON.toJSONString(ArticleCheckDTO.build(articleDetailVO, id)));
         });
     }
 }

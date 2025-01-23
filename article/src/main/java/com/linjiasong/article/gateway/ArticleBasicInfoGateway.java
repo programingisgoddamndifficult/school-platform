@@ -1,5 +1,7 @@
 package com.linjiasong.article.gateway;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.linjiasong.article.entity.ArticleBasicInfo;
 
 import java.util.List;
@@ -13,6 +15,8 @@ public interface ArticleBasicInfoGateway {
     boolean insert(ArticleBasicInfo articleBasicInfo);
 
     boolean update(ArticleBasicInfo articleBasicInfo);
+
+    boolean update(UpdateWrapper<ArticleBasicInfo> updateWrapper);
 
     List<ArticleBasicInfo> getByUserId(Long userId);
 

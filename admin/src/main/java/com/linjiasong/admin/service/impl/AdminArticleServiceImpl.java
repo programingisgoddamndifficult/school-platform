@@ -1,5 +1,6 @@
 package com.linjiasong.admin.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.linjiasong.admin.config.RabbitMqConfig;
 import com.linjiasong.admin.constant.RedisKeyEnum;
 import com.linjiasong.admin.entity.dto.ArticleCheckDTO;
@@ -33,8 +34,8 @@ public class AdminArticleServiceImpl implements AdminArticleService {
 
     @Override
     public AdminBaseResponse getCheckArticleListFirst() {
-        RList<ArticleCheckVO> list = redissonClient.getList(RedisKeyEnum.ARTICLE_CHECK_LIST.getKey());
-        ArticleCheckVO articleCheckVO = list.getFirst();
+        RList<String> list = redissonClient.getList(RedisKeyEnum.ARTICLE_CHECK_LIST.getKey());
+        ArticleCheckVO articleCheckVO = JSON.parseObject(list.getFirst(), ArticleCheckVO.class);
         if (articleCheckVO == null) {
             throw new BizException("暂无新的文章待审核");
         }
@@ -44,6 +45,8 @@ public class AdminArticleServiceImpl implements AdminArticleService {
     @Override
     public AdminBaseResponse checkArticle(ArticleCheckDTO articleCheckDTO) {
         checkArticleHasCheck(articleCheckDTO.getArticleId());
+
+        removeArticleCheckList();
 
         //TODO 发个事件 告诉article文章是被ban还是no ban
         rabbitMQProducer.sendMessage(RabbitMQTopicConfig.TOPIC_EXCHANGE_ADMIN_ARTICLE,
@@ -59,5 +62,10 @@ public class AdminArticleServiceImpl implements AdminArticleService {
             throw new BizException("当前文章已被审核");
         }
         bucket.set(1);
+    }
+
+    private void removeArticleCheckList(){
+        RList<ArticleCheckVO> list = redissonClient.getList(RedisKeyEnum.ARTICLE_CHECK_LIST.getKey());
+        list.removeFirst();
     }
 }

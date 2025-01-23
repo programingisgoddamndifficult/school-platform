@@ -1,6 +1,7 @@
 package com.linjiasong.article.gateway.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.linjiasong.article.constant.ArticleContext;
 import com.linjiasong.article.entity.ArticleBasicInfo;
 import com.linjiasong.article.excepiton.BizException;
@@ -29,6 +30,11 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
     @Override
     public boolean update(ArticleBasicInfo articleBasicInfo) {
         return articleBasicInfoMapper.updateById(articleBasicInfo) > 0;
+    }
+
+    @Override
+    public boolean update(UpdateWrapper<ArticleBasicInfo> updateWrapper) {
+        return articleBasicInfoMapper.update(updateWrapper) > 0;
     }
 
     @Override

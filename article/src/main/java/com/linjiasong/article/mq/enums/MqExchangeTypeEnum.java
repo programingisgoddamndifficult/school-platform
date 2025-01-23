@@ -1,5 +1,6 @@
 package com.linjiasong.article.mq.enums;
 
+import com.linjiasong.article.mq.dto.ArticleMqCheckDTO;
 import com.linjiasong.article.mq.dto.UserDeleteDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,8 @@ import lombok.Getter;
 @Getter
 public enum MqExchangeTypeEnum {
 
-    USER_DELETE("USER_DELETE", UserDeleteDTO.class);
+    USER_DELETE("USER_DELETE", UserDeleteDTO.class),
+    ARTICLE_CHECK("ARTICLE_CHECK", ArticleMqCheckDTO.class);
 
     private final String type;
 

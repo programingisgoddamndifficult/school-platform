@@ -36,5 +36,18 @@ public class RabbitMQTopicConfig {
         return BindingBuilder.bind(topicQueueUserArticle).to(topicExchange).with(TOPIC_USER_ARTICLE);
     }
 
-    //TODO 绑定
+    @Bean
+    public TopicExchange adminArticleExchange() {
+        return new TopicExchange(TOPIC_EXCHANGE_ADMIN_ARTICLE);
+    }
+
+    @Bean
+    public Queue adminArticleQueue() {
+        return new Queue(TOPIC_QUEUE_ADMIN_ARTICLE);
+    }
+
+    @Bean
+    public Binding bindingAdminArticleQueue(Queue adminArticleQueue, TopicExchange adminArticleExchange) {
+        return BindingBuilder.bind(adminArticleQueue).to(adminArticleExchange).with(TOPIC_ADMIN_ARTICLE);
+    }
 }

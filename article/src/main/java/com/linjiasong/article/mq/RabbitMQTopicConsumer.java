@@ -22,6 +22,8 @@ import java.io.IOException;
 @Slf4j
 public class RabbitMQTopicConsumer {
 
+    //TODO 添加消费者
+
     @RabbitListener(queues = RabbitMQTopicConfig.TOPIC_QUEUE_USER_ARTICLE, ackMode = "MANUAL")
     public void userArticleTopicQueue(MqBaseExchangeDTO mqBaseExchangeDTO, Channel channel, Message message) {
         log.info(String.format("队列: %s 收到消息 [%s] 准备执行消费", RabbitMQTopicConfig.TOPIC_QUEUE_USER_ARTICLE,
