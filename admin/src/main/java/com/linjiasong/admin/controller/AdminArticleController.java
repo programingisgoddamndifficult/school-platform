@@ -19,7 +19,6 @@ public class AdminArticleController {
     @Autowired
     private AdminArticleService adminArticleService;
 
-    //TODO update后也要check
     @GetMapping
     public AdminBaseResponse getArticleCheckListFirst(){
         return adminArticleService.getCheckArticleListFirst();

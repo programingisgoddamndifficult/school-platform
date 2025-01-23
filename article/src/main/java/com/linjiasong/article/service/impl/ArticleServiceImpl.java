@@ -90,7 +90,7 @@ public class ArticleServiceImpl implements ArticleService {
         Long articleId = articleUpdateDTO.getId();
 
         ArticleBasicInfo articleBasicInfo = ArticleBasicInfo.builder().id(articleId).articleTitle(articleUpdateDTO.getTitle())
-                .tag(articleUpdateDTO.getTag()).updateTime(LocalDateTime.now()).build();
+                .tag(articleUpdateDTO.getTag()).isOpen(articleUpdateDTO.getIsOpen()).updateTime(LocalDateTime.now()).build();
         if (!articleBasicInfoGateway.update(articleBasicInfo)) {
             throw new BizException("服务异常");
         }
@@ -100,6 +100,8 @@ public class ArticleServiceImpl implements ArticleService {
         if (!articleDetailGateway.update(articleDetail, new QueryWrapper<ArticleDetail>().eq("article_id", articleId))) {
             throw new BizException("服务异常");
         }
+
+        createArticleToCheck(ArticleCreateDTO.build(articleUpdateDTO), articleId);
 
         return ArticleBaseResponse.builder().code("200").msg("success").build();
     }

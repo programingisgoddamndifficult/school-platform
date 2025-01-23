@@ -23,6 +23,8 @@ public class ArticleUpdateDTO {
 
     private List<String> imageUrl;
 
+    private short isOpen;
+
     public boolean checkParam() {
         if (this.title == null || this.title.isBlank() || this.title.length() > 50) {
             return false;
@@ -30,6 +32,10 @@ public class ArticleUpdateDTO {
 
         if (this.context == null || this.context.isBlank() || this.context.length() > 200) {
             return false;
+        }
+
+        if(isOpen != 1 && isOpen != 0){
+            isOpen = 0;
         }
 
         return ArticleTagEnum.typeInvalid(this.tag);

@@ -1,7 +1,10 @@
 package com.linjiasong.article.entity.dto;
 
 import com.linjiasong.article.enums.ArticleTagEnum;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -11,6 +14,9 @@ import java.util.List;
  */
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ArticleCreateDTO {
     private String title;
 
@@ -37,4 +43,15 @@ public class ArticleCreateDTO {
 
         return ArticleTagEnum.typeInvalid(this.tag);
     }
+
+    public static ArticleCreateDTO build(ArticleUpdateDTO articleUpdateDTO){
+        return ArticleCreateDTO.builder()
+                .title(articleUpdateDTO.getTitle())
+                .tag(articleUpdateDTO.getTag())
+                .context(articleUpdateDTO.getContext())
+                .imageUrl(articleUpdateDTO.getImageUrl())
+                .isOpen(articleUpdateDTO.getIsOpen())
+                .build();
+    }
+
 }
