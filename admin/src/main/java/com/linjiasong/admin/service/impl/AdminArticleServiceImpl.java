@@ -1,10 +1,16 @@
 package com.linjiasong.admin.service.impl;
 
+import com.linjiasong.admin.config.RabbitMqConfig;
 import com.linjiasong.admin.constant.RedisKeyEnum;
 import com.linjiasong.admin.entity.dto.ArticleCheckDTO;
 import com.linjiasong.admin.entity.vo.ArticleCheckVO;
 import com.linjiasong.admin.excepiton.AdminBaseResponse;
 import com.linjiasong.admin.excepiton.BizException;
+import com.linjiasong.admin.mq.RabbitMQProducer;
+import com.linjiasong.admin.mq.config.RabbitMQTopicConfig;
+import com.linjiasong.admin.mq.dto.ArticleMqCheckDTO;
+import com.linjiasong.admin.mq.dto.MqBaseExchangeDTO;
+import com.linjiasong.admin.mq.enums.MqExchangeTypeEnum;
 import com.linjiasong.admin.service.AdminArticleService;
 import org.redisson.api.RBucket;
 import org.redisson.api.RList;
@@ -22,6 +28,9 @@ public class AdminArticleServiceImpl implements AdminArticleService {
     @Autowired
     RedissonClient redissonClient;
 
+    @Autowired
+    RabbitMQProducer rabbitMQProducer;
+
     @Override
     public AdminBaseResponse getCheckArticleListFirst() {
         RList<ArticleCheckVO> list = redissonClient.getList(RedisKeyEnum.ARTICLE_CHECK_LIST.getKey());
@@ -37,7 +46,11 @@ public class AdminArticleServiceImpl implements AdminArticleService {
         checkArticleHasCheck(articleCheckDTO.getArticleId());
 
         //TODO 发个事件 告诉article文章是被ban还是no ban
+        rabbitMQProducer.sendMessage(RabbitMQTopicConfig.TOPIC_EXCHANGE_ADMIN_ARTICLE,
+                RabbitMQTopicConfig.TOPIC_ADMIN_ARTICLE,
+                MqBaseExchangeDTO.build(MqExchangeTypeEnum.ARTICLE_CHECK, ArticleMqCheckDTO.build(articleCheckDTO)));
 
+        return AdminBaseResponse.success();
     }
 
     private void checkArticleHasCheck(Long articleId) {

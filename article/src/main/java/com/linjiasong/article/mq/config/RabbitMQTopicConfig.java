@@ -17,6 +17,10 @@ public class RabbitMQTopicConfig {
     public static final String TOPIC_QUEUE_USER_ARTICLE = "user-article-queue";
     public static final String TOPIC_USER_ARTICLE = "topic.user.article";
 
+    public static final String TOPIC_EXCHANGE_ADMIN_ARTICLE = "admin-article-exchange";
+    public static final String TOPIC_QUEUE_ADMIN_ARTICLE = "admin-article-queue";
+    public static final String TOPIC_ADMIN_ARTICLE = "topic.admin.article";
+
     @Bean
     public TopicExchange topicExchange() {
         return new TopicExchange(TOPIC_EXCHANGE_USER_ARTICLE);
@@ -31,4 +35,6 @@ public class RabbitMQTopicConfig {
     public Binding bindingTopicQueue1(Queue topicQueueUserArticle, TopicExchange topicExchange) {
         return BindingBuilder.bind(topicQueueUserArticle).to(topicExchange).with(TOPIC_USER_ARTICLE);
     }
+
+    //TODO 绑定
 }
