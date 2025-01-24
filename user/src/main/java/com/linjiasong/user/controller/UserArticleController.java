@@ -78,4 +78,9 @@ public class UserArticleController {
     public UserBaseResponse<?> getArticleHot() {
         return userArticleService.hotArticle();
     }
+
+    @GetMapping("/selfList")
+    public UserBaseResponse<?> getUserWatchArticleList() {
+        return userArticleService.getArticleUserWatchList();
+    }
 }

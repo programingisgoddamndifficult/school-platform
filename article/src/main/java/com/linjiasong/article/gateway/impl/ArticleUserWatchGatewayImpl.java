@@ -1,10 +1,14 @@
 package com.linjiasong.article.gateway.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.linjiasong.article.constant.ArticleContext;
 import com.linjiasong.article.entity.ArticleUserWatch;
 import com.linjiasong.article.gateway.ArticleUserWatchGateway;
 import com.linjiasong.article.mapper.ArticleUserWatchMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author linjiasong
@@ -19,5 +23,17 @@ public class ArticleUserWatchGatewayImpl implements ArticleUserWatchGateway {
     @Override
     public boolean insert(ArticleUserWatch articleUserWatch) {
         return articleUserWatchMapper.insert(articleUserWatch) > 0;
+    }
+
+    @Override
+    public List<ArticleUserWatch> getUserWatchList() {
+        return articleUserWatchMapper.selectList(new QueryWrapper<ArticleUserWatch>().eq("user_id", ArticleContext.get().getId()));
+    }
+
+    @Override
+    public boolean isExist(Long articleId, Long userId) {
+        return articleUserWatchMapper.selectOne(new QueryWrapper<ArticleUserWatch>()
+                .eq("user_id", userId)
+                .eq("article_id", articleId)) != null;
     }
 }

@@ -114,6 +114,11 @@ public class UserArticleServiceImpl implements UserArticleService {
         return articleServiceClient.hotArticle();
     }
 
+    @Override
+    public UserBaseResponse<?> getArticleUserWatchList() {
+        return articleServiceClient.getUserWatchArticleList();
+    }
+
     private void setArticleDetailVOUserInfo(ArticleDetailVO articleDetailVO) {
         UserInfo userInfo = userGateway.selectById(articleDetailVO.getUserInfo().getUserId());
 

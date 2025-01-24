@@ -14,6 +14,7 @@ import com.linjiasong.article.entity.dto.ArticleCreateDTO;
 import com.linjiasong.article.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.article.entity.vo.ArticleBasicVO;
 import com.linjiasong.article.entity.vo.ArticleDetailVO;
+import com.linjiasong.article.entity.vo.ArticleUserWatchVO;
 import com.linjiasong.article.excepiton.ArticleBaseResponse;
 import com.linjiasong.article.excepiton.BizException;
 import com.linjiasong.article.gateway.ArticleBasicInfoGateway;
@@ -30,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -147,7 +149,7 @@ public class ArticleServiceImpl implements ArticleService {
         articlePoint(articleBasicInfo);
 
         //用户观看历史
-        articleUserWatch(articleBasicInfo);
+        articleUserWatch(articleBasicInfo, ArticleContext.get().getId());
 
         return ArticleBaseResponse.success(ArticleDetailVO.build(articleBasicInfo, articleDetail));
     }
@@ -183,6 +185,31 @@ public class ArticleServiceImpl implements ArticleService {
         return ArticleBaseResponse.success(ArticleBasicVO.build(articleBasicInfoGateway.selectByIdsList(articleIds).stream().filter(articleBasicInfo -> !articleBasicInfo.isBan()).toList()));
     }
 
+    @Override
+    public ArticleBaseResponse<?> getUserWatchList() {
+        List<ArticleUserWatch> userWatchList = articleUserWatchGateway.getUserWatchList();
+
+        List<Long> articleIds = userWatchList.stream().map(ArticleUserWatch::getArticleId).toList();
+        Map<Long, String> articleBaseInfoMap = articleBasicInfoGateway.selectByIdsList(articleIds).stream()
+                .filter(articleBasicInfo -> {
+                    if (articleBasicInfo.getUserId().equals(ArticleContext.get().getId())) {
+                        return true;
+                    }
+
+                    if (articleBasicInfo.isBan() || !articleBasicInfo.isOpen() || !articleBasicInfo.isCheck()) {
+                        return false;
+                    }
+                    return true;
+                })
+                .collect(Collectors.toMap(ArticleBasicInfo::getId, ArticleBasicInfo::getArticleTitle));
+
+        List<ArticleUserWatchVO> userWatchVOList = userWatchList.stream().filter(articleUserWatch -> articleBaseInfoMap.containsKey(articleUserWatch.getArticleId()))
+                .map(articleUserWatch -> ArticleUserWatchVO.build(articleUserWatch, articleBaseInfoMap.get(articleUserWatch.getArticleId())))
+                .toList();
+
+        return ArticleBaseResponse.success(userWatchVOList);
+    }
+
     //TODO 获取文章列表接口
     @Override
     public ArticleBaseResponse<?> getArticleIndexList() {
@@ -197,9 +224,13 @@ public class ArticleServiceImpl implements ArticleService {
         });
     }
 
-    private void articleUserWatch(ArticleBasicInfo articleBasicInfo) {
+    private void articleUserWatch(ArticleBasicInfo articleBasicInfo, Long userId) {
         ThreadPoolContext.execute(() -> {
-            articleUserWatchGateway.insert(ArticleUserWatch.build(articleBasicInfo));
+            if (articleUserWatchGateway.isExist(articleBasicInfo.getId(), userId)) {
+                return;
+            }
+
+            articleUserWatchGateway.insert(ArticleUserWatch.build(articleBasicInfo, userId));
         });
     }
 

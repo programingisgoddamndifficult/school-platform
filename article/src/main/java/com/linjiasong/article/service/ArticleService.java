@@ -60,6 +60,12 @@ public interface ArticleService {
     ArticleBaseResponse<?> getHotArticle();
 
     /**
+     * 获取个人观看历史列表
+     * @return ArticleBaseResponse
+     */
+    ArticleBaseResponse<?> getUserWatchList();
+
+    /**
      * 获取推荐列表
      * @return ArticleBaseResponse
      */

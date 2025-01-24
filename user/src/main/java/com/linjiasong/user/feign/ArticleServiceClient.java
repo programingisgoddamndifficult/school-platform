@@ -51,4 +51,7 @@ public interface ArticleServiceClient {
 
     @GetMapping("/api/article/hot")
     UserBaseResponse<?> hotArticle();
+
+    @GetMapping("/api/article/selfList")
+    UserBaseResponse<?> getUserWatchArticleList();
 }

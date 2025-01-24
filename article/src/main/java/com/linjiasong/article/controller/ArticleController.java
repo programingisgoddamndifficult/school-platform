@@ -45,7 +45,7 @@ public class ArticleController {
     }
 
     @PostMapping("/open/{articleId}")
-    public ArticleBaseResponse<?> openArticle(@PathVariable("articleId") Long articleId){
+    public ArticleBaseResponse<?> openArticle(@PathVariable("articleId") Long articleId) {
         return articleService.openArticle(articleId);
     }
 
@@ -53,4 +53,10 @@ public class ArticleController {
     public ArticleBaseResponse<?> getArticleHot() {
         return articleService.getHotArticle();
     }
+
+    @GetMapping("/selfList")
+    public ArticleBaseResponse<?> getUserWatchArticleList() {
+        return articleService.getUserWatchList();
+    }
+
 }

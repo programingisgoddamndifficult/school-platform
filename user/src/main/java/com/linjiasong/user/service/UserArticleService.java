@@ -92,4 +92,10 @@ public interface UserArticleService {
      * @return UserBaseResponse
      */
     UserBaseResponse<?> hotArticle();
+
+    /**
+     * 个人观看历史
+     * @return UserBaseResponse
+     */
+    UserBaseResponse<?> getArticleUserWatchList();
 }

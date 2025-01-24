@@ -29,10 +29,10 @@ public class ArticleUserWatch {
 
     private LocalDateTime watchTime;
 
-    public static ArticleUserWatch build(ArticleBasicInfo articleBasicInfo){
+    public static ArticleUserWatch build(ArticleBasicInfo articleBasicInfo, Long userId){
         return ArticleUserWatch.builder()
                 .articleId(articleBasicInfo.getId())
-                .userId(articleBasicInfo.getUserId())
+                .userId(userId)
                 .tag(articleBasicInfo.getTag())
                 .build();
     }
