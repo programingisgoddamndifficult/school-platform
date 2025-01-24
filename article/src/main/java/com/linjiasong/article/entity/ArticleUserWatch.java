@@ -28,4 +28,12 @@ public class ArticleUserWatch {
     private short tag;
 
     private LocalDateTime watchTime;
+
+    public static ArticleUserWatch build(ArticleBasicInfo articleBasicInfo){
+        return ArticleUserWatch.builder()
+                .articleId(articleBasicInfo.getId())
+                .userId(articleBasicInfo.getUserId())
+                .tag(articleBasicInfo.getTag())
+                .build();
+    }
 }

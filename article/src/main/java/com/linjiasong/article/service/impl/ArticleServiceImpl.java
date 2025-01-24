@@ -7,6 +7,7 @@ import com.linjiasong.article.constant.RedisKeyEnum;
 import com.linjiasong.article.constant.ThreadPoolContext;
 import com.linjiasong.article.entity.ArticleBasicInfo;
 import com.linjiasong.article.entity.ArticleDetail;
+import com.linjiasong.article.entity.ArticleUserWatch;
 import com.linjiasong.article.entity.UserInfo;
 import com.linjiasong.article.entity.dto.ArticleCheckDTO;
 import com.linjiasong.article.entity.dto.ArticleCreateDTO;
@@ -17,6 +18,7 @@ import com.linjiasong.article.excepiton.ArticleBaseResponse;
 import com.linjiasong.article.excepiton.BizException;
 import com.linjiasong.article.gateway.ArticleBasicInfoGateway;
 import com.linjiasong.article.gateway.ArticleDetailGateway;
+import com.linjiasong.article.gateway.ArticleUserWatchGateway;
 import com.linjiasong.article.service.ArticleService;
 import org.redisson.api.RList;
 import org.redisson.api.RScoredSortedSet;
@@ -45,6 +47,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     RedissonClient redissonClient;
+
+    @Autowired
+    ArticleUserWatchGateway articleUserWatchGateway;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -138,11 +143,11 @@ public class ArticleServiceImpl implements ArticleService {
 
         ArticleDetail articleDetail = articleDetailGateway.selectOne(new QueryWrapper<ArticleDetail>().eq("article_id", articleId));
 
-        ThreadPoolContext.execute(() -> {
-            long readNum = redissonClient.getAtomicLong(String.format(RedisKeyEnum.POINT_ARTICLE.getKey(), articleBasicInfo.getId())).get();
-            articleBasicInfo.setReadNum(readNum);
-            articleBasicInfoGateway.update(articleBasicInfo);
-        });
+        //文章点击埋点
+        articlePoint(articleBasicInfo);
+
+        //用户观看历史
+        articleUserWatch(articleBasicInfo);
 
         return ArticleBaseResponse.success(ArticleDetailVO.build(articleBasicInfo, articleDetail));
     }
@@ -182,6 +187,20 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleBaseResponse<?> getArticleIndexList() {
         return null;
+    }
+
+    private void articlePoint(ArticleBasicInfo articleBasicInfo) {
+        ThreadPoolContext.execute(() -> {
+            long readNum = redissonClient.getAtomicLong(String.format(RedisKeyEnum.POINT_ARTICLE.getKey(), articleBasicInfo.getId())).get();
+            articleBasicInfo.setReadNum(readNum);
+            articleBasicInfoGateway.update(articleBasicInfo);
+        });
+    }
+
+    private void articleUserWatch(ArticleBasicInfo articleBasicInfo) {
+        ThreadPoolContext.execute(() -> {
+            articleUserWatchGateway.insert(ArticleUserWatch.build(articleBasicInfo));
+        });
     }
 
     private void createArticleToCheck(ArticleCreateDTO articleDetailVO, Long id) {
