@@ -3,6 +3,7 @@ package com.linjiasong.user.feign;
 import com.linjiasong.user.config.FeignConfiguration;
 import com.linjiasong.user.entity.dto.ArticleCommentDTO;
 import com.linjiasong.user.entity.dto.ArticleCreateDTO;
+import com.linjiasong.user.entity.dto.ArticleDeleteUserWatchDTO;
 import com.linjiasong.user.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -54,4 +55,7 @@ public interface ArticleServiceClient {
 
     @GetMapping("/api/article/selfList")
     UserBaseResponse<?> getUserWatchArticleList();
+
+    @PostMapping("/api/article/selfList/delete")
+    UserBaseResponse<?> deleteUserWatch(ArticleDeleteUserWatchDTO articleDeleteUserWatchDTO);
 }

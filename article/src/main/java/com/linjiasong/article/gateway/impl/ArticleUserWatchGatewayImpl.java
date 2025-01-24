@@ -36,4 +36,16 @@ public class ArticleUserWatchGatewayImpl implements ArticleUserWatchGateway {
                 .eq("user_id", userId)
                 .eq("article_id", articleId)) != null;
     }
+
+    @Override
+    public boolean deleteUserWatch(List<Long> ids) {
+        return articleUserWatchMapper.deleteByIds(ids) > 0;
+    }
+
+    @Override
+    public List<ArticleUserWatch> checkAndGetUserWatchList(List<Long> ids, Long userId) {
+        return articleUserWatchMapper.selectList(new QueryWrapper<ArticleUserWatch>()
+                .eq("user_id", userId)
+                .in("id", ids));
+    }
 }

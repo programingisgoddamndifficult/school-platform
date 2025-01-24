@@ -5,6 +5,7 @@ import com.linjiasong.user.constant.UserInfoContext;
 import com.linjiasong.user.entity.UserInfo;
 import com.linjiasong.user.entity.dto.ArticleCommentDTO;
 import com.linjiasong.user.entity.dto.ArticleCreateDTO;
+import com.linjiasong.user.entity.dto.ArticleDeleteUserWatchDTO;
 import com.linjiasong.user.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.user.entity.vo.ArticleCommentVO;
 import com.linjiasong.user.entity.vo.ArticleDetailVO;
@@ -117,6 +118,15 @@ public class UserArticleServiceImpl implements UserArticleService {
     @Override
     public UserBaseResponse<?> getArticleUserWatchList() {
         return articleServiceClient.getUserWatchArticleList();
+    }
+
+    @Override
+    public UserBaseResponse<?> deleteUserWatch(ArticleDeleteUserWatchDTO articleDeleteUserWatchDTO) {
+        if(!articleDeleteUserWatchDTO.hasData()){
+            return UserBaseResponse.success();
+        }
+
+        return articleServiceClient.deleteUserWatch(articleDeleteUserWatchDTO);
     }
 
     private void setArticleDetailVOUserInfo(ArticleDetailVO articleDetailVO) {

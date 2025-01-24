@@ -8,9 +8,9 @@ import com.linjiasong.article.constant.ThreadPoolContext;
 import com.linjiasong.article.entity.ArticleBasicInfo;
 import com.linjiasong.article.entity.ArticleDetail;
 import com.linjiasong.article.entity.ArticleUserWatch;
-import com.linjiasong.article.entity.UserInfo;
 import com.linjiasong.article.entity.dto.ArticleCheckDTO;
 import com.linjiasong.article.entity.dto.ArticleCreateDTO;
+import com.linjiasong.article.entity.dto.ArticleDeleteUserWatchDTO;
 import com.linjiasong.article.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.article.entity.vo.ArticleBasicVO;
 import com.linjiasong.article.entity.vo.ArticleDetailVO;
@@ -30,8 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -208,6 +207,26 @@ public class ArticleServiceImpl implements ArticleService {
                 .toList();
 
         return ArticleBaseResponse.success(userWatchVOList);
+    }
+
+    @Override
+    public ArticleBaseResponse<?> deleteUserWatch(ArticleDeleteUserWatchDTO articleDeleteUserWatchDTO) {
+        if (!articleDeleteUserWatchDTO.hasData()) {
+            return ArticleBaseResponse.success();
+        }
+
+        Set<Long> idSet = articleUserWatchGateway.checkAndGetUserWatchList(articleDeleteUserWatchDTO.getIds(), ArticleContext.get().getId())
+                .stream().map(ArticleUserWatch::getId).collect(Collectors.toSet());
+
+        if(idSet.isEmpty()){
+            return ArticleBaseResponse.success();
+        }
+
+        if (!articleUserWatchGateway.deleteUserWatch(new ArrayList<>(idSet))) {
+            throw new BizException("服务异常");
+        }
+
+        return ArticleBaseResponse.success();
     }
 
     //TODO 获取文章列表接口

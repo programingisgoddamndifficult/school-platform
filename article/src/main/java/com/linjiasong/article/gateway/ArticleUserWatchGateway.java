@@ -15,4 +15,8 @@ public interface ArticleUserWatchGateway {
     List<ArticleUserWatch> getUserWatchList();
 
     boolean isExist(Long articleId, Long userId);
+
+    boolean deleteUserWatch(List<Long> ids);
+
+    List<ArticleUserWatch> checkAndGetUserWatchList(List<Long> ids, Long userId);
 }

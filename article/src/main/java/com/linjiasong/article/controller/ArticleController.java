@@ -1,6 +1,7 @@
 package com.linjiasong.article.controller;
 
 import com.linjiasong.article.entity.dto.ArticleCreateDTO;
+import com.linjiasong.article.entity.dto.ArticleDeleteUserWatchDTO;
 import com.linjiasong.article.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.article.excepiton.ArticleBaseResponse;
 import com.linjiasong.article.service.ArticleService;
@@ -57,6 +58,11 @@ public class ArticleController {
     @GetMapping("/selfList")
     public ArticleBaseResponse<?> getUserWatchArticleList() {
         return articleService.getUserWatchList();
+    }
+
+    @PostMapping("/selfList/delete")
+    public ArticleBaseResponse<?> deleteUserWatchArticleList(@RequestBody ArticleDeleteUserWatchDTO articleDeleteUserWatchDTO) {
+        return articleService.deleteUserWatch(articleDeleteUserWatchDTO);
     }
 
 }

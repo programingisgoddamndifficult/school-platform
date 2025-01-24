@@ -2,6 +2,7 @@ package com.linjiasong.user.controller;
 
 import com.linjiasong.user.entity.dto.ArticleCommentDTO;
 import com.linjiasong.user.entity.dto.ArticleCreateDTO;
+import com.linjiasong.user.entity.dto.ArticleDeleteUserWatchDTO;
 import com.linjiasong.user.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
 import com.linjiasong.user.service.UserArticleService;
@@ -82,5 +83,10 @@ public class UserArticleController {
     @GetMapping("/selfList")
     public UserBaseResponse<?> getUserWatchArticleList() {
         return userArticleService.getArticleUserWatchList();
+    }
+
+    @PostMapping("/selfList/delete")
+    public UserBaseResponse<?> deleteUserWatchArticleList(@RequestBody ArticleDeleteUserWatchDTO articleDeleteUserWatchDTO) {
+        return userArticleService.deleteUserWatch(articleDeleteUserWatchDTO);
     }
 }
