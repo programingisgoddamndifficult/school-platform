@@ -178,6 +178,12 @@ public class ArticleServiceImpl implements ArticleService {
         return ArticleBaseResponse.success(ArticleBasicVO.build(articleBasicInfoGateway.selectByIdsList(articleIds).stream().filter(articleBasicInfo -> !articleBasicInfo.isBan()).toList()));
     }
 
+    //TODO 获取文章列表接口
+    @Override
+    public ArticleBaseResponse<?> getArticleIndexList() {
+        return null;
+    }
+
     private void createArticleToCheck(ArticleCreateDTO articleDetailVO, Long id) {
         ThreadPoolContext.execute(() -> {
             RList<String> articleCheckList = redissonClient.getList(RedisKeyEnum.ARTICLE_CHECK_LIST.getKey());

@@ -58,4 +58,10 @@ public interface ArticleService {
      * @return ArticleBaseResponse
      */
     ArticleBaseResponse<?> getHotArticle();
+
+    /**
+     * 获取推荐列表
+     * @return ArticleBaseResponse
+     */
+    ArticleBaseResponse<?> getArticleIndexList();
 }
