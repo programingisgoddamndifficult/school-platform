@@ -2,6 +2,7 @@ package com.linjiasong.article.service;
 
 import com.linjiasong.article.entity.dto.ArticleCreateDTO;
 import com.linjiasong.article.entity.dto.ArticleDeleteUserWatchDTO;
+import com.linjiasong.article.entity.dto.ArticlePageSelectDTO;
 import com.linjiasong.article.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.article.excepiton.ArticleBaseResponse;
 
@@ -74,8 +75,9 @@ public interface ArticleService {
     ArticleBaseResponse<?> deleteUserWatch(ArticleDeleteUserWatchDTO articleDeleteUserWatchDTO);
 
     /**
-     * 获取推荐列表
+     * 推荐 搜索文章
+     * @param articlePageSelectDTO articlePageSelectDTO
      * @return ArticleBaseResponse
      */
-    ArticleBaseResponse<?> getArticleIndexList();
+    ArticleBaseResponse<?> getArticleList(ArticlePageSelectDTO articlePageSelectDTO);
 }

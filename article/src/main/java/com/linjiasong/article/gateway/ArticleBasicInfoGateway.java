@@ -2,7 +2,9 @@ package com.linjiasong.article.gateway;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.linjiasong.article.entity.ArticleBasicInfo;
+import com.linjiasong.article.entity.dto.ArticlePageSelectDTO;
 
 import java.util.List;
 
@@ -33,4 +35,6 @@ public interface ArticleBasicInfoGateway {
     boolean canOpen(Long articleId);
 
     List<ArticleBasicInfo> selectByIdsList(List<Long> ids);
+
+    Page<ArticleBasicInfo> unRecommend(ArticlePageSelectDTO articlePageSelectDTO);
 }

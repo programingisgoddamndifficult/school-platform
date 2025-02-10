@@ -1,9 +1,6 @@
 package com.linjiasong.user.controller;
 
-import com.linjiasong.user.entity.dto.ArticleCommentDTO;
-import com.linjiasong.user.entity.dto.ArticleCreateDTO;
-import com.linjiasong.user.entity.dto.ArticleDeleteUserWatchDTO;
-import com.linjiasong.user.entity.dto.ArticleUpdateDTO;
+import com.linjiasong.user.entity.dto.*;
 import com.linjiasong.user.excepiton.UserBaseResponse;
 import com.linjiasong.user.service.UserArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,5 +85,10 @@ public class UserArticleController {
     @PostMapping("/selfList/delete")
     public UserBaseResponse<?> deleteUserWatchArticleList(@RequestBody ArticleDeleteUserWatchDTO articleDeleteUserWatchDTO) {
         return userArticleService.deleteUserWatch(articleDeleteUserWatchDTO);
+    }
+
+    @PostMapping("/index")
+    public UserBaseResponse<?> getIndexArticle(@RequestBody ArticlePageSelectDTO articlePageSelectDTO) {
+        return userArticleService.getArticleList(articlePageSelectDTO);
     }
 }

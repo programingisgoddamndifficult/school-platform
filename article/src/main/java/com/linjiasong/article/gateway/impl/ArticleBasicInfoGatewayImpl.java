@@ -2,8 +2,11 @@ package com.linjiasong.article.gateway.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.linjiasong.article.constant.ArticleContext;
 import com.linjiasong.article.entity.ArticleBasicInfo;
+import com.linjiasong.article.entity.dto.ArticlePageSelectDTO;
+import com.linjiasong.article.excepiton.ArticleBaseResponse;
 import com.linjiasong.article.excepiton.BizException;
 import com.linjiasong.article.gateway.ArticleBasicInfoGateway;
 import com.linjiasong.article.mapper.ArticleBasicInfoMapper;
@@ -87,5 +90,11 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
     @Override
     public List<ArticleBasicInfo> selectByIdsList(List<Long> ids) {
         return articleBasicInfoMapper.selectBatchIds(ids);
+    }
+
+    @Override
+    public Page<ArticleBasicInfo> unRecommend(ArticlePageSelectDTO articlePageSelectDTO) {
+        return articleBasicInfoMapper.selectPage(new Page<>(articlePageSelectDTO.getCurrent(),
+                articlePageSelectDTO.getSize()), articlePageSelectDTO.buildQueryWrapper());
     }
 }

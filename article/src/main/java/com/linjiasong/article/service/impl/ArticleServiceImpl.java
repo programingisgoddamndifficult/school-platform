@@ -8,10 +8,7 @@ import com.linjiasong.article.constant.ThreadPoolContext;
 import com.linjiasong.article.entity.ArticleBasicInfo;
 import com.linjiasong.article.entity.ArticleDetail;
 import com.linjiasong.article.entity.ArticleUserWatch;
-import com.linjiasong.article.entity.dto.ArticleCheckDTO;
-import com.linjiasong.article.entity.dto.ArticleCreateDTO;
-import com.linjiasong.article.entity.dto.ArticleDeleteUserWatchDTO;
-import com.linjiasong.article.entity.dto.ArticleUpdateDTO;
+import com.linjiasong.article.entity.dto.*;
 import com.linjiasong.article.entity.vo.ArticleBasicVO;
 import com.linjiasong.article.entity.vo.ArticleDetailVO;
 import com.linjiasong.article.entity.vo.ArticleUserWatchVO;
@@ -21,6 +18,7 @@ import com.linjiasong.article.gateway.ArticleBasicInfoGateway;
 import com.linjiasong.article.gateway.ArticleDetailGateway;
 import com.linjiasong.article.gateway.ArticleUserWatchGateway;
 import com.linjiasong.article.service.ArticleService;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RList;
 import org.redisson.api.RScoredSortedSet;
 import org.redisson.api.RedissonClient;
@@ -38,6 +36,7 @@ import java.util.stream.Collectors;
  * @date 2025/1/15 下午5:39
  */
 @Service
+@Slf4j
 public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
@@ -229,10 +228,19 @@ public class ArticleServiceImpl implements ArticleService {
         return ArticleBaseResponse.success();
     }
 
-    //TODO 获取文章列表接口
     @Override
-    public ArticleBaseResponse<?> getArticleIndexList() {
-        return null;
+    public ArticleBaseResponse<?> getArticleList(ArticlePageSelectDTO articlePageSelectDTO) {
+        if(!articlePageSelectDTO.checkParam()){
+            throw new BizException("参数异常");
+        }
+
+        //TODO 走推荐
+        if(articlePageSelectDTO.recommend()){
+
+        }
+
+        //不走推荐 带搜索条件
+        return ArticleBaseResponse.success(articleBasicInfoGateway.unRecommend(articlePageSelectDTO));
     }
 
     private void articlePoint(ArticleBasicInfo articleBasicInfo) {

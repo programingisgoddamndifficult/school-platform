@@ -1,9 +1,6 @@
 package com.linjiasong.user.service;
 
-import com.linjiasong.user.entity.dto.ArticleCommentDTO;
-import com.linjiasong.user.entity.dto.ArticleCreateDTO;
-import com.linjiasong.user.entity.dto.ArticleDeleteUserWatchDTO;
-import com.linjiasong.user.entity.dto.ArticleUpdateDTO;
+import com.linjiasong.user.entity.dto.*;
 import com.linjiasong.user.excepiton.UserBaseResponse;
 
 /**
@@ -106,4 +103,11 @@ public interface UserArticleService {
      * @return UserBaseResponse
      */
     UserBaseResponse<?> deleteUserWatch(ArticleDeleteUserWatchDTO articleDeleteUserWatchDTO);
+
+    /**
+     * 推荐 搜索文章
+     * @param articlePageSelectDTO articlePageSelectDTO
+     * @return ArticleBaseResponse
+     */
+    UserBaseResponse<?> getArticleList(ArticlePageSelectDTO articlePageSelectDTO);
 }

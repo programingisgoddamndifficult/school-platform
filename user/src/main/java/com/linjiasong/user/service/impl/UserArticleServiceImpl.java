@@ -3,10 +3,7 @@ package com.linjiasong.user.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.linjiasong.user.constant.UserInfoContext;
 import com.linjiasong.user.entity.UserInfo;
-import com.linjiasong.user.entity.dto.ArticleCommentDTO;
-import com.linjiasong.user.entity.dto.ArticleCreateDTO;
-import com.linjiasong.user.entity.dto.ArticleDeleteUserWatchDTO;
-import com.linjiasong.user.entity.dto.ArticleUpdateDTO;
+import com.linjiasong.user.entity.dto.*;
 import com.linjiasong.user.entity.vo.ArticleCommentVO;
 import com.linjiasong.user.entity.vo.ArticleDetailVO;
 import com.linjiasong.user.entity.vo.ArticleUserCommentVO;
@@ -127,6 +124,11 @@ public class UserArticleServiceImpl implements UserArticleService {
         }
 
         return articleServiceClient.deleteUserWatch(articleDeleteUserWatchDTO);
+    }
+
+    @Override
+    public UserBaseResponse<?> getArticleList(ArticlePageSelectDTO articlePageSelectDTO) {
+        return articleServiceClient.getIndexArticle(articlePageSelectDTO);
     }
 
     private void setArticleDetailVOUserInfo(ArticleDetailVO articleDetailVO) {
