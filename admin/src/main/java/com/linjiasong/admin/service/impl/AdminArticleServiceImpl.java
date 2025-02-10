@@ -60,10 +60,11 @@ public class AdminArticleServiceImpl implements AdminArticleService {
         if (bucket.isExists()) {
             throw new BizException("当前文章已被审核");
         }
-        bucket.set(1);
+
+        bucket.set(1, RedisKeyEnum.ARTICLE_DO_CHECK.getExpiryTime(), RedisKeyEnum.ARTICLE_DO_CHECK.getTimeUnit());
     }
 
-    private void removeArticleCheckList(){
+    private void removeArticleCheckList() {
         RList<ArticleCheckVO> list = redissonClient.getList(RedisKeyEnum.ARTICLE_CHECK_LIST.getKey());
         list.removeFirst();
     }
