@@ -19,4 +19,6 @@ public interface ArticleUserWatchGateway {
     boolean deleteUserWatch(List<Long> ids);
 
     List<ArticleUserWatch> checkAndGetUserWatchList(List<Long> ids, Long userId);
+
+    Short getTag();
 }

@@ -2,11 +2,13 @@ package com.linjiasong.article.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.linjiasong.article.constant.ArticleContext;
 import com.linjiasong.article.constant.RedisKeyEnum;
 import com.linjiasong.article.constant.ThreadPoolContext;
 import com.linjiasong.article.entity.ArticleBasicInfo;
 import com.linjiasong.article.entity.ArticleDetail;
+import com.linjiasong.article.entity.ArticleUserRecommend;
 import com.linjiasong.article.entity.ArticleUserWatch;
 import com.linjiasong.article.entity.dto.*;
 import com.linjiasong.article.entity.vo.ArticleBasicVO;
@@ -16,6 +18,7 @@ import com.linjiasong.article.excepiton.ArticleBaseResponse;
 import com.linjiasong.article.excepiton.BizException;
 import com.linjiasong.article.gateway.ArticleBasicInfoGateway;
 import com.linjiasong.article.gateway.ArticleDetailGateway;
+import com.linjiasong.article.gateway.ArticleUserRecommendGateway;
 import com.linjiasong.article.gateway.ArticleUserWatchGateway;
 import com.linjiasong.article.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +53,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     ArticleUserWatchGateway articleUserWatchGateway;
+
+    @Autowired
+    ArticleUserRecommendGateway articleUserRecommendGateway;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -217,7 +223,7 @@ public class ArticleServiceImpl implements ArticleService {
         Set<Long> idSet = articleUserWatchGateway.checkAndGetUserWatchList(articleDeleteUserWatchDTO.getIds(), ArticleContext.get().getId())
                 .stream().map(ArticleUserWatch::getId).collect(Collectors.toSet());
 
-        if(idSet.isEmpty()){
+        if (idSet.isEmpty()) {
             return ArticleBaseResponse.success();
         }
 
@@ -230,13 +236,28 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleBaseResponse<?> getArticleList(ArticlePageSelectDTO articlePageSelectDTO) {
-        if(!articlePageSelectDTO.checkParam()){
+        if (!articlePageSelectDTO.checkParam()) {
             throw new BizException("参数异常");
         }
 
         //TODO 走推荐
-        if(articlePageSelectDTO.recommend()){
+        if (articlePageSelectDTO.recommend()) {
+            Page<ArticleBasicInfo> recommend = articleBasicInfoGateway.recommend(
+                    articlePageSelectDTO.getCurrent(),
+                    articlePageSelectDTO.getSize(),
+                    articleUserRecommendGateway.hasRecommendHistory(),
+                    articleUserWatchGateway.getTag(),
+                    articleUserRecommendGateway.getRecommendBigArticleId()
+            );
 
+            ThreadPoolContext.execute(() -> {
+                articleUserRecommendGateway.insert(ArticleUserRecommend.builder()
+                        .userId(ArticleContext.get().getId())
+                        .bigArticleId(recommend.getRecords().getLast().getId())
+                        .build());
+            });
+
+            return ArticleBaseResponse.success(recommend);
         }
 
         //不走推荐 带搜索条件
@@ -255,6 +276,15 @@ public class ArticleServiceImpl implements ArticleService {
         ThreadPoolContext.execute(() -> {
             if (articleUserWatchGateway.isExist(articleBasicInfo.getId(), userId)) {
                 return;
+            }
+
+            List<ArticleUserWatch> userWatchList = articleUserWatchGateway.getUserWatchList();
+            if (userWatchList.size() >= 50) {
+                List<Long> ids = userWatchList.stream().map(ArticleUserWatch::getId).sorted().collect(Collectors.toList());
+                int i = 0;
+                while (userWatchList.size() >= 50) {
+                    articleUserWatchGateway.deleteUserWatch(List.of(ids.get(i)));
+                }
             }
 
             articleUserWatchGateway.insert(ArticleUserWatch.build(articleBasicInfo, userId));

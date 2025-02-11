@@ -5,15 +5,20 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.linjiasong.article.constant.ArticleContext;
 import com.linjiasong.article.entity.ArticleBasicInfo;
+import com.linjiasong.article.entity.ArticleUserWatch;
 import com.linjiasong.article.entity.dto.ArticlePageSelectDTO;
 import com.linjiasong.article.excepiton.ArticleBaseResponse;
 import com.linjiasong.article.excepiton.BizException;
 import com.linjiasong.article.gateway.ArticleBasicInfoGateway;
 import com.linjiasong.article.mapper.ArticleBasicInfoMapper;
+import com.linjiasong.article.mapper.ArticleUserWatchMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author linjiasong
@@ -24,6 +29,9 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
 
     @Autowired
     ArticleBasicInfoMapper articleBasicInfoMapper;
+
+    @Autowired
+    ArticleUserWatchMapper articleUserWatchMapper;
 
     @Override
     public boolean insert(ArticleBasicInfo articleBasicInfo) {
@@ -96,5 +104,22 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
     public Page<ArticleBasicInfo> unRecommend(ArticlePageSelectDTO articlePageSelectDTO) {
         return articleBasicInfoMapper.selectPage(new Page<>(articlePageSelectDTO.getCurrent(),
                 articlePageSelectDTO.getSize()), articlePageSelectDTO.buildQueryWrapper());
+    }
+
+    @Override
+    public Page<ArticleBasicInfo> recommend(int current, int size, boolean hasRecommendHistory, Short tag, Long bigArticleId) {
+        if (!hasRecommendHistory) {
+            return articleBasicInfoMapper.selectPage(new Page<>(current, size), buildRecommendQueryWrapper(hasRecommendHistory));
+        }
+
+        //TODO 推荐逻辑
+    }
+
+    private QueryWrapper<ArticleBasicInfo> buildRecommendQueryWrapper(boolean hasRecommendHistory) {
+        if (!hasRecommendHistory) {
+            return new QueryWrapper<ArticleBasicInfo>().eq("is_check", 1).eq("is_open", 1).eq("is_ban", 0).orderByAsc("id");
+        }
+
+        return null;
     }
 }

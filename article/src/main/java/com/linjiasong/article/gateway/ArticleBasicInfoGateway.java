@@ -37,4 +37,6 @@ public interface ArticleBasicInfoGateway {
     List<ArticleBasicInfo> selectByIdsList(List<Long> ids);
 
     Page<ArticleBasicInfo> unRecommend(ArticlePageSelectDTO articlePageSelectDTO);
+
+    Page<ArticleBasicInfo> recommend(int current, int size, boolean hasRecommendHistory, Short tag, Long bigArticleId);
 }

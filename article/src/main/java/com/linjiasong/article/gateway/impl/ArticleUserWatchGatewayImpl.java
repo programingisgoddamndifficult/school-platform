@@ -2,6 +2,7 @@ package com.linjiasong.article.gateway.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.linjiasong.article.constant.ArticleContext;
+import com.linjiasong.article.entity.ArticleUserRecommend;
 import com.linjiasong.article.entity.ArticleUserWatch;
 import com.linjiasong.article.gateway.ArticleUserWatchGateway;
 import com.linjiasong.article.mapper.ArticleUserWatchMapper;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author linjiasong
@@ -47,5 +50,17 @@ public class ArticleUserWatchGatewayImpl implements ArticleUserWatchGateway {
         return articleUserWatchMapper.selectList(new QueryWrapper<ArticleUserWatch>()
                 .eq("user_id", userId)
                 .in("id", ids));
+    }
+
+    @Override
+    public Short getTag() {
+        return articleUserWatchMapper.selectList(new QueryWrapper<ArticleUserWatch>().eq("user_id", ArticleContext.get().getId()))
+                .stream()
+                .collect(Collectors.groupingBy(ArticleUserWatch::getTag, Collectors.counting()))
+                .entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
     }
 }
