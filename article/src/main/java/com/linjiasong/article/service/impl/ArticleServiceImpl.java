@@ -240,29 +240,15 @@ public class ArticleServiceImpl implements ArticleService {
             throw new BizException("参数异常");
         }
 
-        //TODO 走推荐
+        //走推荐
         if (articlePageSelectDTO.recommend()) {
-            //TODO 走顺序推荐
-            if(articlePageSelectDTO.isOrder()){
-
+            //顺序推荐
+            if (articlePageSelectDTO.isOrder()) {
+                return orderRecommend(articlePageSelectDTO);
             }
 
-            Page<ArticleBasicInfo> recommend = articleBasicInfoGateway.recommend(
-                    articlePageSelectDTO.getCurrent(),
-                    articlePageSelectDTO.getSize(),
-                    articleUserRecommendGateway.hasRecommendHistory(),
-                    articleUserWatchGateway.getTag(),
-                    articleUserRecommendGateway.getRecommendBigArticleId()
-            );
-
-            ThreadPoolContext.execute(() -> {
-                articleUserRecommendGateway.insert(ArticleUserRecommend.builder()
-                        .userId(ArticleContext.get().getId())
-                        .bigArticleId(recommend.getRecords().getLast().getId())
-                        .build());
-            });
-
-            return ArticleBaseResponse.success(recommend);
+            //默认推荐
+            return recommend(articlePageSelectDTO);
         }
 
         //不走推荐 带搜索条件
@@ -300,6 +286,42 @@ public class ArticleServiceImpl implements ArticleService {
         ThreadPoolContext.execute(() -> {
             RList<String> articleCheckList = redissonClient.getList(RedisKeyEnum.ARTICLE_CHECK_LIST.getKey());
             articleCheckList.add(JSON.toJSONString(ArticleCheckDTO.build(articleDetailVO, id)));
+        });
+    }
+
+    private ArticleBaseResponse<?> orderRecommend(ArticlePageSelectDTO articlePageSelectDTO) {
+        Page<ArticleBasicInfo> recommend = articleBasicInfoGateway.orderRecommend(
+                articlePageSelectDTO.getCurrent(),
+                articlePageSelectDTO.getSize(),
+                articleUserRecommendGateway.hasRecommendHistory(),
+                articleUserRecommendGateway.getRecommendBigArticleId()
+        );
+
+        asyncRefreshArticleBigId(ArticleContext.get().getId(),recommend.getRecords().getLast().getId());
+
+        return ArticleBaseResponse.success(recommend);
+    }
+
+    private ArticleBaseResponse<?> recommend(ArticlePageSelectDTO articlePageSelectDTO) {
+        Page<ArticleBasicInfo> recommend = articleBasicInfoGateway.recommend(
+                articlePageSelectDTO.getCurrent(),
+                articlePageSelectDTO.getSize(),
+                articleUserRecommendGateway.hasRecommendHistory(),
+                articleUserWatchGateway.getTag(),
+                articleUserRecommendGateway.getRecommendBigArticleId()
+        );
+
+        asyncRefreshArticleBigId(ArticleContext.get().getId(),recommend.getRecords().getLast().getId());
+
+        return ArticleBaseResponse.success(recommend);
+    }
+
+    private void asyncRefreshArticleBigId(Long userId, Long bigArticleId){
+        ThreadPoolContext.execute(() -> {
+            articleUserRecommendGateway.insert(ArticleUserRecommend.builder()
+                    .userId(userId)
+                    .bigArticleId(bigArticleId)
+                    .build());
         });
     }
 }

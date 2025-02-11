@@ -5,17 +5,14 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.linjiasong.article.constant.ArticleContext;
 import com.linjiasong.article.entity.ArticleBasicInfo;
-import com.linjiasong.article.entity.ArticleUserWatch;
 import com.linjiasong.article.entity.dto.ArticlePageSelectDTO;
-import com.linjiasong.article.excepiton.ArticleBaseResponse;
-import com.linjiasong.article.excepiton.BizException;
 import com.linjiasong.article.gateway.ArticleBasicInfoGateway;
 import com.linjiasong.article.mapper.ArticleBasicInfoMapper;
 import com.linjiasong.article.mapper.ArticleUserWatchMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -109,17 +106,84 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
     @Override
     public Page<ArticleBasicInfo> recommend(int current, int size, boolean hasRecommendHistory, Short tag, Long bigArticleId) {
         if (!hasRecommendHistory) {
-            return articleBasicInfoMapper.selectPage(new Page<>(current, size), buildRecommendQueryWrapper(hasRecommendHistory));
+            return articleBasicInfoMapper.selectPage(new Page<>(current, size), buildRecommendQueryWrapper(false, bigArticleId));
         }
 
-        //TODO 推荐逻辑 +一个按钮 选择是否按顺序推荐（id小到大），不选则走推荐
+        //TODO 推荐逻辑 待测试
+        /**
+         * size默认都是20个，tag中的内容至少占一半；
+         * 每次默认在数据库中查询30条，
+         * 即要在30条中取10条该tag的数据，
+         * 剩下10条在剩下的20条数据中随机抽取
+         * 最后记录返回的20条中 最大的articleId;
+         *
+         * 如果不够一半 那么也无所谓 本次查询算推荐不足
+         * */
+        Page<ArticleBasicInfo> page = articleBasicInfoMapper.selectPage(new Page<>(1, 30),
+                buildRecommendQueryWrapper(true, bigArticleId));
+        List<ArticleBasicInfo> records = page.getRecords();
+
+        if (records.size() <= 20) {
+            return page;
+        }
+
+        page.setCurrent(1);
+        page.setSize(size);
+        page.setTotal(20);
+
+        Map<Short, List<ArticleBasicInfo>> recordsMap = records.stream().collect(Collectors.groupingBy(ArticleBasicInfo::getTag));
+        List<ArticleBasicInfo> tagRecords = recordsMap.remove(tag);
+        if (tagRecords.size() >= 20) {
+            tagRecords = tagRecords.subList(0, 20);
+            page.setRecords(tagRecords);
+            return page;
+        }
+
+        //剩余需补全的records数
+        int remainderRecordsNum = 20 - tagRecords.size();
+
+        Collection<List<ArticleBasicInfo>> remainderRecordsGroups = recordsMap.values();
+
+        int i = 0;
+        while (remainderRecordsNum > 0) {
+            for (List<ArticleBasicInfo> remainderRecords : remainderRecordsGroups) {
+                if (remainderRecords.size() < i + 1) {
+                    continue;
+                }
+                tagRecords.add(remainderRecords.get(i));
+                remainderRecordsNum--;
+            }
+            i++;
+        }
+
+        page.setRecords(tagRecords);
+        return page;
     }
 
-    private QueryWrapper<ArticleBasicInfo> buildRecommendQueryWrapper(boolean hasRecommendHistory) {
+    @Override
+    public Page<ArticleBasicInfo> orderRecommend(int current, int size, boolean hasRecommendHistory, Long bigArticleId) {
         if (!hasRecommendHistory) {
-            return new QueryWrapper<ArticleBasicInfo>().eq("is_check", 1).eq("is_open", 1).eq("is_ban", 0).orderByAsc("id");
+            return articleBasicInfoMapper.selectPage(new Page<>(current, size), buildRecommendQueryWrapper(false, bigArticleId));
         }
 
-        return null;
+        return articleBasicInfoMapper.selectPage(new Page<>(1, size),
+                buildRecommendQueryWrapper(true, bigArticleId));
+    }
+
+    private QueryWrapper<ArticleBasicInfo> buildRecommendQueryWrapper(boolean hasRecommendHistory, Long bigArticleId) {
+        if (!hasRecommendHistory) {
+            return new QueryWrapper<ArticleBasicInfo>()
+                    .eq("is_check", 1)
+                    .eq("is_open", 1)
+                    .eq("is_ban", 0)
+                    .orderByAsc("id");
+        }
+
+        return new QueryWrapper<ArticleBasicInfo>()
+                .eq("is_check", 1)
+                .eq("is_open", 1)
+                .eq("is_ban", 0)
+                .gt("id", bigArticleId)
+                .orderByAsc("id");
     }
 }
