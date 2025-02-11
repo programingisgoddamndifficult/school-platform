@@ -8,6 +8,8 @@ import lombok.Data;
  */
 @Data
 public class ArticlePageSelectDTO {
+    private boolean order;
+
     private short tag;
 
     /**
