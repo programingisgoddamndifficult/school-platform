@@ -39,4 +39,6 @@ public interface ArticleBasicInfoGateway {
     Page<ArticleBasicInfo> unRecommend(ArticlePageSelectDTO articlePageSelectDTO);
 
     Page<ArticleBasicInfo> recommend(int current, int size, boolean hasRecommendHistory, Short tag, Long bigArticleId);
+
+    Page<ArticleBasicInfo> orderRecommend(int current, int size, boolean hasRecommendHistory, Long bigArticleId);
 }

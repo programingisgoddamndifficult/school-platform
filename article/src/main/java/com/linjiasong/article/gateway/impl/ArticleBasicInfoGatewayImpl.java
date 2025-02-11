@@ -112,7 +112,7 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
             return articleBasicInfoMapper.selectPage(new Page<>(current, size), buildRecommendQueryWrapper(hasRecommendHistory));
         }
 
-        //TODO 推荐逻辑
+        //TODO 推荐逻辑 +一个按钮 选择是否按顺序推荐（id小到大），不选则走推荐
     }
 
     private QueryWrapper<ArticleBasicInfo> buildRecommendQueryWrapper(boolean hasRecommendHistory) {

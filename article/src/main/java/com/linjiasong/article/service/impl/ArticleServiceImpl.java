@@ -242,6 +242,11 @@ public class ArticleServiceImpl implements ArticleService {
 
         //TODO 走推荐
         if (articlePageSelectDTO.recommend()) {
+            //TODO 走顺序推荐
+            if(articlePageSelectDTO.isOrder()){
+
+            }
+
             Page<ArticleBasicInfo> recommend = articleBasicInfoGateway.recommend(
                     articlePageSelectDTO.getCurrent(),
                     articlePageSelectDTO.getSize(),
