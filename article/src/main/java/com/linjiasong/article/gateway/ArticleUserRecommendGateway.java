@@ -10,7 +10,9 @@ public interface ArticleUserRecommendGateway {
 
     boolean hasRecommendHistory();
 
-    boolean insert(ArticleUserRecommend recommend);
+    boolean updateOrInsert(ArticleUserRecommend recommend);
 
     Long getRecommendBigArticleId();
+
+    ArticleUserRecommend getByUserId(Long userId);
 }

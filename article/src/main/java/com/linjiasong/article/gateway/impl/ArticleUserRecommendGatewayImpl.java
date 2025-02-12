@@ -29,8 +29,8 @@ public class ArticleUserRecommendGatewayImpl implements ArticleUserRecommendGate
     }
 
     @Override
-    public boolean insert(ArticleUserRecommend recommend) {
-        return articleUserRecommendMapper.insert(recommend) > 0;
+    public boolean updateOrInsert(ArticleUserRecommend recommend) {
+        return articleUserRecommendMapper.insertOrUpdate(recommend);
     }
 
     @Override
@@ -39,5 +39,10 @@ public class ArticleUserRecommendGatewayImpl implements ArticleUserRecommendGate
                 .eq("user_id", ArticleContext.get().getId()));
 
         return articleUserRecommend == null ? null : articleUserRecommend.getBigArticleId();
+    }
+
+    @Override
+    public ArticleUserRecommend getByUserId(Long userId) {
+        return articleUserRecommendMapper.selectOne(new QueryWrapper<ArticleUserRecommend>().eq("user_id", userId));
     }
 }

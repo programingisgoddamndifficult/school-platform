@@ -318,10 +318,16 @@ public class ArticleServiceImpl implements ArticleService {
 
     private void asyncRefreshArticleBigId(Long userId, Long bigArticleId){
         ThreadPoolContext.execute(() -> {
-            articleUserRecommendGateway.insert(ArticleUserRecommend.builder()
-                    .userId(userId)
-                    .bigArticleId(bigArticleId)
-                    .build());
+            ArticleUserRecommend articleUserRecommend = articleUserRecommendGateway.getByUserId(userId);
+            if(articleUserRecommend == null){
+                articleUserRecommendGateway.updateOrInsert(ArticleUserRecommend.builder()
+                        .userId(userId)
+                        .bigArticleId(bigArticleId)
+                        .build());
+            }else{
+                articleUserRecommend.setBigArticleId(bigArticleId);
+                articleUserRecommendGateway.updateOrInsert(articleUserRecommend);
+            }
         });
     }
 }
