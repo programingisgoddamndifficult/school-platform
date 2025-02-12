@@ -109,7 +109,6 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
             return articleBasicInfoMapper.selectPage(new Page<>(current, size), buildRecommendQueryWrapper(false, bigArticleId));
         }
 
-        //TODO 推荐逻辑 待测试
         /**
          * size默认都是20个，tag中的内容至少占一半；
          * 每次默认在数据库中查询30条，
@@ -124,6 +123,10 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
         List<ArticleBasicInfo> records = page.getRecords();
 
         if (records.size() <= 20) {
+            if(records.isEmpty()){
+                return articleBasicInfoMapper.selectPage(new Page<>(1, size),
+                        buildNoRecordsQueryWrapper(bigArticleId));
+            }
             return page;
         }
 
@@ -151,9 +154,16 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
                     continue;
                 }
                 tagRecords.add(remainderRecords.get(i));
-                remainderRecordsNum--;
+                if (--remainderRecordsNum <= 0) {
+                    break;
+                }
             }
             i++;
+        }
+
+        if (tagRecords.isEmpty()) {
+            return articleBasicInfoMapper.selectPage(new Page<>(1, size),
+                    buildNoRecordsQueryWrapper(bigArticleId));
         }
 
         page.setRecords(tagRecords);
@@ -169,9 +179,9 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
         Page<ArticleBasicInfo> page = articleBasicInfoMapper.selectPage(new Page<>(1, size),
                 buildRecommendQueryWrapper(true, bigArticleId));
 
-        if(page.getRecords().isEmpty()){
+        if (page.getRecords().isEmpty()) {
             return articleBasicInfoMapper.selectPage(new Page<>(1, size),
-                    buildNoRecordsQueryWrapper( bigArticleId));
+                    buildNoRecordsQueryWrapper(bigArticleId));
         }
 
         return page;

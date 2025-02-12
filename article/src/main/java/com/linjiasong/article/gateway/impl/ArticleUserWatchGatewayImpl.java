@@ -29,8 +29,8 @@ public class ArticleUserWatchGatewayImpl implements ArticleUserWatchGateway {
     }
 
     @Override
-    public List<ArticleUserWatch> getUserWatchList() {
-        return articleUserWatchMapper.selectList(new QueryWrapper<ArticleUserWatch>().eq("user_id", ArticleContext.get().getId()));
+    public List<ArticleUserWatch> getUserWatchList(Long userId) {
+        return articleUserWatchMapper.selectList(new QueryWrapper<ArticleUserWatch>().eq("user_id", userId));
     }
 
     @Override

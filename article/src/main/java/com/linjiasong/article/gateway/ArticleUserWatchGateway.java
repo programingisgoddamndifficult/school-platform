@@ -12,7 +12,7 @@ public interface ArticleUserWatchGateway {
 
     boolean insert(ArticleUserWatch articleUserWatch);
 
-    List<ArticleUserWatch> getUserWatchList();
+    List<ArticleUserWatch> getUserWatchList(Long userId);
 
     boolean isExist(Long articleId, Long userId);
 
