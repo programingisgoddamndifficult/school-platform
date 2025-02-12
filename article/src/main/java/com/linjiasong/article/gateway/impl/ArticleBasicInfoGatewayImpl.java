@@ -166,8 +166,15 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
             return articleBasicInfoMapper.selectPage(new Page<>(current, size), buildRecommendQueryWrapper(false, bigArticleId));
         }
 
-        return articleBasicInfoMapper.selectPage(new Page<>(1, size),
+        Page<ArticleBasicInfo> page = articleBasicInfoMapper.selectPage(new Page<>(1, size),
                 buildRecommendQueryWrapper(true, bigArticleId));
+
+        if(page.getRecords().isEmpty()){
+            return articleBasicInfoMapper.selectPage(new Page<>(1, size),
+                    buildNoRecordsQueryWrapper( bigArticleId));
+        }
+
+        return page;
     }
 
     private QueryWrapper<ArticleBasicInfo> buildRecommendQueryWrapper(boolean hasRecommendHistory, Long bigArticleId) {
@@ -184,6 +191,15 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
                 .eq("is_open", 1)
                 .eq("is_ban", 0)
                 .gt("id", bigArticleId)
+                .orderByAsc("id");
+    }
+
+    private QueryWrapper<ArticleBasicInfo> buildNoRecordsQueryWrapper(Long bigArticleId) {
+        return new QueryWrapper<ArticleBasicInfo>()
+                .eq("is_check", 1)
+                .eq("is_open", 1)
+                .eq("is_ban", 0)
+                .lt("id", bigArticleId)
                 .orderByAsc("id");
     }
 }
