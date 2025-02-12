@@ -35,7 +35,9 @@ public class ArticleUserRecommendGatewayImpl implements ArticleUserRecommendGate
 
     @Override
     public Long getRecommendBigArticleId() {
-        return articleUserRecommendMapper.selectOne(new QueryWrapper<ArticleUserRecommend>()
-                .eq("user_id", ArticleContext.get().getId())).getBigArticleId();
+        ArticleUserRecommend articleUserRecommend = articleUserRecommendMapper.selectOne(new QueryWrapper<ArticleUserRecommend>()
+                .eq("user_id", ArticleContext.get().getId()));
+
+        return articleUserRecommend == null ? null : articleUserRecommend.getBigArticleId();
     }
 }
