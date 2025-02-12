@@ -191,7 +191,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleBaseResponse<?> getUserWatchList() {
-        List<ArticleUserWatch> userWatchList = articleUserWatchGateway.getUserWatchList();
+        List<ArticleUserWatch> userWatchList = articleUserWatchGateway.getUserWatchList(ArticleContext.get().getId());
 
         List<Long> articleIds = userWatchList.stream().map(ArticleUserWatch::getArticleId).toList();
         Map<Long, String> articleBaseInfoMap = articleBasicInfoGateway.selectByIdsList(articleIds).stream()
@@ -269,7 +269,7 @@ public class ArticleServiceImpl implements ArticleService {
                 return;
             }
 
-            List<ArticleUserWatch> userWatchList = articleUserWatchGateway.getUserWatchList();
+            List<ArticleUserWatch> userWatchList = articleUserWatchGateway.getUserWatchList(userId);
             if (userWatchList.size() >= 50) {
                 List<Long> ids = userWatchList.stream().map(ArticleUserWatch::getId).sorted().collect(Collectors.toList());
                 int i = 0;
@@ -297,7 +297,7 @@ public class ArticleServiceImpl implements ArticleService {
                 articleUserRecommendGateway.getRecommendBigArticleId()
         );
 
-        asyncRefreshArticleBigId(ArticleContext.get().getId(),recommend.getRecords().getLast().getId());
+        asyncRefreshArticleBigId(ArticleContext.get().getId(), recommend.getRecords().getLast().getId());
 
         return ArticleBaseResponse.success(recommend);
     }
@@ -311,20 +311,20 @@ public class ArticleServiceImpl implements ArticleService {
                 articleUserRecommendGateway.getRecommendBigArticleId()
         );
 
-        asyncRefreshArticleBigId(ArticleContext.get().getId(),recommend.getRecords().getLast().getId());
+        asyncRefreshArticleBigId(ArticleContext.get().getId(), recommend.getRecords().getLast().getId());
 
         return ArticleBaseResponse.success(recommend);
     }
 
-    private void asyncRefreshArticleBigId(Long userId, Long bigArticleId){
+    private void asyncRefreshArticleBigId(Long userId, Long bigArticleId) {
         ThreadPoolContext.execute(() -> {
             ArticleUserRecommend articleUserRecommend = articleUserRecommendGateway.getByUserId(userId);
-            if(articleUserRecommend == null){
+            if (articleUserRecommend == null) {
                 articleUserRecommendGateway.updateOrInsert(ArticleUserRecommend.builder()
                         .userId(userId)
                         .bigArticleId(bigArticleId)
                         .build());
-            }else{
+            } else {
                 articleUserRecommend.setBigArticleId(bigArticleId);
                 articleUserRecommendGateway.updateOrInsert(articleUserRecommend);
             }
