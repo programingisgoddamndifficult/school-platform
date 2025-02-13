@@ -63,6 +63,12 @@
             padding: 10px;
             text-align: left;
             box-sizing: border-box;
+            cursor: pointer; /* 添加鼠标指针样式 */
+            transition: border-width 0.2s; /* 添加过渡效果 */
+        }
+
+        .record:hover {
+            border-width: 3px; /* 鼠标悬停时边框加粗 */
         }
 
         .article-title {
@@ -205,6 +211,7 @@
             .then(data => {
                 if (data.code === '200') {
                     displayRecords(data.data.records);
+                    filters.current++; // 更新页码
                 } else {
                     console.error('请求失败:', data.msg);
                 }
@@ -250,6 +257,14 @@
             const createTime = document.createElement('div');
             createTime.textContent = `发布时间: ${record.createTime}`;
             recordDiv.appendChild(createTime);
+
+            // 添加点击事件处理函数
+            recordDiv.addEventListener('click', function () {
+                const articleId = record.id; // 假设 record 对象中有 id 属性
+                const authorization = localStorage.getItem('authorization');
+                const url = `article_detail.html?articleId=${articleId}&authorization=${authorization}`;
+                window.location.href = url;
+            });
 
             recordContainer.appendChild(recordDiv);
         });

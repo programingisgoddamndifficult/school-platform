@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Article Detail</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+    }
+
+    pre {
+      text-align: left;
+      background-color: #f4f4f4;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+
+<body>
+<h1>文章详情</h1>
+<div id="article-detail"></div>
+
+<script>
+  // 从 URL 中获取参数
+  const urlParams = new URLSearchParams(window.location.search);
+  const articleId = urlParams.get('articleId');
+  const authorization = urlParams.get('authorization');
+
+  if (!articleId || !authorization) {
+    alert('缺少必要参数，请重新访问。');
+    window.location.href = 'index.html';
+  } else {
+    // 发起请求获取文章详情
+    fetch(`http://127.0.0.1/api/user/article/detail?articleId=${articleId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `${authorization}`,
+        'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+      }
+    })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.json();
+            })
+            .then(data => {
+              const articleDetailDiv = document.getElementById('article-detail');
+              // 将响应数据转换为格式化的 JSON 字符串
+              const formattedResponse = JSON.stringify(data, null, 2);
+              const preElement = document.createElement('pre');
+              preElement.textContent = formattedResponse;
+              articleDetailDiv.appendChild(preElement);
+            })
+            .catch(error => {
+              const articleDetailDiv = document.getElementById('article-detail');
+              const errorMessage = `发生错误: ${error.message}`;
+              articleDetailDiv.textContent = errorMessage;
+            });
+  }
+</script>
+</body>
+
+</html>
