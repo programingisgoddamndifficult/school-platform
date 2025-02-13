@@ -58,4 +58,7 @@ public interface ArticleServiceClient {
 
     @PostMapping("/api/article/index")
     UserBaseResponse<?> getIndexArticle(@RequestBody ArticlePageSelectDTO articlePageSelectDTO);
+
+    @PostMapping("/api/article/ai/chat")
+    UserBaseResponse<?> chat(@RequestBody QianWenChatDTO qianWenChatDTO);
 }
