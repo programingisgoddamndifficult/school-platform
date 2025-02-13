@@ -24,4 +24,6 @@ public class ArticleLikeController {
         return articleLikeService.like(articleId);
     }
 
+    //TODO 新增接口-判断当前用户是否已点击喜欢
+
 }

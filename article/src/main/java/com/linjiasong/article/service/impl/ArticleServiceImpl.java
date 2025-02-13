@@ -257,6 +257,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     private void articlePoint(ArticleBasicInfo articleBasicInfo) {
         ThreadPoolContext.execute(() -> {
+            //TODO 新增逻辑 判断最近是否有观看历史，有则不添加readNum
+
             long readNum = redissonClient.getAtomicLong(String.format(RedisKeyEnum.POINT_ARTICLE.getKey(), articleBasicInfo.getId())).get();
             articleBasicInfo.setReadNum(readNum);
             articleBasicInfoGateway.update(articleBasicInfo);
