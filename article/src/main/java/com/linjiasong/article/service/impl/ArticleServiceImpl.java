@@ -150,7 +150,7 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleDetail articleDetail = articleDetailGateway.selectOne(new QueryWrapper<ArticleDetail>().eq("article_id", articleId));
 
         //文章点击埋点
-        articlePoint(articleBasicInfo);
+        articlePoint(articleBasicInfo, ArticleContext.get().getId());
 
         //用户观看历史
         articleUserWatch(articleBasicInfo, ArticleContext.get().getId());
@@ -255,9 +255,11 @@ public class ArticleServiceImpl implements ArticleService {
         return ArticleBaseResponse.success(articleBasicInfoGateway.unRecommend(articlePageSelectDTO));
     }
 
-    private void articlePoint(ArticleBasicInfo articleBasicInfo) {
+    private void articlePoint(ArticleBasicInfo articleBasicInfo, Long watchUserId) {
         ThreadPoolContext.execute(() -> {
-            //TODO 新增逻辑 判断最近是否有观看历史，有则不添加readNum
+            if (articleUserWatchGateway.isExist(articleBasicInfo.getId(), watchUserId)) {
+                return;
+            }
 
             long readNum = redissonClient.getAtomicLong(String.format(RedisKeyEnum.POINT_ARTICLE.getKey(), articleBasicInfo.getId())).get();
             articleBasicInfo.setReadNum(readNum);
