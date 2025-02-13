@@ -61,4 +61,7 @@ public interface ArticleServiceClient {
 
     @PostMapping("/api/article/ai/chat")
     UserBaseResponse<?> chat(@RequestBody QianWenChatDTO qianWenChatDTO);
+
+    @PostMapping("/api/article/ai/sum/{articleId}")
+    UserBaseResponse<?> summaryArticle(@PathVariable("articleId") Long articleId);
 }

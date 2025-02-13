@@ -11,4 +11,5 @@ public interface QianWenService {
 
     ArticleBaseResponse<?> chat(QianWenChatDTO qianWenChatDTO);
 
+    ArticleBaseResponse<?> articleSummary(Long articleId);
 }

@@ -1,11 +1,16 @@
 package com.linjiasong.article.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.linjiasong.article.entity.ArticleDetail;
 import com.linjiasong.article.entity.dto.QianWenChatDTO;
+import com.linjiasong.article.entity.dto.QianWenChatReq;
 import com.linjiasong.article.entity.dto.QianWenChatResp;
 import com.linjiasong.article.excepiton.ArticleBaseResponse;
 import com.linjiasong.article.excepiton.BizException;
+import com.linjiasong.article.gateway.ArticleDetailGateway;
 import com.linjiasong.article.service.QianWenService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -25,19 +30,12 @@ import java.util.Optional;
 @Service
 public class QianWenServiceImpl implements QianWenService {
 
+    @Autowired
+    ArticleDetailGateway articleDetailGateway;
+
     private final static String AUTHORIZATION = "Bearer sk-97d5309161f34a1b9d59524e2f664897";
     private final static String CHAT_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions";
     private final static String CONTENT_TYPE = "application/json";
-    private final static String MODEL = "qwen-plus";
-    private final static String JSON_BODY = "{\n" +
-            "    \"model\": \"%s\",\n" +
-            "    \"messages\": [\n" +
-            "        {\n" +
-            "            \"role\": \"user\",\n" +
-            "            \"content\": \"%s\"\n" +
-            "        }\n" +
-            "    ]\n" +
-            "}";
 
     @Override
     public ArticleBaseResponse<?> chat(QianWenChatDTO qianWenChatDTO) {
@@ -45,11 +43,27 @@ public class QianWenServiceImpl implements QianWenService {
             throw new BizException("参数异常，请重试");
         }
 
+        String resultResponse = doRequest(JSON.toJSONString(QianWenChatReq.build(qianWenChatDTO.getContent())));
+
+        return ArticleBaseResponse.success(Map.of("content", getQianWenRespContent(JSON.parseObject(resultResponse, QianWenChatResp.class).getChoices())));
+    }
+
+    @Override
+    public ArticleBaseResponse<?> articleSummary(Long articleId) {
+        ArticleDetail articleDetail = articleDetailGateway.selectOne(new QueryWrapper<ArticleDetail>().eq("article_id", articleId));
+        if (articleDetail == null) {
+            throw new BizException("系统异常，请稍后重试");
+        }
+
+        String resultResponse = doRequest(JSON.toJSONString(QianWenChatReq.build("请你对后面的文本内容做一个总结，你只需要输出总结的内容即可，总结的字数限制在150字以内：" + articleDetail.getContent())));
+
+        return ArticleBaseResponse.success(Map.of("content", getQianWenRespContent(JSON.parseObject(resultResponse, QianWenChatResp.class).getChoices())));
+    }
+
+    private String doRequest(String jsonInputString) {
         String resultResponse = null;
         try {
             HttpURLConnection connection = buildHttpURLConnection();
-
-            String jsonInputString = String.format(JSON_BODY, MODEL, qianWenChatDTO.getContent());
 
             try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes("utf-8");
@@ -58,7 +72,7 @@ public class QianWenServiceImpl implements QianWenService {
 
             // Get response code
             int responseCode = connection.getResponseCode();
-            if(responseCode != 200){
+            if (responseCode != 200) {
                 throw new BizException("server error");
             }
 
@@ -73,10 +87,9 @@ public class QianWenServiceImpl implements QianWenService {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new BizException(e.getMessage());
         }
-
-        return ArticleBaseResponse.success(Map.of("content", getQianWenRespContent(JSON.parseObject(resultResponse, QianWenChatResp.class).getChoices())));
+        return resultResponse;
     }
 
     private HttpURLConnection buildHttpURLConnection() throws IOException {

@@ -23,4 +23,8 @@ class QianWenServiceImplTest {
         System.out.println(qianWenService.chat(qianWenChatDTO));
     }
 
+    @Test
+    void testSummary(){
+        System.out.println(qianWenService.articleSummary(29L));
+    }
 }
