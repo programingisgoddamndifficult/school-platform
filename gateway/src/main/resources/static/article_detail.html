@@ -10,22 +10,102 @@
       font-family: Arial, sans-serif;
       margin: 20px;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    pre {
+    h1 {
+      font-size: 2em;
+      max-width: 70%;
+      margin: 0 auto 10px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    h1:hover {
+      white-space: normal;
+      overflow: visible;
+    }
+
+    #author-info {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    #author-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #ccc;
+      margin-right: 10px;
+    }
+
+    #article-content {
+      text-align: center;
+      margin-bottom: 20px;
+      max-width: 70%;
+      margin-left: auto;
+      margin-right: auto;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 10;
+      -webkit-box-orient: vertical;
+    }
+
+    #article-stats {
+      position: absolute;
+      left: 20px;
+      top: 150px;
       text-align: left;
-      background-color: #f4f4f4;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
-      overflow-x: auto;
+      border-right: 1px dashed #ccc;
+      padding-right: 20px;
+    }
+
+    #create-time {
+      text-align: right;
+      font-size: 0.8em;
+      width: 70%;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .stat-icon {
+      margin-right: 5px;
     }
   </style>
 </head>
 
 <body>
-<h1>文章详情</h1>
-<div id="article-detail"></div>
+<h1 id="article-title"></h1>
+<div id="author-info">
+  <div id="author-avatar"></div>
+  <span id="author-name"></span>
+</div>
+<div id="article-content"></div>
+<div id="article-stats">
+  <div class="stat-item">
+    <span class="stat-icon">❤️</span>
+    <span id="likes-num"></span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-icon">👁️</span>
+    <span id="read-num"></span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-icon">⭐</span>
+    <span id="collect-num"></span>
+  </div>
+</div>
+<div id="create-time"></div>
 
 <script>
   // 从 URL 中获取参数
@@ -52,17 +132,20 @@
               return response.json();
             })
             .then(data => {
-              const articleDetailDiv = document.getElementById('article-detail');
-              // 将响应数据转换为格式化的 JSON 字符串
-              const formattedResponse = JSON.stringify(data, null, 2);
-              const preElement = document.createElement('pre');
-              preElement.textContent = formattedResponse;
-              articleDetailDiv.appendChild(preElement);
+              if (data.code === '200') {
+                const articleData = data.data;
+                document.getElementById('article-title').textContent = articleData.title;
+                document.getElementById('author-name').textContent = articleData.userInfo.username;
+                document.getElementById('article-content').textContent = articleData.content;
+                document.getElementById('likes-num').textContent = articleData.likesNum;
+                document.getElementById('read-num').textContent = articleData.readNum;
+                document.getElementById('collect-num').textContent = articleData.collectNum;
+                document.getElementById('create-time').textContent = articleData.createTime;
+              }
             })
             .catch(error => {
-              const articleDetailDiv = document.getElementById('article-detail');
               const errorMessage = `发生错误: ${error.message}`;
-              articleDetailDiv.textContent = errorMessage;
+              alert(errorMessage);
             });
   }
 </script>
