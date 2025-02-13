@@ -9,6 +9,7 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            text-align: center;
         }
 
         button {
@@ -24,24 +25,58 @@
             background-color: #0056b3;
         }
 
-        .response-container {
-            margin-top: 20px;
+        button.active {
+            background-color: #28a745;
+        }
+
+        .filter-container {
+            margin: 60px auto; /* Adjusted margin for better spacing */
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        select, input {
             padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
             border: 1px solid #ccc;
-            border-radius: 3px;
-            background-color: #f9f9f9;
+        }
+
+        input {
+            width: 200px;
         }
     </style>
 </head>
 
 <body>
-<button id="fetchDataButton">Fetch Data</button>
-<div id="response-container" class="response-container"></div>
+<!-- Login/Logout and User Info Buttons -->
 <button id="loginButton" style="position: absolute; top: 20px; right: 20px;">Go to Login</button>
 <button id="logoutButton" style="position: absolute; top: 20px; right: 130px; display: none;">Logout</button>
 <button id="userInfoButton" style="position: absolute; top: 20px; right: 20px; display: none;">个人信息</button>
 
+<!-- Filter Section -->
+<div class="filter-container">
+    <button id="resetButton">重置</button>
+    <button id="orderButton">顺序推荐</button>
+    <select id="typeSelect">
+        <option value="0">类型</option>
+        <option value="1">交友</option>
+        <option value="2">恋爱</option>
+        <option value="3">二手</option>
+        <option value="4">代课</option>
+        <option value="5">提问</option>
+        <option value="6">分享</option>
+    </select>
+    <button id="likeButton">按点赞数排序</button>
+    <button id="collectButton">按收藏量排序</button>
+    <button id="readButton">按阅读量排序</button>
+    <input type="text" id="searchInput" maxlength="20" placeholder="搜索...">
+</div>
+
 <script>
+    let filters = { current: 1, size: 20 }; // 默认请求条件
+
     // 页面加载时检查authorization状态
     function checkAuthorizationStatus() {
         var authorization = localStorage.getItem('authorization');
@@ -60,6 +95,79 @@
     }
     checkAuthorizationStatus();
 
+    // 发送请求
+    function fetchData() {
+        const authorization = localStorage.getItem('authorization');
+        fetch('http://127.0.0.1/api/user/article/index', {
+            method: 'POST',
+            headers: {
+                'Authorization': authorization,
+                'User-Agent': 'Apifox/1.0.0',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(filters)
+        })
+            .then(response => response.json())
+            .then(data => console.log('Response:', data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    // 更新过滤条件
+    function updateFilters(key, value) {
+        if (value === null) {
+            delete filters[key];
+        } else {
+            filters[key] = value;
+        }
+        fetchData();
+    }
+
+    // Reset Button
+    document.getElementById('resetButton').addEventListener('click', function () {
+        filters = { current: 1, size: 20 }; // 重置请求条件
+        document.querySelectorAll('button').forEach(btn => btn.classList.remove('active')); // 重置按钮状态
+        document.getElementById('typeSelect').value = '0'; // 重置下拉框
+        document.getElementById('searchInput').value = ''; // 重置搜索框
+        fetchData(); // 发起请求
+    });
+
+    // Order Button (顺序推荐)
+    document.getElementById('orderButton').addEventListener('click', function () {
+        this.classList.toggle('active');
+        updateFilters('order', this.classList.contains('active') ? true : null);
+    });
+
+    // Type Select
+    document.getElementById('typeSelect').addEventListener('change', function () {
+        updateFilters('tag', this.value !== '0' ? parseInt(this.value) : null);
+    });
+
+    // Like Button (点赞数排序)
+    document.getElementById('likeButton').addEventListener('click', function () {
+        this.classList.toggle('active');
+        updateFilters('like', this.classList.contains('active') ? true : null);
+    });
+
+    // Collect Button (收藏量排序)
+    document.getElementById('collectButton').addEventListener('click', function () {
+        this.classList.toggle('active');
+        updateFilters('collect', this.classList.contains('active') ? true : null);
+    });
+
+    // Read Button (阅读量排序)
+    document.getElementById('readButton').addEventListener('click', function () {
+        this.classList.toggle('active');
+        updateFilters('read', this.classList.contains('active') ? true : null);
+    });
+
+    // Search Input
+    document.getElementById('searchInput').addEventListener('keypress', function (event) {
+        if (event.key === 'Enter') {
+            updateFilters('condition', this.value ? { title: this.value } : null);
+        }
+    });
+
+    // Login/Logout Button Handlers
     document.getElementById('loginButton').addEventListener('click', function () {
         window.location.href = 'login.html';
     });
@@ -83,7 +191,7 @@
                     if (response.ok) {
                         localStorage.removeItem('authorization');
                         alert("You have been logged out successfully.");
-                        checkAuthorizationStatus(); // 登出后重新检查状态
+                        checkAuthorizationStatus();
                     } else {
                         console.error('Logout failed');
                         alert("Logout failed. Please try again.");
@@ -96,43 +204,13 @@
         }
     });
 
-    document.getElementById('fetchDataButton').addEventListener('click', function () {
-        var authorization = localStorage.getItem('authorization');
-        if (!authorization) {
-            alert('Authorization not found. Please log in first.');
-            window.location.href = 'login.html';
-            return;
-        }
-
-        fetch('http://127.0.0.1/api/user', {
-            method: 'GET',
-            headers: {
-                'Authorization': authorization,
-                'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.msg && (data.msg === "用户尚未登陆或登陆信息过期")) {
-                    localStorage.removeItem('authorization');
-                    checkAuthorizationStatus(); // 信息过期后重新检查状态
-                    window.location.href = 'login.html';
-                } else {
-                    var responseContainer = document.getElementById('response-container');
-                    responseContainer.style.display = 'block';
-                    responseContainer.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while fetching data');
-            });
-    });
-
-    // 给个人信息按钮添加点击事件
+    // Personal Info Button
     document.getElementById('userInfoButton').addEventListener('click', function () {
         window.location.href = 'userInfo.html';
     });
+
+    // 页面加载时默认请求数据
+    fetchData();
 </script>
 </body>
 
