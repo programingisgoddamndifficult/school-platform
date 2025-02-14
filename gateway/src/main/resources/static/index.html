@@ -120,12 +120,13 @@
 <body>
 <!-- Login/Logout and User Info Buttons -->
 <button id="loginButton" style="position: absolute; top: 20px; right: 20px;">Go to Login</button>
-<button id="logoutButton" style="position: absolute; top: 20px; right: 130px; display: none;">Logout</button>
-<button id="userInfoButton" style="position: absolute; top: 20px; right: 20px; display: none;">个人信息</button>
+<button id="logoutButton" style="position: absolute; top: 20px; right: 130px; display: none;">退出登录</button>
+<button id="userInfoButton" style="position: absolute; top: 20px; right: 20px; display: none;">个人中心</button>
 
 <!-- Filter Section -->
 <div class="filter-container">
     <button id="resetButton">重置</button>
+    <button id="hotButton">最热</button>
     <button id="orderButton">顺序推荐</button>
     <select id="typeSelect">
         <option value="0">类型</option>
@@ -233,7 +234,7 @@
 
             const articleTitle = document.createElement('div');
             articleTitle.classList.add('article-title');
-            articleTitle.textContent = record.articleTitle;
+            articleTitle.textContent = record.title || record.articleTitle;
             recordDiv.appendChild(articleTitle);
 
             const stats = document.createElement('div');
@@ -292,6 +293,48 @@
         const recordContainer = document.getElementById('record-container');
         recordContainer.innerHTML = ''; // 清空记录容器
         fetchData(); // 发起请求
+    });
+
+    // 最热按钮点击事件
+    document.getElementById('hotButton').addEventListener('click', function () {
+        if (isFetching) return; // 如果正在请求数据，直接返回
+        isFetching = true; // 标记为正在请求数据
+        const authorization = localStorage.getItem('authorization');
+        if (!authorization) {
+            alert('Authorization not found. Please log in first.');
+            window.location.href = 'login.html';
+            isFetching = false; // 标记为请求结束
+            return;
+        }
+        fetch('http://127.0.0.1/api/user/article/hot', {
+            method: 'GET',
+            headers: {
+                'Authorization': `${authorization}`,
+                'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.code === '200') {
+                    this.classList.toggle('active');
+                    const recordContainer = document.getElementById('record-container');
+                    recordContainer.innerHTML = ''; // 清空记录容器
+                    displayRecords(data.data);
+                } else {
+                    console.error('请求失败:', data.msg);
+                }
+                isFetching = false; // 标记为请求结束
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while fetching hot data');
+                isFetching = false; // 标记为请求结束
+            });
     });
 
     // Order Button (顺序推荐)
