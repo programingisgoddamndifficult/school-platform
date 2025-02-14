@@ -22,6 +22,7 @@ import com.linjiasong.article.gateway.ArticleUserRecommendGateway;
 import com.linjiasong.article.gateway.ArticleUserWatchGateway;
 import com.linjiasong.article.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RAtomicLong;
 import org.redisson.api.RList;
 import org.redisson.api.RScoredSortedSet;
 import org.redisson.api.RedissonClient;
@@ -261,8 +262,8 @@ public class ArticleServiceImpl implements ArticleService {
                 return;
             }
 
-            long readNum = redissonClient.getAtomicLong(String.format(RedisKeyEnum.POINT_ARTICLE.getKey(), articleBasicInfo.getId())).get();
-            articleBasicInfo.setReadNum(readNum);
+            RAtomicLong atomicLong = redissonClient.getAtomicLong(String.format(RedisKeyEnum.POINT_ARTICLE.getKey(), articleBasicInfo.getId()));
+            articleBasicInfo.setReadNum(atomicLong.incrementAndGet());
             articleBasicInfoGateway.update(articleBasicInfo);
         });
     }
