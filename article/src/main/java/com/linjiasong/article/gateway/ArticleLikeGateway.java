@@ -8,4 +8,5 @@ public interface ArticleLikeGateway {
 
     boolean like(Long articleId);
 
+    boolean userHasLike(Long articleId);
 }

@@ -10,6 +10,8 @@ import com.linjiasong.article.service.ArticleCollectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 /**
  * @author linjiasong
  * @date 2025/1/15 下午5:09
@@ -22,10 +24,19 @@ public class ArticleCollectServiceImpl extends ServiceImpl<ArticleCollectMapper,
 
     @Override
     public ArticleBaseResponse<?> collect(Long articleId) {
-        if(!articleCollectGateway.collect(articleId)){
+        if (!articleCollectGateway.collect(articleId)) {
             throw new BizException("服务异常");
         }
 
         return ArticleBaseResponse.success();
+    }
+
+    @Override
+    public ArticleBaseResponse<?> userHasCollect(Long articleId) {
+        if (articleCollectGateway.userHasCollect(articleId)) {
+            return ArticleBaseResponse.success(Map.of("collect", true));
+        }
+
+        return ArticleBaseResponse.success(Map.of("collect", false));
     }
 }

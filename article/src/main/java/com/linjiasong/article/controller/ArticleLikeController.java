@@ -3,10 +3,7 @@ package com.linjiasong.article.controller;
 import com.linjiasong.article.excepiton.ArticleBaseResponse;
 import com.linjiasong.article.service.ArticleLikeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author linjiasong
@@ -24,6 +21,8 @@ public class ArticleLikeController {
         return articleLikeService.like(articleId);
     }
 
-    //TODO 新增接口-判断当前用户是否已点击喜欢
-
+    @GetMapping
+    public ArticleBaseResponse<?> userHasLike(@RequestParam("articleId") Long articleId) {
+        return articleLikeService.userHasLike(articleId);
+    }
 }

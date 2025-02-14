@@ -46,6 +46,13 @@ public class ArticleLikeGatewayImpl implements ArticleLikeGateway {
         return doUnlike(articleLike.getId());
     }
 
+    @Override
+    public boolean userHasLike(Long articleId) {
+        return articleLikeMapper.selectOne(new QueryWrapper<ArticleLike>()
+                .eq("article_id", articleId)
+                .eq("user_id", ArticleContext.get().getId())) != null;
+    }
+
     private boolean doLike(Long articleId) {
         return articleLikeMapper.insert(ArticleLike.build(articleId, ArticleContext.get().getId())) > 0;
     }

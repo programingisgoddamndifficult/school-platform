@@ -17,4 +17,10 @@ public interface ArticleLikeService extends IService<ArticleLike> {
      */
     ArticleBaseResponse<?> like(Long articleId);
 
+    /**
+     * 用户是否点赞
+     * @param articleId articleId
+     * @return ArticleBaseResponse
+     */
+    ArticleBaseResponse<?> userHasLike(Long articleId);
 }

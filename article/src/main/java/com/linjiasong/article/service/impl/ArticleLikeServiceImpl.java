@@ -10,6 +10,8 @@ import com.linjiasong.article.service.ArticleLikeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 /**
  * @author linjiasong
  * @date 2025/1/15 下午5:19
@@ -22,10 +24,19 @@ public class ArticleLikeServiceImpl extends ServiceImpl<ArticleLikeMapper, Artic
 
     @Override
     public ArticleBaseResponse<?> like(Long articleId) {
-        if(!articleLikeGateway.like(articleId)){
+        if (!articleLikeGateway.like(articleId)) {
             throw new BizException("服务异常");
         }
 
         return ArticleBaseResponse.success();
+    }
+
+    @Override
+    public ArticleBaseResponse<?> userHasLike(Long articleId) {
+        if (articleLikeGateway.userHasLike(articleId)) {
+            return ArticleBaseResponse.success(Map.of("like", true));
+        }
+
+        return ArticleBaseResponse.success(Map.of("like", false));
     }
 }

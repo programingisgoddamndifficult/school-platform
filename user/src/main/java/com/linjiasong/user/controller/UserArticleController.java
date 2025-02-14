@@ -42,9 +42,19 @@ public class UserArticleController {
         return userArticleService.collect(articleId);
     }
 
+    @GetMapping("/collect")
+    public UserBaseResponse<?> userHasCollect(@RequestParam("articleId") Long articleId) {
+        return userArticleService.userHasCollect(articleId);
+    }
+
     @PostMapping("/like/{articleId}")
     public UserBaseResponse<?> likeArticle(@PathVariable("articleId") Long articleId) {
         return userArticleService.like(articleId);
+    }
+
+    @GetMapping("/like")
+    public UserBaseResponse<?> userHasLike(@RequestParam("articleId") Long articleId) {
+        return userArticleService.userHasLike(articleId);
     }
 
     @GetMapping("/detail")

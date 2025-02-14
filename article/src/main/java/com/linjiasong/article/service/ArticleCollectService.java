@@ -17,4 +17,10 @@ public interface ArticleCollectService extends IService<ArticleCollect> {
      */
     ArticleBaseResponse<?> collect(Long articleId);
 
+    /**
+     * 用户是否已收藏
+     * @param articleId articleId
+     * @return ArticleBaseResponse
+     */
+    ArticleBaseResponse<?> userHasCollect(Long articleId);
 }

@@ -10,4 +10,5 @@ public interface ArticleCollectGateway {
 
     boolean collect(Long articleId);
 
+    boolean userHasCollect(Long articleId);
 }

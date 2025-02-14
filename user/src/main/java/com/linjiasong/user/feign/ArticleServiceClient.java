@@ -64,4 +64,10 @@ public interface ArticleServiceClient {
 
     @PostMapping("/api/article/ai/sum/{articleId}")
     UserBaseResponse<?> summaryArticle(@PathVariable("articleId") Long articleId);
+
+    @GetMapping("/api/article/collect")
+    UserBaseResponse<?> userHasCollect(@RequestParam("articleId") Long articleId);
+
+    @GetMapping("/api/article/like")
+    UserBaseResponse<?> userHasLike(@RequestParam("articleId") Long articleId);
 }

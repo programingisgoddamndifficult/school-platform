@@ -3,10 +3,7 @@ package com.linjiasong.article.controller;
 import com.linjiasong.article.excepiton.ArticleBaseResponse;
 import com.linjiasong.article.service.ArticleCollectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author linjiasong
@@ -21,10 +18,13 @@ public class ArticleCollectController {
     private ArticleCollectService articleCollectService;
 
     @PostMapping("/{articleId}")
-    public ArticleBaseResponse<?> collect(@PathVariable("articleId") Long articleId){
+    public ArticleBaseResponse<?> collect(@PathVariable("articleId") Long articleId) {
         return articleCollectService.collect(articleId);
     }
 
-    //TODO 新增接口-判断当前用户是否已点击收藏
+    @GetMapping
+    public ArticleBaseResponse<?> userHasCollect(@RequestParam("articleId") Long articleId) {
+        return articleCollectService.userHasCollect(articleId);
+    }
 
 }

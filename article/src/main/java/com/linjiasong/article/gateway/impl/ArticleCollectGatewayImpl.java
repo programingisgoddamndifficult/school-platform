@@ -46,6 +46,13 @@ public class ArticleCollectGatewayImpl implements ArticleCollectGateway {
         return doUnCollect(articleCollect.getId());
     }
 
+    @Override
+    public boolean userHasCollect(Long articleId) {
+        return articleCollectMapper.selectOne(new QueryWrapper<ArticleCollect>()
+                .eq("article_id", articleId)
+                .eq("user_id", ArticleContext.get().getId())) != null;
+    }
+
     private boolean doCollect(Long articleId) {
         return articleCollectMapper.insert(ArticleCollect.build(articleId, ArticleContext.get().getId())) > 0;
     }

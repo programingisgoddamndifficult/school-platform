@@ -110,4 +110,18 @@ public interface UserArticleService {
      * @return ArticleBaseResponse
      */
     UserBaseResponse<?> getArticleList(ArticlePageSelectDTO articlePageSelectDTO);
+
+    /**
+     * 用户是否收藏文章
+     * @param articleId articleId
+     * @return UserBaseResponse
+     */
+    UserBaseResponse<?> userHasCollect(Long articleId);
+
+    /**
+     * 用户是否点赞文章
+     * @param articleId articleId
+     * @return UserBaseResponse
+     */
+    UserBaseResponse<?> userHasLike(Long articleId);
 }

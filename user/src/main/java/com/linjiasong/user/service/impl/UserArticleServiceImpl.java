@@ -119,7 +119,7 @@ public class UserArticleServiceImpl implements UserArticleService {
 
     @Override
     public UserBaseResponse<?> deleteUserWatch(ArticleDeleteUserWatchDTO articleDeleteUserWatchDTO) {
-        if(!articleDeleteUserWatchDTO.hasData()){
+        if (!articleDeleteUserWatchDTO.hasData()) {
             return UserBaseResponse.success();
         }
 
@@ -129,6 +129,16 @@ public class UserArticleServiceImpl implements UserArticleService {
     @Override
     public UserBaseResponse<?> getArticleList(ArticlePageSelectDTO articlePageSelectDTO) {
         return articleServiceClient.getIndexArticle(articlePageSelectDTO);
+    }
+
+    @Override
+    public UserBaseResponse<?> userHasCollect(Long articleId) {
+        return articleServiceClient.userHasCollect(articleId);
+    }
+
+    @Override
+    public UserBaseResponse<?> userHasLike(Long articleId) {
+        return articleServiceClient.userHasLike(articleId);
     }
 
     private void setArticleDetailVOUserInfo(ArticleDetailVO articleDetailVO) {
