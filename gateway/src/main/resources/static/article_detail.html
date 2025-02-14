@@ -81,6 +81,23 @@
     .stat-icon {
       margin-right: 5px;
     }
+
+    /* 新增按钮样式 */
+    .like-button,
+    .collect-button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .like-button.liked {
+      color: red;
+    }
+
+    .collect-button.collected {
+      color: gold;
+    }
   </style>
 </head>
 
@@ -93,27 +110,33 @@
 <div id="article-content"></div>
 <div id="article-stats">
   <div class="stat-item">
-    <span class="stat-icon">❤️</span>
-    <span id="likes-num"></span>
+    <!-- 修改为按钮 -->
+    <button class="like-button" id="like-button">
+      <span class="stat-icon">❤️</span>
+      <span id="likes-num"></span>
+    </button>
   </div>
   <div class="stat-item">
     <span class="stat-icon">👁️</span>
     <span id="read-num"></span>
   </div>
   <div class="stat-item">
-    <span class="stat-icon">⭐</span>
-    <span id="collect-num"></span>
+    <!-- 修改为按钮 -->
+    <button class="collect-button" id="collect-button">
+      <span class="stat-icon">⭐</span>
+      <span id="collect-num"></span>
+    </button>
   </div>
 </div>
 <div id="create-time"></div>
 
 <script>
-  // 从 URL 中获取参数
+  // 从URL中获取参数
   const urlParams = new URLSearchParams(window.location.search);
   const articleId = urlParams.get('articleId');
   const authorization = urlParams.get('authorization');
 
-  if (!articleId || !authorization) {
+  if (!articleId ||!authorization) {
     alert('缺少必要参数，请重新访问。');
     window.location.href = 'index.html';
   } else {
@@ -141,6 +164,9 @@
                 document.getElementById('read-num').textContent = articleData.readNum;
                 document.getElementById('collect-num').textContent = articleData.collectNum;
                 document.getElementById('create-time').textContent = articleData.createTime;
+                // 初始加载时查询点赞和收藏状态
+                checkLikeStatus();
+                checkCollectStatus();
               }
             })
             .catch(error => {
@@ -148,6 +174,100 @@
               alert(errorMessage);
             });
   }
+
+  // 查询点赞状态
+  function checkLikeStatus() {
+    fetch(`http://127.0.0.1/api/user/article/like?articleId=${articleId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `${authorization}`,
+        'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+      }
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.code === '200') {
+                const likeButton = document.getElementById('like-button');
+                if (data.data.like) {
+                  likeButton.classList.add('liked');
+                } else {
+                  likeButton.classList.remove('liked');
+                }
+              }
+            })
+            .catch(error => {
+              console.error('查询点赞状态错误:', error);
+            });
+  }
+
+  // 查询收藏状态
+  function checkCollectStatus() {
+    fetch(`http://127.0.0.1/api/user/article/collect?articleId=${articleId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `${authorization}`,
+        'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+      }
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.code === '200') {
+                const collectButton = document.getElementById('collect-button');
+                if (data.data.collect) {
+                  collectButton.classList.add('collected');
+                } else {
+                  collectButton.classList.remove('collected');
+                }
+              }
+            })
+            .catch(error => {
+              console.error('查询收藏状态错误:', error);
+            });
+  }
+
+  // 点赞/取消点赞
+  document.getElementById('like-button').addEventListener('click', function () {
+    const likeButton = this;
+    fetch(`http://127.0.0.1/api/user/article/like/${articleId}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `${authorization}`,
+        'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+      }
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.code === '200') {
+                // 重新查询点赞状态
+                checkLikeStatus();
+              }
+            })
+            .catch(error => {
+              console.error('点赞/取消点赞错误:', error);
+            });
+  });
+
+  // 收藏/取消收藏
+  document.getElementById('collect-button').addEventListener('click', function () {
+    const collectButton = this;
+    fetch(`http://127.0.0.1/api/user/article/collect/${articleId}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `${authorization}`,
+        'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+      }
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.code === '200') {
+                // 重新查询收藏状态
+                checkCollectStatus();
+              }
+            })
+            .catch(error => {
+              console.error('收藏/取消收藏错误:', error);
+            });
+  });
 </script>
 </body>
 
