@@ -98,6 +98,67 @@
     .collect-button.collected {
       color: gold;
     }
+
+    /* 评论框和评论按钮样式 */
+    #comment-container {
+      display: flex;
+      align-items: center;
+      width: 70%;
+      margin-bottom: 20px;
+    }
+
+    #comment-box {
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      padding: 10px;
+      flex: 1;
+      margin-right: 10px;
+      outline: none;
+    }
+
+    #comment-button {
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      border-radius: 20px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    /* 评论区样式 */
+    #comment-section {
+      width: 70%;
+      text-align: left;
+      font-size: 0.9em;
+    }
+
+    .comment-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .comment-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #ccc;
+      margin-right: 10px;
+    }
+
+    .comment-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .comment-author {
+      font-weight: bold;
+    }
+
+    .comment-time {
+      font-size: 0.8em;
+      color: #888;
+    }
   </style>
 </head>
 
@@ -129,6 +190,13 @@
   </div>
 </div>
 <div id="create-time"></div>
+<!-- 新增评论框和评论按钮 -->
+<div id="comment-container">
+  <input type="text" id="comment-box" placeholder="请输入评论内容">
+  <button id="comment-button">评论</button>
+</div>
+<!-- 新增评论区 -->
+<div id="comment-section"></div>
 
 <script>
   // 从URL中获取参数
@@ -168,6 +236,8 @@
                   // 初始加载时查询点赞和收藏状态
                   checkLikeStatus();
                   checkCollectStatus();
+                  // 加载评论列表
+                  fetchCommentList();
                 }
               })
               .catch(error => {
@@ -275,6 +345,101 @@
               console.error('收藏/取消收藏错误:', error);
             });
   });
+
+  // 处理评论按钮点击事件
+  document.getElementById('comment-button').addEventListener('click', function () {
+    const commentBox = document.getElementById('comment-box');
+    const comment = commentBox.value.trim();
+    // 添加评论长度限制检查
+    if (comment.length > 100) {
+      alert('评论内容不能超过100个字符');
+      return;
+    }
+    if (comment!== '') {
+      fetch('http://127.0.0.1/api/user/article/comment', {
+        method: 'POST',
+        headers: {
+          'Authorization': `${authorization}`,
+          'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          articleId: parseInt(articleId),
+          comment: comment,
+          level: 1
+        })
+      })
+              .then(response => response.json())
+              .then(data => {
+                if (data.code === '200') {
+                  alert('评论成功');
+                  commentBox.value = ''; // 清空评论框
+                  // 重新加载评论列表
+                  fetchCommentList();
+                } else {
+                  alert('评论失败: ' + data.msg);
+                }
+              })
+              .catch(error => {
+                console.error('评论请求错误:', error);
+                alert('评论请求发生错误');
+              });
+    } else {
+      alert('请输入评论内容');
+    }
+  });
+
+  // 获取评论列表
+  function fetchCommentList() {
+    fetch(`http://127.0.0.1/api/user/article/comment/${articleId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `${authorization}`,
+        'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+      }
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.code === '200') {
+                const commentSection = document.getElementById('comment-section');
+                commentSection.innerHTML = ''; // 清空评论区
+                const comments = data.data;
+                comments.forEach(comment => {
+                  const commentItem = document.createElement('div');
+                  commentItem.classList.add('comment-item');
+
+                  const commentAvatar = document.createElement('div');
+                  commentAvatar.classList.add('comment-avatar');
+
+                  const commentInfo = document.createElement('div');
+                  commentInfo.classList.add('comment-info');
+
+                  const commentAuthor = document.createElement('span');
+                  commentAuthor.classList.add('comment-author');
+                  commentAuthor.textContent = `${comment.userCommentInfo.username}: `;
+
+                  const commentContent = document.createElement('span');
+                  commentContent.textContent = comment.articleCommentInfo.comment;
+
+                  const commentTime = document.createElement('span');
+                  commentTime.classList.add('comment-time');
+                  commentTime.textContent = comment.articleCommentInfo.createTime;
+
+                  commentInfo.appendChild(commentAuthor);
+                  commentInfo.appendChild(commentContent);
+                  commentInfo.appendChild(commentTime);
+
+                  commentItem.appendChild(commentAvatar);
+                  commentItem.appendChild(commentInfo);
+
+                  commentSection.appendChild(commentItem);
+                });
+              }
+            })
+            .catch(error => {
+              console.error('获取评论列表错误:', error);
+            });
+  }
 </script>
 </body>
 
