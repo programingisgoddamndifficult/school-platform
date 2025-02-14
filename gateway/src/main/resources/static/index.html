@@ -121,7 +121,7 @@
 <!-- Login/Logout and User Info Buttons -->
 <button id="loginButton" style="position: absolute; top: 20px; right: 20px;">Go to Login</button>
 <button id="logoutButton" style="position: absolute; top: 20px; right: 130px; display: none;">退出登录</button>
-<button id="userInfoButton" style="position: absolute; top: 20px; right: 20px; display: none;">个人中心</button>
+<button id="userCenterButton" style="position: absolute; top: 20px; right: 20px; display: none;">个人中心</button>
 
 <!-- Filter Section -->
 <div class="filter-container">
@@ -170,15 +170,15 @@
         var authorization = localStorage.getItem('authorization');
         var loginButton = document.getElementById('loginButton');
         var logoutButton = document.getElementById('logoutButton');
-        var userInfoButton = document.getElementById('userInfoButton');
+        var userCenterButton = document.getElementById('userCenterButton');
         if (authorization) {
             loginButton.style.display = 'none';
             logoutButton.style.display = 'block';
-            userInfoButton.style.display = 'block';
+            userCenterButton.style.display = 'block';
         } else {
             loginButton.style.display = 'block';
             logoutButton.style.display = 'none';
-            userInfoButton.style.display = 'none';
+            userCenterButton.style.display = 'none';
         }
     }
     checkAuthorizationStatus();
@@ -423,8 +423,8 @@
     });
 
     // Personal Info Button
-    document.getElementById('userInfoButton').addEventListener('click', function () {
-        window.location.href = 'userInfo.html';
+    document.getElementById('userCenterButton').addEventListener('click', function () {
+        window.location.href = 'userCenter.html';
     });
 
     // 监听滚动事件
