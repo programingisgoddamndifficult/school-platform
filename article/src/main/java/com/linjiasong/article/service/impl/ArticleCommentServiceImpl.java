@@ -29,6 +29,10 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
 
     @Override
     public ArticleBaseResponse<?> comment(ArticleCommentDTO articleCommentDTO) {
+        if(articleCommentDTO.getComment().length() > 100){
+            throw new BizException("评论内容长度不能超过100字");
+        }
+
         if(!articleCommentGateway.comment(ArticleComment.build(articleCommentDTO))){
             throw new BizException("服务异常");
         }
