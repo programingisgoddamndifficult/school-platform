@@ -141,38 +141,41 @@
     window.location.href = 'index.html';
   } else {
     // 发起请求获取文章详情
-    fetch(`http://127.0.0.1/api/user/article/detail?articleId=${articleId}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `${authorization}`,
-        'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
-      }
-    })
-            .then(response => {
-              if (!response.ok) {
-                throw new Error('Network response was not ok');
-              }
-              return response.json();
-            })
-            .then(data => {
-              if (data.code === '200') {
-                const articleData = data.data;
-                document.getElementById('article-title').textContent = articleData.title;
-                document.getElementById('author-name').textContent = articleData.userInfo.username;
-                document.getElementById('article-content').textContent = articleData.content;
-                document.getElementById('likes-num').textContent = articleData.likesNum;
-                document.getElementById('read-num').textContent = articleData.readNum;
-                document.getElementById('collect-num').textContent = articleData.collectNum;
-                document.getElementById('create-time').textContent = articleData.createTime;
-                // 初始加载时查询点赞和收藏状态
-                checkLikeStatus();
-                checkCollectStatus();
-              }
-            })
-            .catch(error => {
-              const errorMessage = `发生错误: ${error.message}`;
-              alert(errorMessage);
-            });
+    function fetchArticleDetail() {
+      fetch(`http://127.0.0.1/api/user/article/detail?articleId=${articleId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `${authorization}`,
+          'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+        }
+      })
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error('Network response was not ok');
+                }
+                return response.json();
+              })
+              .then(data => {
+                if (data.code === '200') {
+                  const articleData = data.data;
+                  document.getElementById('article-title').textContent = articleData.title;
+                  document.getElementById('author-name').textContent = articleData.userInfo.username;
+                  document.getElementById('article-content').textContent = articleData.content;
+                  document.getElementById('likes-num').textContent = articleData.likesNum;
+                  document.getElementById('read-num').textContent = articleData.readNum;
+                  document.getElementById('collect-num').textContent = articleData.collectNum;
+                  document.getElementById('create-time').textContent = articleData.createTime;
+                  // 初始加载时查询点赞和收藏状态
+                  checkLikeStatus();
+                  checkCollectStatus();
+                }
+              })
+              .catch(error => {
+                const errorMessage = `发生错误: ${error.message}`;
+                alert(errorMessage);
+              });
+    }
+    fetchArticleDetail();
   }
 
   // 查询点赞状态
@@ -240,6 +243,8 @@
               if (data.code === '200') {
                 // 重新查询点赞状态
                 checkLikeStatus();
+                // 重新获取文章详情
+                fetchArticleDetail();
               }
             })
             .catch(error => {
@@ -262,6 +267,8 @@
               if (data.code === '200') {
                 // 重新查询收藏状态
                 checkCollectStatus();
+                // 重新获取文章详情
+                fetchArticleDetail();
               }
             })
             .catch(error => {
