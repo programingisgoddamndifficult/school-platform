@@ -13,6 +13,7 @@ import com.linjiasong.article.entity.ArticleUserWatch;
 import com.linjiasong.article.entity.dto.*;
 import com.linjiasong.article.entity.vo.ArticleBasicVO;
 import com.linjiasong.article.entity.vo.ArticleDetailVO;
+import com.linjiasong.article.entity.vo.ArticleSelfDetailVO;
 import com.linjiasong.article.entity.vo.ArticleUserWatchVO;
 import com.linjiasong.article.excepiton.ArticleBaseResponse;
 import com.linjiasong.article.excepiton.BizException;
@@ -156,6 +157,19 @@ public class ArticleServiceImpl implements ArticleService {
         articleUserWatch(articleBasicInfo, ArticleContext.get().getId());
 
         return ArticleBaseResponse.success(ArticleDetailVO.build(articleBasicInfo, articleDetail));
+    }
+
+    @Override
+    public ArticleBaseResponse<?> getSelfArticleDetail(Long articleId) {
+        ArticleBasicInfo articleBasicInfo = articleBasicInfoGateway.selectById(articleId);
+        //如果非本人文章，则无权限
+        if (!articleBasicInfo.getUserId().equals(ArticleContext.get().getId())) {
+            throw new BizException("没有权限或文章不存在");
+        }
+
+        ArticleDetail articleDetail = articleDetailGateway.selectOne(new QueryWrapper<ArticleDetail>().eq("article_id", articleId));
+
+        return ArticleBaseResponse.success(ArticleSelfDetailVO.build(articleBasicInfo, articleDetail));
     }
 
     @Override

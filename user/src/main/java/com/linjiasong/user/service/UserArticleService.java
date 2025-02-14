@@ -65,6 +65,14 @@ public interface UserArticleService {
     UserBaseResponse<?> getArticleDetail(Long articleId);
 
     /**
+     * 获取个人文章详情
+     *
+     * @param articleId articleId
+     * @return UserBaseResponse
+     */
+    UserBaseResponse<?> getSelfArticleDetail(Long articleId);
+
+    /**
      * 评论
      *
      * @param articleCommentDTO articleCommentDTO

@@ -83,6 +83,11 @@ public class UserArticleServiceImpl implements UserArticleService {
     }
 
     @Override
+    public UserBaseResponse<?> getSelfArticleDetail(Long articleId) {
+        return articleServiceClient.getSelfArticleDetail(articleId);
+    }
+
+    @Override
     public UserBaseResponse<?> comment(ArticleCommentDTO articleCommentDTO) {
         return articleServiceClient.comment(articleCommentDTO);
     }

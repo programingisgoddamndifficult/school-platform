@@ -35,6 +35,9 @@ public interface ArticleServiceClient {
     @GetMapping("/api/article/detail")
     UserBaseResponse<?> getArticleDetail(@RequestParam("articleId") Long articleId);
 
+    @GetMapping("/api/article/detail/self")
+    UserBaseResponse<?> getSelfArticleDetail(@RequestParam("articleId") Long articleId);
+
     @PostMapping("/api/article/comment")
     UserBaseResponse<?> comment(@RequestBody ArticleCommentDTO articleCommentDTO);
 

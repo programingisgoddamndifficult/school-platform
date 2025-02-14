@@ -46,6 +46,11 @@ public class ArticleController {
         return articleService.getArticleDetail(articleId);
     }
 
+    @GetMapping("/detail/self")
+    public ArticleBaseResponse<?> getSelfArticleDetail(@RequestParam("articleId") Long articleId) {
+        return articleService.getSelfArticleDetail(articleId);
+    }
+
     @PostMapping("/open/{articleId}")
     public ArticleBaseResponse<?> openArticle(@PathVariable("articleId") Long articleId) {
         return articleService.openArticle(articleId);

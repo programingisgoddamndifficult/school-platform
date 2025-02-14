@@ -62,6 +62,11 @@ public class UserArticleController {
         return userArticleService.getArticleDetail(articleId);
     }
 
+    @GetMapping("/detail/self")
+    public UserBaseResponse<?> getSelfArticleDetail(@RequestParam("articleId") Long articleId) {
+        return userArticleService.getSelfArticleDetail(articleId);
+    }
+
     @PostMapping("/comment")
     public UserBaseResponse<?> comment(@RequestBody ArticleCommentDTO articleCommentDTO) {
         return userArticleService.comment(articleCommentDTO);

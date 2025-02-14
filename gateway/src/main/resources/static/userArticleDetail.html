@@ -77,7 +77,7 @@
     const articleId = urlParams.get('articleId');
 
     if (articleId) {
-        const apiUrl = `http://127.0.0.1/api/user/article/detail?articleId=${articleId}`;
+        const apiUrl = `http://127.0.0.1/api/user/article/detail/self?articleId=${articleId}`;
         var token = localStorage.getItem('authorization');
         const authorizationToken = token;
 
