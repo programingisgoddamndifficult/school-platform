@@ -11,15 +11,66 @@
             padding: 20px;
         }
 
-        pre {
-            white-space: pre-wrap;
+        h1 {
+            text-align: center;
+        }
+
+        #article-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #user-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        #user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin-right: 10px;
+        }
+
+        #article-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+
+        #article-stats,
+        #article-tag,
+        #article-create-time {
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        #article-status {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: red;
         }
     </style>
 </head>
 
 <body>
 <h1>文章详情</h1>
-<div id="article-detail"></div>
+<div id="article-status"></div>
+<div id="article-title"></div>
+<div id="user-info">
+    <div id="user-avatar"></div>
+    <div id="user-username"></div>
+</div>
+<div id="article-content"></div>
+<div id="article-stats"></div>
+<div id="article-tag"></div>
+<div id="article-create-time"></div>
 
 <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -39,14 +90,47 @@
         })
             .then(response => response.json())
             .then(data => {
-                const articleDetailDiv = document.getElementById('article-detail');
-                const pre = document.createElement('pre');
-                pre.textContent = JSON.stringify(data, null, 2);
-                articleDetailDiv.appendChild(pre);
+                if (data.code === '200') {
+                    const articleData = data.data;
+                    const articleTitle = document.getElementById('article-title');
+                    const userUsername = document.getElementById('user-username');
+                    const articleContent = document.getElementById('article-content');
+                    const articleStats = document.getElementById('article-stats');
+                    const articleTag = document.getElementById('article-tag');
+                    const articleCreateTime = document.getElementById('article-create-time');
+                    const articleStatus = document.getElementById('article-status');
+
+                    articleTitle.textContent = articleData.title;
+                    userUsername.textContent = articleData.userInfo.username;
+                    articleContent.textContent = articleData.content;
+                    articleStats.textContent = `收藏数: ${articleData.collectNum}，点赞数: ${articleData.likesNum}，阅读数: ${articleData.readNum}`;
+
+                    const tagMap = {
+                        1: '交友',
+                        2: '恋爱',
+                        3: '二手',
+                        4: '代课',
+                        5: '提问',
+                        6: '分享'
+                    };
+                    articleTag.textContent = `标签: ${tagMap[articleData.tag]}`;
+                    articleCreateTime.textContent = `创建时间: ${articleData.createTime}`;
+
+                    let statusText = '';
+                    if (articleData.isCheck === 0) {
+                        statusText += '文章待审核 ';
+                    }
+                    if (articleData.isBan === 1) {
+                        statusText += '文章违规';
+                    }
+                    articleStatus.textContent = statusText;
+                } else {
+                    console.error('请求失败:', data.msg);
+                }
             })
             .catch(error => console.error('请求出错:', error));
     } else {
-        console.error('未获取到文章ID');
+        console.error('未获取到文章 ID');
     }
 </script>
 </body>

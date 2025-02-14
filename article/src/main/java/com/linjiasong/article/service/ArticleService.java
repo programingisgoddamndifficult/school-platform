@@ -46,6 +46,7 @@ public interface ArticleService {
     ArticleBaseResponse<?> deleteArticle(Long id);
 
     /**
+     * TODO 返回要带文章状态，考虑新开一个接口
      * 获取文章详情
      *
      * @param articleId articleId
