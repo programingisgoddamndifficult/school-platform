@@ -31,9 +31,6 @@ public class ArticleCollectGatewayImpl implements ArticleCollectGateway {
         Long userId = ArticleContext.get().getId();
 
         ArticleBasicInfo articleInfo = getArticleBasicInfo(articleId);
-        if (articleInfo.getUserId().equals(userId)) {
-            throw new BizException("操作异常");
-        }
 
         ArticleCollect articleCollect = articleCollectMapper.selectOne(new QueryWrapper<ArticleCollect>().eq("article_id", articleId).eq("user_id", userId));
 
