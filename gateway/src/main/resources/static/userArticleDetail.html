@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章详情</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        pre {
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+<h1>文章详情</h1>
+<div id="article-detail"></div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const articleId = urlParams.get('articleId');
+
+    if (articleId) {
+        const apiUrl = `http://127.0.0.1/api/user/article/detail?articleId=${articleId}`;
+        var token = localStorage.getItem('authorization');
+        const authorizationToken = token;
+
+        fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Authorization': authorizationToken,
+                'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                const articleDetailDiv = document.getElementById('article-detail');
+                const pre = document.createElement('pre');
+                pre.textContent = JSON.stringify(data, null, 2);
+                articleDetailDiv.appendChild(pre);
+            })
+            .catch(error => console.error('请求出错:', error));
+    } else {
+        console.error('未获取到文章ID');
+    }
+</script>
+</body>
+
+</html>

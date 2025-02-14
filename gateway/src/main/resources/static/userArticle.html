@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的文章</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin: 20px 0;
+        }
+
+        .article-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 80%;
+        }
+
+        .article-box {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px;
+            width: calc(50% - 20px);
+            box-sizing: border-box;
+            transition: border 0.3s;
+            cursor: pointer;
+        }
+
+        .article-box:hover {
+            border: 2px solid #007BFF;
+        }
+    </style>
+</head>
+
+<body>
+<h1>我的文章</h1>
+<div class="article-container" id="article-container"></div>
+
+<script>
+    let currentPage = 1;
+    const apiUrl = 'http://127.0.0.1/api/user/article';
+    var token = localStorage.getItem('authorization');
+    const authorizationToken = token;
+
+    function getArticleData(page) {
+        const params = new URLSearchParams({
+            current: page,
+            size: 20
+        });
+        const fullUrl = `${apiUrl}?${params.toString()}`;
+
+        fetch(fullUrl, {
+            method: 'GET',
+            headers: {
+                'Authorization': authorizationToken,
+                'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === '200') {
+                    const articles = data.data.records;
+                    const articleContainer = document.getElementById('article-container');
+
+                    articles.forEach(article => {
+                        const articleBox = document.createElement('div');
+                        articleBox.classList.add('article-box');
+                        // 添加点击事件
+                        articleBox.addEventListener('click', () => {
+                            window.location.href = `userArticleDetail.html?articleId=${article.id}`;
+                        });
+
+                        const title = document.createElement('h2');
+                        title.textContent = article.articleTitle;
+                        articleBox.appendChild(title);
+
+                        const collectNum = document.createElement('p');
+                        collectNum.textContent = `收藏量: ${article.collectNum}`;
+                        articleBox.appendChild(collectNum);
+
+                        const likesNum = document.createElement('p');
+                        likesNum.textContent = `点赞量: ${article.likesNum}`;
+                        articleBox.appendChild(likesNum);
+
+                        const readNum = document.createElement('p');
+                        readNum.textContent = `阅读量: ${article.readNum}`;
+                        articleBox.appendChild(readNum);
+
+                        const tagMap = {
+                            1: '交友',
+                            2: '恋爱',
+                            3: '二手',
+                            4: '代课',
+                            5: '提问',
+                            6: '分享'
+                        };
+                        const tag = document.createElement('p');
+                        tag.textContent = `标签: ${tagMap[article.tag] || '未知'}`;
+                        articleBox.appendChild(tag);
+
+                        const createTime = document.createElement('p');
+                        createTime.textContent = `发布时间: ${article.createTime}`;
+                        articleBox.appendChild(createTime);
+
+                        articleContainer.appendChild(articleBox);
+                    });
+                }
+            })
+            .catch(error => console.error('请求出错:', error));
+    }
+
+    function handleScroll() {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+            currentPage++;
+            getArticleData(currentPage);
+        }
+    }
+
+    window.addEventListener('scroll', handleScroll);
+
+    getArticleData(currentPage);
+</script>
+</body>
+
+</html>
