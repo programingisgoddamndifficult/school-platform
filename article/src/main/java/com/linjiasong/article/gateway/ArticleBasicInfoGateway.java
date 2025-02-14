@@ -41,4 +41,6 @@ public interface ArticleBasicInfoGateway {
     Page<ArticleBasicInfo> recommend(int current, int size, boolean hasRecommendHistory, Short tag, Long bigArticleId);
 
     Page<ArticleBasicInfo> orderRecommend(int current, int size, boolean hasRecommendHistory, Long bigArticleId);
+
+    Page<ArticleBasicInfo> getByUserId(int current, int size, Long userId);
 }

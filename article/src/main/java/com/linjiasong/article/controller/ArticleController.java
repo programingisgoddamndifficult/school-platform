@@ -27,8 +27,8 @@ public class ArticleController {
     }
 
     @GetMapping("/basic")
-    public ArticleBaseResponse<?> getArticleBasicByUserId(@RequestParam("userId") Long userId) {
-        return articleService.getUserArticleBasic(userId);
+    public ArticleBaseResponse<?> getArticleBasicByUserId(@RequestParam("userId") Long userId, @RequestParam("current") int current, @RequestParam("size") int size) {
+        return articleService.getUserArticleBasic(userId, current, size);
     }
 
     @PostMapping("/update")
@@ -68,6 +68,7 @@ public class ArticleController {
 
     /**
      * 推荐
+     *
      * @return ArticleBaseResponse
      */
     @PostMapping("/index")

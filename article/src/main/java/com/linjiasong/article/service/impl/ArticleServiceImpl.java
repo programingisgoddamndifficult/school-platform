@@ -82,9 +82,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleBaseResponse<?> getUserArticleBasic(Long userId) {
-        List<ArticleBasicInfo> basicInfoList = articleBasicInfoGateway.getByUserId(userId);
-        return ArticleBaseResponse.builder().code("200").msg("success").data(ArticleBasicVO.build(basicInfoList)).build();
+    public ArticleBaseResponse<?> getUserArticleBasic(Long userId, int current, int size) {
+        return ArticleBaseResponse.success(articleBasicInfoGateway.getByUserId(current,size,userId));
     }
 
     @Override

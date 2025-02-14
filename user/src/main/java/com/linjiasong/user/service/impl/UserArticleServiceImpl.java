@@ -37,8 +37,8 @@ public class UserArticleServiceImpl implements UserArticleService {
     PointService pointService;
 
     @Override
-    public UserBaseResponse<?> getUserArticleBasic() {
-        return articleServiceClient.getArticleBasicByUserId(UserInfoContext.get().getId());
+    public UserBaseResponse<?> getUserArticleBasic(int current, int size) {
+        return articleServiceClient.getArticleBasicByUserId(UserInfoContext.get().getId(), current, size);
     }
 
     @Override

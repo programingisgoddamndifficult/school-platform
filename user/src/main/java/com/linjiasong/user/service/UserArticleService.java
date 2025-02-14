@@ -11,12 +11,14 @@ public interface UserArticleService {
 
     /**
      * 获取文章基础信息
+     *
      * @return UserBaseResponse
      */
-    UserBaseResponse<?> getUserArticleBasic();
+    UserBaseResponse<?> getUserArticleBasic(int current, int size);
 
     /**
      * 创建文章
+     *
      * @param articleCreateDTO articleCreateDTO
      * @return UserBaseResponse
      */
@@ -24,6 +26,7 @@ public interface UserArticleService {
 
     /**
      * 修改文章
+     *
      * @param articleUpdateDTO articleUpdateDTO
      * @return UserBaseResponse
      */
@@ -31,6 +34,7 @@ public interface UserArticleService {
 
     /**
      * 删除文章
+     *
      * @param id id
      * @return UserBaseResponse
      */
@@ -38,6 +42,7 @@ public interface UserArticleService {
 
     /**
      * 收藏/取消收藏文章
+     *
      * @param articleId articleId
      * @return UserBaseResponse
      */
@@ -45,6 +50,7 @@ public interface UserArticleService {
 
     /**
      * 点赞/取消点赞
+     *
      * @param articleId articleId
      * @return UserBaseResponse
      */
@@ -52,6 +58,7 @@ public interface UserArticleService {
 
     /**
      * 获取文章详情
+     *
      * @param articleId articleId
      * @return UserBaseResponse
      */
@@ -59,13 +66,13 @@ public interface UserArticleService {
 
     /**
      * 评论
+     *
      * @param articleCommentDTO articleCommentDTO
      * @return UserBaseResponse
      */
     UserBaseResponse<?> comment(ArticleCommentDTO articleCommentDTO);
 
     /**
-     *
      * @param id id
      * @return UserBaseResponse
      */
@@ -73,6 +80,7 @@ public interface UserArticleService {
 
     /**
      * 获取文章的评论
+     *
      * @param articleId articleId
      * @return UserBaseResponse
      */
@@ -80,6 +88,7 @@ public interface UserArticleService {
 
     /**
      * 开放/私密文章
+     *
      * @param articleId articleId
      * @return UserBaseResponse
      */
@@ -87,18 +96,21 @@ public interface UserArticleService {
 
     /**
      * 文章hot100
+     *
      * @return UserBaseResponse
      */
     UserBaseResponse<?> hotArticle();
 
     /**
      * 个人观看历史
+     *
      * @return UserBaseResponse
      */
     UserBaseResponse<?> getArticleUserWatchList();
 
     /**
      * 删除用户观看历史
+     *
      * @param articleDeleteUserWatchDTO articleDeleteUserWatchDTO
      * @return UserBaseResponse
      */
@@ -106,6 +118,7 @@ public interface UserArticleService {
 
     /**
      * 推荐 搜索文章
+     *
      * @param articlePageSelectDTO articlePageSelectDTO
      * @return ArticleBaseResponse
      */
@@ -113,6 +126,7 @@ public interface UserArticleService {
 
     /**
      * 用户是否收藏文章
+     *
      * @param articleId articleId
      * @return UserBaseResponse
      */
@@ -120,6 +134,7 @@ public interface UserArticleService {
 
     /**
      * 用户是否点赞文章
+     *
      * @param articleId articleId
      * @return UserBaseResponse
      */

@@ -14,6 +14,7 @@ public interface ArticleService {
 
     /**
      * 新建文章
+     *
      * @param articleCreateDTO articleCreateDTO
      * @return ArticleBaseResponse
      */
@@ -22,13 +23,15 @@ public interface ArticleService {
 
     /**
      * 获取用户的文章
+     *
      * @param userId userId
      * @return ArticleBaseResponse
      */
-    ArticleBaseResponse<?> getUserArticleBasic(Long userId);
+    ArticleBaseResponse<?> getUserArticleBasic(Long userId, int current, int size);
 
     /**
      * 修改文章
+     *
      * @param articleUpdateDTO articleUpdateDTO
      * @return ArticleBaseResponse
      */
@@ -36,6 +39,7 @@ public interface ArticleService {
 
     /**
      * 删除文章
+     *
      * @param id id
      * @return ArticleBaseResponse
      */
@@ -43,6 +47,7 @@ public interface ArticleService {
 
     /**
      * 获取文章详情
+     *
      * @param articleId articleId
      * @return ArticleBaseResponse
      */
@@ -50,6 +55,7 @@ public interface ArticleService {
 
     /**
      * 开放文章
+     *
      * @param articleId articleId
      * @return ArticleBaseResponse
      */
@@ -57,18 +63,21 @@ public interface ArticleService {
 
     /**
      * 获取热门文章
+     *
      * @return ArticleBaseResponse
      */
     ArticleBaseResponse<?> getHotArticle();
 
     /**
      * 获取个人观看历史列表
+     *
      * @return ArticleBaseResponse
      */
     ArticleBaseResponse<?> getUserWatchList();
 
     /**
      * 删除用户观看历史
+     *
      * @param articleDeleteUserWatchDTO articleDeleteUserWatchDTO
      * @return ArticleBaseResponse
      */
@@ -76,6 +85,7 @@ public interface ArticleService {
 
     /**
      * 推荐 搜索文章
+     *
      * @param articlePageSelectDTO articlePageSelectDTO
      * @return ArticleBaseResponse
      */

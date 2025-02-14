@@ -18,8 +18,8 @@ public class UserArticleController {
     UserArticleService userArticleService;
 
     @GetMapping
-    public UserBaseResponse<?> getUserArticle() {
-        return userArticleService.getUserArticleBasic();
+    public UserBaseResponse<?> getUserArticle(@RequestParam("current") int current, @RequestParam("size") int size) {
+        return userArticleService.getUserArticleBasic(current, size);
     }
 
     @PostMapping

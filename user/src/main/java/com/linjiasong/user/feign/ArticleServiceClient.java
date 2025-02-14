@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public interface ArticleServiceClient {
 
     @GetMapping("/api/article/basic")
-    UserBaseResponse<?> getArticleBasicByUserId(@RequestParam("userId") Long userId);
+    UserBaseResponse<?> getArticleBasicByUserId(@RequestParam("userId") Long userId, @RequestParam("current") int current, @RequestParam("size") int size);
 
     @PostMapping("/api/article")
     UserBaseResponse<?> createArticle(@RequestBody ArticleCreateDTO articleCreateDTO);

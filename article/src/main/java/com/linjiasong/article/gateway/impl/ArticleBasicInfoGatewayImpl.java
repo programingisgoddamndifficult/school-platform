@@ -51,6 +51,11 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
     }
 
     @Override
+    public Page<ArticleBasicInfo> getByUserId(int current, int size, Long userId) {
+        return articleBasicInfoMapper.selectPage(new Page<>(current, size), new QueryWrapper<ArticleBasicInfo>().eq("user_id", userId));
+    }
+
+    @Override
     public boolean deleteById(Long id) {
         return articleBasicInfoMapper.deleteById(id) > 0;
     }
@@ -123,7 +128,7 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
         List<ArticleBasicInfo> records = page.getRecords();
 
         if (records.size() <= 20) {
-            if(records.isEmpty()){
+            if (records.isEmpty()) {
                 return articleBasicInfoMapper.selectPage(new Page<>(1, size),
                         buildNoRecordsQueryWrapper(bigArticleId));
             }
