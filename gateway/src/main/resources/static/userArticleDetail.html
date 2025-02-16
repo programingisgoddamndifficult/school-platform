@@ -93,6 +93,13 @@
         #user-info {
             margin-top: 20px;
         }
+
+        /* 新增删除按钮样式 */
+        #delete-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
     </style>
 </head>
 
@@ -112,6 +119,8 @@
 <div id="article-stats"></div>
 <div id="article-tag"></div>
 <div id="article-create-time"></div>
+<!-- 新增删除文章按钮 -->
+<button id="delete-button">删除文章</button>
 
 <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -242,6 +251,31 @@
                                 }
                             })
                             .catch(error => console.error('保存请求出错:', error));
+                    };
+
+                    // 新增删除文章逻辑
+                    const deleteButton = document.getElementById('delete-button');
+                    deleteButton.onclick = function () {
+                        const confirmDelete = confirm('文章删除后无法恢复，是否确认删除文章');
+                        if (confirmDelete) {
+                            const deleteApiUrl = `http://127.0.0.1/api/user/article/delete/${articleId}`;
+                            fetch(deleteApiUrl, {
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': authorizationToken,
+                                    'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+                                }
+                            })
+                                .then(response => response.json())
+                                .then(deleteData => {
+                                    if (deleteData.code === '200') {
+                                        window.location.href = 'userArticle.html';
+                                    } else {
+                                        console.error('删除失败:', deleteData.msg);
+                                    }
+                                })
+                                .catch(error => console.error('删除请求出错:', error));
+                        }
                     };
                 } else {
                     console.error('请求失败:', data.msg);
