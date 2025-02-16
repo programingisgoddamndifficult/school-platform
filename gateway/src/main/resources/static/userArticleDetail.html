@@ -100,6 +100,39 @@
             top: 20px;
             right: 20px;
         }
+
+        /* 评论样式 */
+        .comment {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .comment-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin-right: 10px;
+        }
+
+        .comment-info {
+            flex-grow: 1;
+        }
+
+        .comment-username {
+            font-weight: bold;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: #888;
+            display: block;
+        }
+
+        .comment-delete {
+            margin-left: 10px;
+        }
     </style>
 </head>
 
@@ -121,6 +154,8 @@
 <div id="article-create-time"></div>
 <!-- 新增删除文章按钮 -->
 <button id="delete-button">删除文章</button>
+<!-- 评论容器 -->
+<div id="comments-container"></div>
 
 <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -183,7 +218,7 @@
                     }
 
                     openStatusButton.onclick = function () {
-                        const newIsOpen = articleData.isOpen === 1? 0 : 1;
+                        const newIsOpen = articleData.isOpen === 1 ? 0 : 1;
                         const updateApiUrl = 'http://127.0.0.1/api/user/article/update';
                         const updateData = {
                             "id": articleId,
@@ -277,6 +312,87 @@
                                 .catch(error => console.error('删除请求出错:', error));
                         }
                     };
+
+                    // 获取评论数据
+                    function getComments() {
+                        const commentApiUrl = `http://127.0.0.1/api/user/article/comment/${articleId}`;
+                        fetch(commentApiUrl, {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': authorizationToken,
+                                'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+                            }
+                        })
+                            .then(response => response.json())
+                            .then(commentData => {
+                                if (commentData.code === '200') {
+                                    const comments = commentData.data;
+                                    const commentsContainer = document.getElementById('comments-container');
+                                    commentsContainer.innerHTML = '';
+                                    comments.forEach(comment => {
+                                        const commentDiv = document.createElement('div');
+                                        commentDiv.classList.add('comment');
+
+                                        const avatarDiv = document.createElement('div');
+                                        avatarDiv.classList.add('comment-avatar');
+                                        commentDiv.appendChild(avatarDiv);
+
+                                        const infoDiv = document.createElement('div');
+                                        infoDiv.classList.add('comment-info');
+
+                                        const usernameSpan = document.createElement('span');
+                                        usernameSpan.classList.add('comment-username');
+                                        usernameSpan.textContent = comment.userCommentInfo.username + ': ';
+                                        infoDiv.appendChild(usernameSpan);
+
+                                        const commentText = document.createElement('span');
+                                        commentText.textContent = comment.articleCommentInfo.comment;
+                                        infoDiv.appendChild(commentText);
+
+                                        const timeSpan = document.createElement('span');
+                                        timeSpan.classList.add('comment-time');
+                                        timeSpan.textContent = comment.articleCommentInfo.createTime;
+                                        infoDiv.appendChild(timeSpan);
+
+                                        commentDiv.appendChild(infoDiv);
+
+                                        const deleteCommentButton = document.createElement('button');
+                                        deleteCommentButton.classList.add('comment-delete');
+                                        deleteCommentButton.textContent = '删除';
+                                        deleteCommentButton.onclick = function () {
+                                            const confirmDeleteComment = confirm('是否删除该评论？');
+                                            if (confirmDeleteComment) {
+                                                const deleteCommentApiUrl = `http://127.0.0.1/api/user/article/comment/delete/${comment.articleCommentInfo.id}`;
+                                                fetch(deleteCommentApiUrl, {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Authorization': authorizationToken,
+                                                        'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+                                                    }
+                                                })
+                                                    .then(response => response.json())
+                                                    .then(deleteResult => {
+                                                        if (deleteResult.code === '200') {
+                                                            getComments();
+                                                        } else {
+                                                            console.error('删除评论失败:', deleteResult.msg);
+                                                        }
+                                                    })
+                                                    .catch(error => console.error('删除评论请求出错:', error));
+                                            }
+                                        };
+                                        commentDiv.appendChild(deleteCommentButton);
+
+                                        commentsContainer.appendChild(commentDiv);
+                                    });
+                                } else {
+                                    console.error('获取评论失败:', commentData.msg);
+                                }
+                            })
+                            .catch(error => console.error('获取评论请求出错:', error));
+                    }
+
+                    getComments();
                 } else {
                     console.error('请求失败:', data.msg);
                 }
