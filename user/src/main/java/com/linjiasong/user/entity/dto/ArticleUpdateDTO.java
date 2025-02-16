@@ -21,4 +21,6 @@ public class ArticleUpdateDTO {
     private String context;
 
     private List<String> imageUrl;
+
+    private short isOpen;
 }

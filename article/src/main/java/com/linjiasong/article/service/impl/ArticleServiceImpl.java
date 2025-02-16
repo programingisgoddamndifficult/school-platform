@@ -101,8 +101,14 @@ public class ArticleServiceImpl implements ArticleService {
 
         Long articleId = articleUpdateDTO.getId();
 
-        ArticleBasicInfo articleBasicInfo = ArticleBasicInfo.builder().id(articleId).articleTitle(articleUpdateDTO.getTitle())
-                .tag(articleUpdateDTO.getTag()).isOpen(articleUpdateDTO.getIsOpen()).updateTime(LocalDateTime.now()).build();
+        ArticleBasicInfo articleBasicInfo = articleBasicInfoGateway.selectById(articleId);
+        if(articleBasicInfo == null){
+            throw new BizException("服务异常");
+        }
+        articleBasicInfo.setArticleTitle(articleUpdateDTO.getTitle());
+        articleBasicInfo.setTag(articleUpdateDTO.getTag());
+        articleBasicInfo.setIsOpen(articleUpdateDTO.getIsOpen());
+        articleBasicInfo.setUpdateTime(LocalDateTime.now());
         if (!articleBasicInfoGateway.update(articleBasicInfo)) {
             throw new BizException("服务异常");
         }
