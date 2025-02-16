@@ -9,6 +9,7 @@ import com.linjiasong.article.entity.dto.ArticleCommentDTO;
 import com.linjiasong.article.entity.vo.ArticleCommentVO;
 import com.linjiasong.article.excepiton.ArticleBaseResponse;
 import com.linjiasong.article.excepiton.BizException;
+import com.linjiasong.article.gateway.ArticleBasicInfoGateway;
 import com.linjiasong.article.gateway.ArticleCommentGateway;
 import com.linjiasong.article.mapper.ArticleCommentMapper;
 import com.linjiasong.article.service.ArticleCommentService;
@@ -27,13 +28,16 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
     @Autowired
     private ArticleCommentGateway articleCommentGateway;
 
+    @Autowired
+    private ArticleBasicInfoGateway articleBasicInfoGateway;
+
     @Override
     public ArticleBaseResponse<?> comment(ArticleCommentDTO articleCommentDTO) {
-        if(articleCommentDTO.getComment().length() > 100){
+        if (articleCommentDTO.getComment().length() > 100) {
             throw new BizException("评论内容长度不能超过100字");
         }
 
-        if(!articleCommentGateway.comment(ArticleComment.build(articleCommentDTO))){
+        if (!articleCommentGateway.comment(ArticleComment.build(articleCommentDTO))) {
             throw new BizException("服务异常");
         }
         return ArticleBaseResponse.success();
@@ -43,11 +47,17 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
     public ArticleBaseResponse<?> deleteComment(Long id) {
         ArticleComment articleComment = articleCommentGateway.selectOne(new QueryWrapper<ArticleComment>()
                 .eq("id", id).eq("user_id", ArticleContext.get().getId()));
-        if(articleComment == null){
-            throw new BizException("评论不存在或无权限");
+        if (articleComment == null) {
+            Long articleId = articleCommentGateway.selectOne(new QueryWrapper<ArticleComment>()
+                    .eq("id", id)).getArticleId();
+            Long userId = articleBasicInfoGateway.selectById(articleId).getUserId();
+            //说明是自己的文章，那么可以随便删
+            if (!userId.equals(ArticleContext.get().getId())) {
+                throw new BizException("评论不存在或无权限");
+            }
         }
 
-        if(!articleCommentGateway.deleteComment(id)){
+        if (!articleCommentGateway.deleteComment(id)) {
             throw new BizException("服务异常");
         }
 
