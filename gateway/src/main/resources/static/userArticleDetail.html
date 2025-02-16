@@ -56,18 +56,59 @@
             left: 20px;
             color: red;
         }
+
+        /* 新增样式 */
+        #title-edit,
+        #content-edit {
+            display: block;
+            margin: 0 auto 10px;
+            text-align: center;
+        }
+
+        #title-edit {
+            width: 50%;
+            height: 30px;
+        }
+
+        #content-edit {
+            width: 100%;
+            max-width: 800px;
+            height: 200px;
+            overflow-y: auto;
+        }
+
+        /* 按钮容器样式 */
+        #button-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #save-button,
+        #open-status-button {
+            display: inline-block;
+            margin: 5px;
+        }
+
+        /* 调整用户信息位置 */
+        #user-info {
+            margin-top: 20px;
+        }
     </style>
 </head>
 
 <body>
 <h1>文章详情</h1>
 <div id="article-status"></div>
-<div id="article-title"></div>
+<input type="text" id="title-edit">
 <div id="user-info">
     <div id="user-avatar"></div>
     <div id="user-username"></div>
 </div>
-<div id="article-content"></div>
+<textarea id="content-edit"></textarea>
+<div id="button-container">
+    <button id="save-button">保存</button>
+    <button id="open-status-button"></button>
+</div>
 <div id="article-stats"></div>
 <div id="article-tag"></div>
 <div id="article-create-time"></div>
@@ -92,17 +133,18 @@
             .then(data => {
                 if (data.code === '200') {
                     const articleData = data.data;
-                    const articleTitle = document.getElementById('article-title');
+                    const titleEdit = document.getElementById('title-edit');
+                    const contentEdit = document.getElementById('content-edit');
                     const userUsername = document.getElementById('user-username');
-                    const articleContent = document.getElementById('article-content');
                     const articleStats = document.getElementById('article-stats');
                     const articleTag = document.getElementById('article-tag');
                     const articleCreateTime = document.getElementById('article-create-time');
                     const articleStatus = document.getElementById('article-status');
+                    const openStatusButton = document.getElementById('open-status-button');
 
-                    articleTitle.textContent = articleData.title;
+                    titleEdit.value = articleData.title;
+                    contentEdit.value = articleData.content;
                     userUsername.textContent = articleData.userInfo.username;
-                    articleContent.textContent = articleData.content;
                     articleStats.textContent = `收藏数: ${articleData.collectNum}，点赞数: ${articleData.likesNum}，阅读数: ${articleData.readNum}`;
 
                     const tagMap = {
@@ -124,6 +166,83 @@
                         statusText += '文章违规';
                     }
                     articleStatus.textContent = statusText;
+
+                    if (articleData.isOpen === 1) {
+                        openStatusButton.textContent = '私密';
+                    } else {
+                        openStatusButton.textContent = '开放';
+                    }
+
+                    openStatusButton.onclick = function () {
+                        const newIsOpen = articleData.isOpen === 1? 0 : 1;
+                        const updateApiUrl = 'http://127.0.0.1/api/user/article/update';
+                        const updateData = {
+                            "id": articleId,
+                            "userId": articleData.userInfo.userId,
+                            "title": titleEdit.value,
+                            "tag": articleData.tag,
+                            "context": contentEdit.value,
+                            "imageUrl": articleData.imageUrl,
+                            "isOpen": newIsOpen
+                        };
+
+                        fetch(updateApiUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': authorizationToken,
+                                'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(updateData)
+                        })
+                            .then(response => response.json())
+                            .then(updateData => {
+                                if (updateData.code === '200') {
+                                    console.log('更新成功');
+                                    articleData.isOpen = newIsOpen;
+                                    if (newIsOpen === 1) {
+                                        openStatusButton.textContent = '私密';
+                                    } else {
+                                        openStatusButton.textContent = '开放';
+                                    }
+                                } else {
+                                    console.error('更新失败:', updateData.msg);
+                                }
+                            })
+                            .catch(error => console.error('更新请求出错:', error));
+                    };
+
+                    document.getElementById('save-button').onclick = function () {
+                        const updateApiUrl = 'http://127.0.0.1/api/user/article/update';
+                        const updateData = {
+                            "id": articleId,
+                            "userId": articleData.userInfo.userId,
+                            "title": titleEdit.value,
+                            "tag": articleData.tag,
+                            "context": contentEdit.value,
+                            "imageUrl": articleData.imageUrl,
+                            "isOpen": articleData.isOpen
+                        };
+
+                        fetch(updateApiUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': authorizationToken,
+                                'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(updateData)
+                        })
+                            .then(response => response.json())
+                            .then(updateData => {
+                                if (updateData.code === '200') {
+                                    console.log('保存成功');
+                                } else {
+                                    console.error('保存失败:', updateData.msg);
+                                }
+                            })
+                            .catch(error => console.error('保存请求出错:', error));
+                    };
                 } else {
                     console.error('请求失败:', data.msg);
                 }
