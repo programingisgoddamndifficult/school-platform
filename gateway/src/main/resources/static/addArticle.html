@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>发布文章</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            text-align: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        form {
+            width: 60%;
+            max-width: 500px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            min-height: 150px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+<h1>发布文章</h1>
+<form id="articleForm">
+    <label for="title">文章标题：</label>
+    <input type="text" id="title" name="title" required>
+    <label for="tag">文章类型：</label>
+    <select id="tag" name="tag">
+        <option value="1">交友</option>
+        <option value="2">恋爱</option>
+        <option value="3">二手</option>
+        <option value="4">代课</option>
+        <option value="5">提问</option>
+        <option value="6">分享</option>
+    </select>
+    <label for="context">文章内容：</label>
+    <textarea id="context" name="context" required></textarea>
+    <label for="isOpen">文章权限：</label>
+    <select id="isOpen" name="isOpen">
+        <option value="1">开放</option>
+        <option value="0">私密</option>
+    </select>
+    <button type="submit">保存文章</button>
+</form>
+<div id="responseMessage"></div>
+<script>
+    document.getElementById('articleForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const title = document.getElementById('title').value;
+        const tag = document.getElementById('tag').value;
+        const context = document.getElementById('context').value;
+        const isOpen = document.getElementById('isOpen').value;
+        const data = {
+            title: title,
+            tag: parseInt(tag),
+            context: context,
+            isOpen: parseInt(isOpen)
+        };
+        const xhr = new XMLHttpRequest();
+        var token = localStorage.getItem('authorization');
+        const authorizationToken = token;
+        xhr.open('POST', 'http://127.0.0.1/api/user/article', true);
+        xhr.setRequestHeader('Authorization', authorizationToken);
+        xhr.setRequestHeader('User-Agent', 'Apifox/1.0.0 (https://apifox.com)');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.code === '200') {
+                        window.location.href = 'userArticle.html';
+                    }
+                } else {
+                    document.getElementById('responseMessage').innerHTML = '保存文章失败，请检查网络或联系管理员';
+                }
+            }
+        };
+        xhr.send(JSON.stringify(data));
+    });
+</script>
+</body>
+
+</html>

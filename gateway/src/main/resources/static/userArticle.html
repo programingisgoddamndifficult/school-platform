@@ -40,11 +40,32 @@
         .article-box:hover {
             border: 2px solid #007BFF;
         }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        /* 添加返回首页按钮的样式 */
+        #backToIndexButton {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
     </style>
 </head>
 
 <body>
+<!-- 添加返回首页按钮 -->
+<button id="backToIndexButton">返回首页</button>
 <h1>我的文章</h1>
+<button id="addArticleButton">新增文章</button>
 <div class="article-container" id="article-container"></div>
 
 <script>
@@ -128,6 +149,17 @@
     }
 
     window.addEventListener('scroll', handleScroll);
+
+    const addArticleButton = document.getElementById('addArticleButton');
+    addArticleButton.addEventListener('click', () => {
+        window.location.href = 'addArticle.html';
+    });
+
+    // 为返回首页按钮添加点击事件
+    const backToIndexButton = document.getElementById('backToIndexButton');
+    backToIndexButton.addEventListener('click', () => {
+        window.location.href = 'index.html';
+    });
 
     getArticleData(currentPage);
 </script>
