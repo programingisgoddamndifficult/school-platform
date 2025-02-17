@@ -12,6 +12,7 @@ import com.linjiasong.article.mapper.ArticleUserWatchMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -141,6 +142,9 @@ public class ArticleBasicInfoGatewayImpl implements ArticleBasicInfoGateway {
 
         Map<Short, List<ArticleBasicInfo>> recordsMap = records.stream().collect(Collectors.groupingBy(ArticleBasicInfo::getTag));
         List<ArticleBasicInfo> tagRecords = recordsMap.remove(tag);
+        if (tagRecords == null) {
+            tagRecords = new ArrayList<>();
+        }
         if (tagRecords.size() >= 20) {
             tagRecords = tagRecords.subList(0, 20);
             page.setRecords(tagRecords);
