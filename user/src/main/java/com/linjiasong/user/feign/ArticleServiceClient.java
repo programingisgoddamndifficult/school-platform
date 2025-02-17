@@ -76,4 +76,7 @@ public interface ArticleServiceClient {
 
     @GetMapping("/api/article/like/list")
     UserBaseResponse<?> getUserLikeArticles(@RequestParam("current") int current, @RequestParam("size") int size);
+
+    @GetMapping("/api/article/collect/list")
+    UserBaseResponse<?> getUserCollectArticles(@RequestParam("current") int current, @RequestParam("size") int size);
 }

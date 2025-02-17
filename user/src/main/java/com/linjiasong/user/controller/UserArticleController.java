@@ -47,6 +47,11 @@ public class UserArticleController {
         return userArticleService.userHasCollect(articleId);
     }
 
+    @GetMapping("/collect/list")
+    public UserBaseResponse<?> getUserCollectArticles(@RequestParam("current") int current, @RequestParam("size") int size) {
+        return userArticleService.getUserCollectArticles(current, size);
+    }
+
     @PostMapping("/like/{articleId}")
     public UserBaseResponse<?> likeArticle(@PathVariable("articleId") Long articleId) {
         return userArticleService.like(articleId);

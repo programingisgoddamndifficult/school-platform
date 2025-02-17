@@ -1,6 +1,8 @@
 package com.linjiasong.article.gateway;
 
-import com.linjiasong.article.entity.ArticleBasicInfo;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.linjiasong.article.entity.ArticleCollect;
 
 /**
  * @author linjiasong
@@ -11,4 +13,6 @@ public interface ArticleCollectGateway {
     boolean collect(Long articleId);
 
     boolean userHasCollect(Long articleId);
+
+    Page<ArticleCollect> selectList(int current, int size, QueryWrapper<ArticleCollect> queryWrapper);
 }

@@ -155,4 +155,12 @@ public interface UserArticleService {
      * @return UserBaseResponse
      */
     UserBaseResponse<?> getUserLikeArticles(int current, int size);
+
+    /**
+     * 获取用户收藏列表
+     * @param current current
+     * @param size size
+     * @return UserBaseResponse
+     */
+    UserBaseResponse<?> getUserCollectArticles(int current, int size);
 }

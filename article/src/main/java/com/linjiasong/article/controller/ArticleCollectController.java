@@ -27,4 +27,9 @@ public class ArticleCollectController {
         return articleCollectService.userHasCollect(articleId);
     }
 
+    @GetMapping("/list")
+    public ArticleBaseResponse<?> getUserCollectArticles(@RequestParam("current") int current, @RequestParam("size") int size) {
+        return articleCollectService.getUserCollectArticles(current, size);
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.linjiasong.article.gateway.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.linjiasong.article.constant.ArticleContext;
 import com.linjiasong.article.entity.ArticleBasicInfo;
 import com.linjiasong.article.entity.ArticleCollect;
@@ -48,6 +49,11 @@ public class ArticleCollectGatewayImpl implements ArticleCollectGateway {
         return articleCollectMapper.selectOne(new QueryWrapper<ArticleCollect>()
                 .eq("article_id", articleId)
                 .eq("user_id", ArticleContext.get().getId())) != null;
+    }
+
+    @Override
+    public Page<ArticleCollect> selectList(int current, int size, QueryWrapper<ArticleCollect> queryWrapper) {
+        return articleCollectMapper.selectPage(new Page<>(current, size), queryWrapper);
     }
 
     private boolean doCollect(Long articleId) {
