@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.linjiasong.user.constant.UserInfoContext;
 import com.linjiasong.user.entity.UserInfo;
 import com.linjiasong.user.entity.dto.*;
-import com.linjiasong.user.entity.vo.ArticleCommentVO;
-import com.linjiasong.user.entity.vo.ArticleDetailVO;
-import com.linjiasong.user.entity.vo.ArticleLikeVO;
-import com.linjiasong.user.entity.vo.ArticleUserCommentVO;
+import com.linjiasong.user.entity.vo.*;
 import com.linjiasong.user.excepiton.UserBaseResponse;
 import com.linjiasong.user.feign.ArticleServiceClient;
 import com.linjiasong.user.gateway.UserGateway;
@@ -157,6 +154,17 @@ public class UserArticleServiceImpl implements UserArticleService {
         Map<Long, UserInfo> userMap = userIds.isEmpty() ? Map.of() : userGateway.selectByIds(userIds).stream().collect(Collectors.toMap(UserInfo::getId, userInfo -> userInfo));
 
         return UserBaseResponse.success(ArticleLikeVO.build(articleLikeDTO, userMap));
+    }
+
+    @Override
+    public UserBaseResponse<?> getUserCollectArticles(int current, int size) {
+        UserBaseResponse<?> userCollectArticles = articleServiceClient.getUserCollectArticles(current, size);
+        ArticleCollectDTO articleCollectDTO = JSON.parseObject(userCollectArticles.getData().toString(), ArticleCollectDTO.class);
+
+        List<Long> userIds = articleCollectDTO.getCollectDataList().stream().map(ArticleCollectDTO.CollectData::getUserId).toList();
+        Map<Long, UserInfo> userMap = userIds.isEmpty() ? Map.of() : userGateway.selectByIds(userIds).stream().collect(Collectors.toMap(UserInfo::getId, userInfo -> userInfo));
+
+        return UserBaseResponse.success(ArticleCollectVO.build(articleCollectDTO, userMap));
     }
 
     private void setArticleDetailVOUserInfo(ArticleDetailVO articleDetailVO) {
