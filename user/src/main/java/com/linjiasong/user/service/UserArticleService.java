@@ -147,4 +147,12 @@ public interface UserArticleService {
      * @return UserBaseResponse
      */
     UserBaseResponse<?> userHasLike(Long articleId);
+
+    /**
+     * 获取用户点赞列表
+     * @param current current
+     * @param size size
+     * @return UserBaseResponse
+     */
+    UserBaseResponse<?> getUserLikeArticles(int current, int size);
 }

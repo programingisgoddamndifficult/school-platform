@@ -57,6 +57,11 @@ public class UserArticleController {
         return userArticleService.userHasLike(articleId);
     }
 
+    @GetMapping("/like/list")
+    public UserBaseResponse<?> getUserLikeArticles(@RequestParam("current") int current, @RequestParam("size") int size) {
+        return userArticleService.getUserLikeArticles(current, size);
+    }
+
     @GetMapping("/detail")
     public UserBaseResponse<?> getArticleDetail(@RequestParam("articleId") Long articleId) {
         return userArticleService.getArticleDetail(articleId);

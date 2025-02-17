@@ -12,6 +12,7 @@ public interface ArticleLikeService extends IService<ArticleLike> {
 
     /**
      * 点赞/取消点赞
+     *
      * @param articleId articleId
      * @return ArticleBaseResponse
      */
@@ -19,8 +20,16 @@ public interface ArticleLikeService extends IService<ArticleLike> {
 
     /**
      * 用户是否点赞
+     *
      * @param articleId articleId
      * @return ArticleBaseResponse
      */
     ArticleBaseResponse<?> userHasLike(Long articleId);
+
+    /**
+     * 获取用户点赞的文章列表
+     *
+     * @return ArticleBaseResponse
+     */
+    ArticleBaseResponse<?> getUserLikeArticles(int current, int size);
 }

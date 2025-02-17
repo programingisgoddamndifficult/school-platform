@@ -6,6 +6,7 @@ import com.linjiasong.user.entity.UserInfo;
 import com.linjiasong.user.entity.dto.*;
 import com.linjiasong.user.entity.vo.ArticleCommentVO;
 import com.linjiasong.user.entity.vo.ArticleDetailVO;
+import com.linjiasong.user.entity.vo.ArticleLikeVO;
 import com.linjiasong.user.entity.vo.ArticleUserCommentVO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
 import com.linjiasong.user.feign.ArticleServiceClient;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -144,6 +146,17 @@ public class UserArticleServiceImpl implements UserArticleService {
     @Override
     public UserBaseResponse<?> userHasLike(Long articleId) {
         return articleServiceClient.userHasLike(articleId);
+    }
+
+    @Override
+    public UserBaseResponse<?> getUserLikeArticles(int current, int size) {
+        UserBaseResponse<?> userLikeArticles = articleServiceClient.getUserLikeArticles(current, size);
+        ArticleLikeDTO articleLikeDTO = JSON.parseObject(userLikeArticles.getData().toString(), ArticleLikeDTO.class);
+
+        List<Long> userIds = articleLikeDTO.getLikeDataList().stream().map(ArticleLikeDTO.LikeData::getUserId).toList();
+        Map<Long, UserInfo> userMap = userIds.isEmpty() ? Map.of() : userGateway.selectByIds(userIds).stream().collect(Collectors.toMap(UserInfo::getId, userInfo -> userInfo));
+
+        return UserBaseResponse.success(ArticleLikeVO.build(articleLikeDTO, userMap));
     }
 
     private void setArticleDetailVOUserInfo(ArticleDetailVO articleDetailVO) {

@@ -1,6 +1,7 @@
 package com.linjiasong.article.gateway.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.linjiasong.article.constant.ArticleContext;
 import com.linjiasong.article.entity.ArticleBasicInfo;
 import com.linjiasong.article.entity.ArticleLike;
@@ -48,6 +49,11 @@ public class ArticleLikeGatewayImpl implements ArticleLikeGateway {
         return articleLikeMapper.selectOne(new QueryWrapper<ArticleLike>()
                 .eq("article_id", articleId)
                 .eq("user_id", ArticleContext.get().getId())) != null;
+    }
+
+    @Override
+    public Page<ArticleLike> selectList(int current, int size, QueryWrapper<ArticleLike> queryWrapper) {
+        return articleLikeMapper.selectPage(new Page<>(current, size), queryWrapper);
     }
 
     private boolean doLike(Long articleId) {
