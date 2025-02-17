@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,23 +13,19 @@
             flex-direction: column;
             align-items: center;
         }
-
         h1 {
             text-align: center;
             width: 100%;
             margin-bottom: 20px;
         }
-
         form {
             width: 60%;
             max-width: 500px;
         }
-
         label {
             display: block;
             margin-top: 10px;
         }
-
         input,
         textarea,
         select {
@@ -40,11 +35,9 @@
             margin-bottom: 15px;
             box-sizing: border-box;
         }
-
         textarea {
             min-height: 150px;
         }
-
         button {
             padding: 10px 20px;
             background-color: #007BFF;
@@ -52,13 +45,17 @@
             border: none;
             cursor: pointer;
         }
-
         button:hover {
             background-color: #0056b3;
         }
+        .right-side {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+        }
     </style>
 </head>
-
 <body>
 <h1>发布文章</h1>
 <form id="articleForm">
@@ -83,6 +80,14 @@
     <button type="submit">保存文章</button>
 </form>
 <div id="responseMessage"></div>
+<div class="right-side">
+    <span>可以对我提问帮你找到写作思绪噢～</span>
+    <label for="question">提问：</label>
+    <textarea id="question" name="question" required></textarea>
+    <button id="askButton">提问</button>
+    <label for="answer">回答：</label>
+    <textarea id="answer" name="answer" readonly></textarea>
+</div>
 <script>
     document.getElementById('articleForm').addEventListener('submit', function (event) {
         event.preventDefault();
@@ -117,7 +122,33 @@
         };
         xhr.send(JSON.stringify(data));
     });
+    document.getElementById('askButton').addEventListener('click', function () {
+        const question = document.getElementById('question').value;
+        const xhr = new XMLHttpRequest();
+        var token = localStorage.getItem('authorization');
+        const authorizationToken = token;
+        xhr.open('POST', 'http://127.0.0.1/api/user/ai/chat', true);
+        xhr.setRequestHeader('Authorization', authorizationToken);
+        xhr.setRequestHeader('User-Agent', 'Apifox/1.0.0 (https://apifox.com)');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        const data = {
+            "content": question
+        };
+        document.getElementById('answer').value = '';
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.code === '200') {
+                        document.getElementById('answer').value = response.data.content;
+                    }
+                } else {
+                    document.getElementById('answer').value = '提问失败，请检查网络或联系管理员';
+                }
+            }
+        };
+        xhr.send(JSON.stringify(data));
+    });
 </script>
 </body>
-
 </html>
