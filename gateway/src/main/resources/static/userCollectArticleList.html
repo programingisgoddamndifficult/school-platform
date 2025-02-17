@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户收藏的文章列表</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .article-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px;
+        }
+
+        .article-item {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .article-item h3 {
+            margin-top: 0;
+        }
+
+        .article-item p {
+            color: #666;
+        }
+
+        .article-item button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .article-item button:hover {
+            background-color: #0056b3;
+        }
+
+        .delete-button {
+            background-color: #dc3545;
+        }
+
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .user-info img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <h1>用户收藏的文章列表</h1>
+</header>
+<ul class="article-list">
+    <!-- 这里会通过 JavaScript 动态添加文章项 -->
+</ul>
+<script>
+    // 定义文章类型映射
+    const tagMap = {
+        1: '交友',
+        2: '恋爱',
+        3: '二手',
+        4: '代课',
+        5: '提问',
+        6: '分享'
+    };
+
+    // 定义接口 URL 和请求头
+    const baseApiUrl = 'http://127.0.0.1/api/user/article/collect/list';
+    const deleteUrl = 'http://127.0.0.1/api/user/article/collect/{articleId}';
+    var token = localStorage.getItem('authorization');
+    const authorizationToken = token;
+    const headers = {
+        'Authorization': authorizationToken,
+        'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
+        'Content-Type': 'application/json'
+    };
+
+    let currentPage = 1;
+    const pageSize = 20;
+    let isLoading = false;
+
+    // 发起请求
+    function fetchArticles() {
+        if (isLoading) return;
+        isLoading = true;
+        const apiUrl = `${baseApiUrl}?current=${currentPage}&size=${pageSize}`;
+        fetch(apiUrl, {
+            method: 'GET',
+            headers: headers
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.code === '200') {
+                    const articleList = document.querySelector('.article-list');
+                    const collectDataList = data.data.collectDataList;
+                    collectDataList.forEach(article => {
+                        const articleItem = document.createElement('li');
+                        articleItem.classList.add('article-item');
+
+                        const userInfoDiv = document.createElement('div');
+                        userInfoDiv.classList.add('user-info');
+
+                        const userImage = document.createElement('img');
+                        userImage.src = article.userInfo.image || 'default_avatar.jpg'; // 如果没有头像，使用默认头像
+                        userImage.alt = article.userInfo.username;
+
+                        const username = document.createElement('span');
+                        username.textContent = article.userInfo.username;
+
+                        userInfoDiv.appendChild(userImage);
+                        userInfoDiv.appendChild(username);
+
+                        const title = document.createElement('h3');
+                        title.textContent = article.articleTitle;
+
+                        const collectTime = document.createElement('p');
+                        collectTime.textContent = `喜欢时间：${article.collectTime}`;
+
+                        const tag = document.createElement('p');
+                        const tagText = tagMap[article.tag] || '未知类型';
+                        tag.textContent = `文章类型：${tagText}`;
+
+                        const viewButton = document.createElement('button');
+                        viewButton.textContent = '查看文章';
+
+                        // 为查看文章按钮添加点击事件监听器
+                        viewButton.addEventListener('click', function () {
+                            const articleId = article.articleId;
+                            const authorization = localStorage.getItem('authorization');
+                            const url = `article_detail.html?articleId=${articleId}&authorization=${authorization}`;
+                            window.location.href = url;
+                        });
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = '删除记录';
+                        deleteButton.classList.add('delete-button');
+
+                        // 为删除记录按钮添加点击事件监听器
+                        deleteButton.addEventListener('click', function () {
+                            const recordId = article.articleId;
+                            const deleteArticleUrl = deleteUrl.replace('{articleId}', recordId);
+                            fetch(deleteArticleUrl, {
+                                method: 'POST',
+                                headers: headers
+                            })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error(`HTTP error! status: ${response.status}`);
+                                    }
+                                    return response.json();
+                                })
+                                .then(deleteResponse => {
+                                    if (deleteResponse.code === '200') {
+                                        // 删除成功，从页面中移除该文章项
+                                        articleItem.remove();
+                                        console.log('删除记录成功');
+                                        // 刷新页面
+                                        location.reload();
+                                    } else {
+                                        console.error('删除记录失败:', deleteResponse.msg);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('删除记录请求出错:', error);
+                                });
+                        });
+
+                        articleItem.appendChild(userInfoDiv);
+                        articleItem.appendChild(title);
+                        articleItem.appendChild(collectTime);
+                        articleItem.appendChild(tag);
+                        articleItem.appendChild(viewButton);
+                        articleItem.appendChild(deleteButton);
+
+                        articleList.appendChild(articleItem);
+                    });
+                    currentPage++;
+                } else {
+                    console.error('请求失败:', data.msg);
+                }
+            })
+            .catch(error => {
+                console.error('请求出错:', error);
+            })
+            .finally(() => {
+                isLoading = false;
+            });
+    }
+
+    // 初始化加载
+    fetchArticles();
+
+    // 监听滚动事件
+    window.addEventListener('scroll', function () {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        const scrollHeight = Math.max(
+            document.documentElement.scrollHeight,
+            document.body.scrollHeight
+        );
+        const clientHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+        if (scrollTop + clientHeight >= scrollHeight) {
+            fetchArticles();
+        }
+    });
+</script>
+</body>
+
+</html>
