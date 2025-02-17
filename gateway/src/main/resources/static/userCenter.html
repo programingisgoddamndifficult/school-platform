@@ -36,6 +36,35 @@
         button:hover {
             background-color: #0056b3;
         }
+
+        /* 弹窗样式 */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .countdown {
+            margin-top: 10px;
+        }
+
+        .button-group {
+            margin-top: 20px;
+        }
     </style>
 </head>
 
@@ -44,7 +73,77 @@
 <button onclick="window.location.href='userInfo.html'">个人信息</button>
 <button onclick="window.location.href='userArticle.html'">个人文章</button>
 <button onclick="window.location.href='userArticleHistory.html'">观看历史</button>
-<button onclick="window.location.href='userDelete.html'">注销账户</button>
+<button onclick="showPopup()">注销账户</button>
+
+<!-- 弹窗 -->
+<div class="popup" id="popup">
+    <div class="popup-content">
+        <p>用户注销后无法恢复或者找回，请问是否确认注销</p>
+        <div class="countdown" id="countdown">倒计时：10秒</div>
+        <div class="button-group" id="buttonGroup" style="display: none;">
+            <button onclick="confirmDelete()">确认</button>
+            <button onclick="hidePopup()">取消</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let countdown;
+    let countdownValue = 10;
+
+    function showPopup() {
+        document.getElementById('popup').style.display = 'flex';
+        startCountdown();
+    }
+
+    function startCountdown() {
+        countdown = setInterval(() => {
+            countdownValue--;
+            document.getElementById('countdown').textContent = `倒计时：${countdownValue}秒`;
+            if (countdownValue === 0) {
+                clearInterval(countdown);
+                document.getElementById('buttonGroup').style.display = 'flex';
+            }
+        }, 1000);
+    }
+
+
+    var token = localStorage.getItem('authorization');
+    const authorizationToken = token;
+    function confirmDelete() {
+        // 这里可以添加更多逻辑，比如检查用户登录状态等
+        // 发起请求
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://127.0.0.1/api/user/delete', true);
+        xhr.setRequestHeader('Authorization', authorizationToken);
+        xhr.setRequestHeader('User-Agent', 'Apifox/1.0.0 (https://apifox.com)');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                const response = JSON.parse(xhr.responseText);
+                if (response.code === '200') {
+                    // 注销成功，可进行页面跳转等操作
+                    alert('注销成功');
+                    localStorage.removeItem('authorization');
+                    window.location.href = 'login.html';// 假设跳转到登录页面
+                } else {
+                    alert('注销失败：' + response.msg);
+                }
+            }
+        };
+        xhr.send();
+        hidePopup();
+    }
+
+    function hidePopup() {
+        document.getElementById('popup').style.display = 'none';
+        countdownValue = 10;
+        document.getElementById('countdown').textContent = '倒计时：10秒';
+        document.getElementById('buttonGroup').style.display = 'none';
+        if (countdown) {
+            clearInterval(countdown);
+        }
+    }
+</script>
 </body>
 
 </html>
