@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.linjiasong.admin.constant.AdminInfoContext;
+import com.linjiasong.admin.constant.RedisKeyEnum;
 import com.linjiasong.admin.entity.AdminInfo;
 import com.linjiasong.admin.entity.dto.AdminCreateDTO;
 import com.linjiasong.admin.entity.dto.AdminLoginDTO;
@@ -14,8 +15,12 @@ import com.linjiasong.admin.mapper.AdminInfoMapper;
 import com.linjiasong.admin.service.AdminInfoService;
 import com.linjiasong.admin.utils.TokenUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import org.redisson.api.RBucket;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * @author linjiasong
@@ -27,9 +32,12 @@ public class AdminInfoServiceImpl extends ServiceImpl<AdminInfoMapper, AdminInfo
     @Autowired
     private AdminGateway adminGateway;
 
+    @Autowired
+    private RedissonClient redissonClient;
+
     @Override
     public AdminBaseResponse createAdmin(AdminCreateDTO adminCreateDTO) {
-        if(!AdminInfoContext.get().getId().equals(1L)){
+        if (!AdminInfoContext.get().getId().equals(1L)) {
             throw new BizException("没有权限");
         }
 
@@ -60,8 +68,27 @@ public class AdminInfoServiceImpl extends ServiceImpl<AdminInfoMapper, AdminInfo
             throw new BizException("登陆失败，用户名或者密码不正确");
         }
 
-        response.setHeader("Authorization", "Bearer " + TokenUtil.generateToken(JSON.toJSONString(adminInfo)));
+        String token = "Bearer " + TokenUtil.generateToken(JSON.toJSONString(adminInfo));
+
+        RBucket<String> bucket = redissonClient.getBucket(String.format(RedisKeyEnum.ADMIN_LOGIN.getKey(), adminInfo.getId()));
+        if (bucket.isExists()) {
+            bucket.delete();
+        }
+        bucket.set(token, RedisKeyEnum.ADMIN_LOGIN.getExpiryTime(), RedisKeyEnum.ADMIN_LOGIN.getTimeUnit());
+
+        response.setHeader("Authorization", token);
         return AdminBaseResponse.builder().code("200").msg("success").build();
     }
 
+    @Override
+    public AdminBaseResponse loginOut() {
+        RBucket<String> bucket = redissonClient.getBucket(String.format(RedisKeyEnum.ADMIN_LOGIN.getKey(), AdminInfoContext.get().getId()));
+        bucket.delete();
+        return AdminBaseResponse.success();
+    }
+
+    @Override
+    public AdminBaseResponse isBigAdmin() {
+        return AdminBaseResponse.success(Map.of("isBigAdmin", AdminInfoContext.get().getId().equals(1L)));
+    }
 }

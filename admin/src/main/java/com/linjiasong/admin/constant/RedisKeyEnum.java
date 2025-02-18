@@ -15,6 +15,7 @@ public enum RedisKeyEnum {
 
     ARTICLE_CHECK_LIST("article:check_list", "管理员check文章list", 14L, TimeUnit.DAYS),
     ARTICLE_DO_CHECK("article:do_check:%s", "被check的文章id", 7L, TimeUnit.DAYS),
+    ADMIN_LOGIN("admin:login:%s", "管理员登陆标识", 7L, TimeUnit.DAYS),
     ;
 
     /**

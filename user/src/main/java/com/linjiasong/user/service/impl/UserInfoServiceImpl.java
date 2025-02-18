@@ -87,8 +87,8 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         if (bucket.isExists()) {
             bucket.delete();
         }
+        bucket.set(token, RedisKeyEnum.USER_LOGIN.getExpiryTime(), RedisKeyEnum.USER_LOGIN.getTimeUnit());
 
-        bucket.set(token);
         response.setHeader("Authorization", token);
         return UserBaseResponse.builder().code("200").msg("success").build();
     }

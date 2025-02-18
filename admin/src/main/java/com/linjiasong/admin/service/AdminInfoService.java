@@ -16,4 +16,8 @@ public interface AdminInfoService extends IService<AdminInfo> {
     AdminBaseResponse createAdmin(AdminCreateDTO adminCreateDTO);
 
     AdminBaseResponse login(AdminLoginDTO adminLoginDTO, HttpServletResponse response);
+
+    AdminBaseResponse loginOut();
+
+    AdminBaseResponse isBigAdmin();
 }
