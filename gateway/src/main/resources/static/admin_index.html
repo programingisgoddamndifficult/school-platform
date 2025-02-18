@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员中心</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            width: 200px;
+            padding: 15px;
+            margin: 10px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+        }
+
+        .close, .confirm {
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .close {
+            background-color: #f44336;
+        }
+
+        .close:hover {
+            background-color: #d32f2f;
+        }
+
+        .confirm {
+            background-color: #4CAF50;
+        }
+
+        .confirm:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<h1>管理员中心</h1>
+<button onclick="window.location.href='admin_manager_index.html'" id="manageAdminButton">管理 管理员账户</button>
+<button onclick="window.location.href='article_check.html'">文章审核</button>
+<button id="logoutButton">退出登陆</button>
+
+<!-- Confirmation Modal -->
+<div id="logoutModal" class="modal">
+    <div class="modal-content">
+        <p>是否退出登录？</p>
+        <button class="close">取消</button>
+        <button class="confirm">确认</button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Check if 'adminAuthorization' is present in localStorage
+        const adminAuthorization = localStorage.getItem('adminAuthorization');
+        if (!adminAuthorization) {
+            // Redirect to login page if not present
+            window.location.href = 'admin_login.html';
+            return;
+        }
+
+        const manageAdminButton = document.getElementById('manageAdminButton');
+        const logoutButton = document.getElementById('logoutButton');
+        const logoutModal = document.getElementById('logoutModal');
+        const closeModal = logoutModal.querySelector('.close');
+        const confirmButton = logoutModal.querySelector('.confirm');
+
+        fetch('http://127.0.0.1/api/admin/isBigAdmin', {
+            method: 'GET',
+            headers: {
+                'Authorization': adminAuthorization
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === "200" && data.data.isBigAdmin) {
+                    manageAdminButton.onclick = function () {
+                        window.location.href = 'admin_manager_index.html';
+                    }
+                } else {
+                    manageAdminButton.onclick = function () {
+                        alert('无权限');
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+
+        logoutButton.onclick = function() {
+            logoutModal.style.display = 'block';
+        };
+
+        closeModal.onclick = function() {
+            logoutModal.style.display = 'none';
+        };
+
+        confirmButton.onclick = function() {
+            fetch('http://127.0.0.1/api/admin/loginOut', {
+                method: 'POST',
+                headers: {
+                    'Authorization': adminAuthorization,
+                    'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === "200") {
+                        window.location.href = 'admin_login.html';
+                        localStorage.removeItem('adminAuthorization')
+                    } else {
+                        alert('Error: ' + data.msg);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        };
+    });
+</script>
+</body>
+</html>
