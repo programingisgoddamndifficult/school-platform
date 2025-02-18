@@ -263,7 +263,7 @@
             recordDiv.addEventListener('click', function () {
                 const articleId = record.id; // 假设 record 对象中有 id 属性
                 const authorization = localStorage.getItem('authorization');
-                const url = `article_detail.html?articleId=${articleId}&authorization=${authorization}`;
+                const url = `article_detail.html?articleId=${articleId}`;
                 window.location.href = url;
             });
 

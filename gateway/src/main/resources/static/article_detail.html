@@ -202,7 +202,7 @@
   // 从URL中获取参数
   const urlParams = new URLSearchParams(window.location.search);
   const articleId = urlParams.get('articleId');
-  const authorization = urlParams.get('authorization');
+  const authorization = localStorage.getItem('authorization')
 
   if (!articleId ||!authorization) {
     alert('缺少必要参数，请重新访问。');
