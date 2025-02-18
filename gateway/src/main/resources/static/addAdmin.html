@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Admin</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      position: relative; /* Add relative positioning */
+    }
+    .container {
+      text-align: center;
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .return-button { /* Styling for the return button */
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 10px;
+      background-color: #007BFF;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+<a href="admin_manager_index.html" class="return-button">返回</a> <!-- Return button -->
+<div class="container">
+  <h1>Add Admin</h1>
+  <form id="addAdminForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
+
+    <button type="submit">Add Admin</button>
+  </form>
+
+  <div id="responseMessage"></div>
+</div>
+
+<script>
+  async function checkIsBigAdmin() {
+    try {
+      const response = await fetch('http://127.0.0.1/api/admin/isBigAdmin', {
+        method: 'GET',
+        headers: {
+          'Authorization': `${localStorage.getItem('adminAuthorization')}`
+        }
+      });
+
+      const result = await response.json();
+
+      if (result.code === '200' && !result.data.isBigAdmin) {
+        window.location.href = 'admin_index.html';
+      }
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+    }
+  }
+
+  document.getElementById('addAdminForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const responseMessage = document.getElementById('responseMessage');
+    responseMessage.textContent = '';
+
+    try {
+      const response = await fetch('http://127.0.0.1/api/admin', {
+        method: 'POST',
+        headers: {
+          'Authorization': `${localStorage.getItem('adminAuthorization')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      });
+
+      const result = await response.json();
+
+      if (result.code === '200') {
+        responseMessage.textContent = 'Admin added successfully!';
+      } else {
+        responseMessage.textContent = `Error: ${result.msg}`;
+      }
+    } catch (error) {
+      responseMessage.textContent = `Request failed: ${error.message}`;
+    }
+  });
+
+  // Check admin status on page load
+  window.onload = checkIsBigAdmin;
+</script>
+</body>
+</html>
