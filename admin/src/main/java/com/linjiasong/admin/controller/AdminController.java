@@ -41,4 +41,9 @@ public class AdminController {
         return adminInfoService.isBigAdmin();
     }
 
+    @GetMapping
+    public AdminBaseResponse getAdminInfoList(@RequestParam("current") int current, @RequestParam("size") int size) {
+        return adminInfoService.getAdminList(current, size);
+    }
+
 }

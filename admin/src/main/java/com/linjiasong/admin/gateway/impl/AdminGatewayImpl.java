@@ -1,6 +1,7 @@
 package com.linjiasong.admin.gateway.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.linjiasong.admin.entity.AdminInfo;
 import com.linjiasong.admin.gateway.AdminGateway;
 import com.linjiasong.admin.mapper.AdminInfoMapper;
@@ -25,5 +26,10 @@ public class AdminGatewayImpl implements AdminGateway {
     @Override
     public AdminInfo selectOne(QueryWrapper<AdminInfo> queryWrapper) {
         return adminInfoMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public Page<AdminInfo> selectPage(Page<AdminInfo> page, QueryWrapper<AdminInfo> queryWrapper) {
+        return adminInfoMapper.selectPage(page, queryWrapper);
     }
 }

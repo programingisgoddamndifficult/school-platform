@@ -2,12 +2,14 @@ package com.linjiasong.admin.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.linjiasong.admin.constant.AdminInfoContext;
 import com.linjiasong.admin.constant.RedisKeyEnum;
 import com.linjiasong.admin.entity.AdminInfo;
 import com.linjiasong.admin.entity.dto.AdminCreateDTO;
 import com.linjiasong.admin.entity.dto.AdminLoginDTO;
+import com.linjiasong.admin.entity.vo.AdminInfoListVo;
 import com.linjiasong.admin.excepiton.AdminBaseResponse;
 import com.linjiasong.admin.excepiton.BizException;
 import com.linjiasong.admin.gateway.AdminGateway;
@@ -35,9 +37,11 @@ public class AdminInfoServiceImpl extends ServiceImpl<AdminInfoMapper, AdminInfo
     @Autowired
     private RedissonClient redissonClient;
 
+    private static final Long SUPER_ADMIN_ID = 1L;
+
     @Override
     public AdminBaseResponse createAdmin(AdminCreateDTO adminCreateDTO) {
-        if (!AdminInfoContext.get().getId().equals(1L)) {
+        if (!AdminInfoContext.get().getId().equals(SUPER_ADMIN_ID)) {
             throw new BizException("没有权限");
         }
 
@@ -89,6 +93,16 @@ public class AdminInfoServiceImpl extends ServiceImpl<AdminInfoMapper, AdminInfo
 
     @Override
     public AdminBaseResponse isBigAdmin() {
-        return AdminBaseResponse.success(Map.of("isBigAdmin", AdminInfoContext.get().getId().equals(1L)));
+        return AdminBaseResponse.success(Map.of("isBigAdmin", AdminInfoContext.get().getId().equals(SUPER_ADMIN_ID)));
+    }
+
+    @Override
+    public AdminBaseResponse getAdminList(int current, int size) {
+        if (!AdminInfoContext.get().getId().equals(SUPER_ADMIN_ID)) {
+            throw new BizException("无权限");
+        }
+
+        return AdminBaseResponse.success(AdminInfoListVo.build(adminGateway.selectPage(new Page<>(current, size),
+                new QueryWrapper<AdminInfo>().notIn("id", SUPER_ADMIN_ID).orderByAsc("id"))));
     }
 }
