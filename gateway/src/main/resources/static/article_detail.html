@@ -159,6 +159,57 @@
       font-size: 0.8em;
       color: #888;
     }
+
+    /* 新增智能总结按钮样式 */
+    #ai-summary-container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      text-align: right;
+    }
+
+    #ai-summary-button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    /* 弹窗样式 */
+    #summary-modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      width: 50%;
+      max-width: 600px;
+    }
+
+    #summary-modal h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    #summary-modal-content {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    #summary-modal-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      font-size: 20px;
+    }
   </style>
 </head>
 
@@ -171,7 +222,6 @@
 <div id="article-content"></div>
 <div id="article-stats">
   <div class="stat-item">
-    <!-- 修改为按钮 -->
     <button class="like-button" id="like-button">
       <span class="stat-icon">❤️</span>
       <span id="likes-num"></span>
@@ -182,7 +232,6 @@
     <span id="read-num"></span>
   </div>
   <div class="stat-item">
-    <!-- 修改为按钮 -->
     <button class="collect-button" id="collect-button">
       <span class="stat-icon">⭐</span>
       <span id="collect-num"></span>
@@ -190,13 +239,24 @@
   </div>
 </div>
 <div id="create-time"></div>
-<!-- 新增评论框和评论按钮 -->
 <div id="comment-container">
   <input type="text" id="comment-box" placeholder="请输入评论内容">
   <button id="comment-button">评论</button>
 </div>
-<!-- 新增评论区 -->
 <div id="comment-section"></div>
+
+<!-- 新增智能总结按钮和提示文字 -->
+<div id="ai-summary-container">
+  <p>文字太多？那就让AI帮你总结吧</p>
+  <button id="ai-summary-button">智能总结</button>
+</div>
+
+<!-- 新增弹窗 -->
+<div id="summary-modal">
+  <div id="summary-modal-close">×</div>
+  <h2>智能总结</h2>
+  <div id="summary-modal-content"></div>
+</div>
 
 <script>
   // 从URL中获取参数
@@ -350,7 +410,6 @@
   document.getElementById('comment-button').addEventListener('click', function () {
     const commentBox = document.getElementById('comment-box');
     const comment = commentBox.value.trim();
-    // 添加评论长度限制检查
     if (comment.length > 100) {
       alert('评论内容不能超过100个字符');
       return;
@@ -440,6 +499,36 @@
               console.error('获取评论列表错误:', error);
             });
   }
+
+  // 处理智能总结按钮点击事件
+  document.getElementById('ai-summary-button').addEventListener('click', function () {
+    fetch(`http://127.0.0.1/api/user/ai/sum/${articleId}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `${authorization}`,
+        'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+      }
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.code === '200') {
+                const summaryContent = data.data.content;
+                const summaryModal = document.getElementById('summary-modal');
+                const summaryModalContent = document.getElementById('summary-modal-content');
+                summaryModalContent.textContent = summaryContent;
+                summaryModal.style.display = 'block';
+              }
+            })
+            .catch(error => {
+              console.error('获取AI总结错误:', error);
+            });
+  });
+
+  // 关闭弹窗
+  document.getElementById('summary-modal-close').addEventListener('click', function () {
+    const summaryModal = document.getElementById('summary-modal');
+    summaryModal.style.display = 'none';
+  });
 </script>
 </body>
 
