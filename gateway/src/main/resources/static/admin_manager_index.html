@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理员管理页</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 30px;
+    }
+
+    button {
+      width: 200px;
+      padding: 15px;
+      margin: 10px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const token = localStorage.getItem('adminAuthorization');
+      if (!token) {
+        window.location.href = 'admin_index.html';
+        return;
+      }
+
+      fetch('http://127.0.0.1/api/admin/isBigAdmin', {
+        method: 'GET',
+        headers: {
+          'Authorization': `${token}`,
+          'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+        }
+      })
+              .then(response => response.json())
+              .then(data => {
+                if (data.code !== "200" || !data.data.isBigAdmin) {
+                  window.location.href = 'admin_index.html';
+                }
+              })
+              .catch(() => {
+                window.location.href = 'admin_index.html';
+              });
+    });
+  </script>
+</head>
+
+<body>
+<h1>管理员管理页</h1>
+<button onclick="window.location.href='addAdmin.html'">添加管理员</button>
+<button onclick="window.location.href='admin_list.html'">管理员列表</button>
+<button onclick="window.location.href='admin_index.html'">返回</button>
+</body>
+
+</html>
