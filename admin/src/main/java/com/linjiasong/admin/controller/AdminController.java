@@ -46,4 +46,9 @@ public class AdminController {
         return adminInfoService.getAdminList(current, size);
     }
 
+    @PostMapping("/delete/{adminId}")
+    public AdminBaseResponse deleteAdmin(@PathVariable("adminId") Long adminId) {
+        return adminInfoService.deleteAdmin(adminId);
+    }
+
 }

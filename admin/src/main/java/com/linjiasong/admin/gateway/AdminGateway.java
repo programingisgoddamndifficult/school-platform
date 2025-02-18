@@ -15,4 +15,6 @@ public interface AdminGateway {
     AdminInfo selectOne(QueryWrapper<AdminInfo> queryWrapper);
 
     Page<AdminInfo> selectPage(Page<AdminInfo> page, QueryWrapper<AdminInfo> queryWrapper);
+
+    boolean deleteById(Long id);
 }

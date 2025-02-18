@@ -47,4 +47,11 @@ public interface AdminInfoService extends IService<AdminInfo> {
      * @return AdminBaseResponse
      */
     AdminBaseResponse getAdminList(int current, int size);
+
+    /**
+     * 移除管理员
+     * @param adminId adminId
+     * @return AdminBaseResponse
+     */
+    AdminBaseResponse deleteAdmin(Long adminId);
 }

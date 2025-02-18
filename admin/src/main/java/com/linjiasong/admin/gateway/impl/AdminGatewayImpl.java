@@ -32,4 +32,9 @@ public class AdminGatewayImpl implements AdminGateway {
     public Page<AdminInfo> selectPage(Page<AdminInfo> page, QueryWrapper<AdminInfo> queryWrapper) {
         return adminInfoMapper.selectPage(page, queryWrapper);
     }
+
+    @Override
+    public boolean deleteById(Long id) {
+        return adminInfoMapper.deleteById(id) > 0;
+    }
 }

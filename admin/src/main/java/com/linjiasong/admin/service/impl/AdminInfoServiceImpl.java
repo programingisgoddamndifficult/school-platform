@@ -41,9 +41,7 @@ public class AdminInfoServiceImpl extends ServiceImpl<AdminInfoMapper, AdminInfo
 
     @Override
     public AdminBaseResponse createAdmin(AdminCreateDTO adminCreateDTO) {
-        if (!AdminInfoContext.get().getId().equals(SUPER_ADMIN_ID)) {
-            throw new BizException("没有权限");
-        }
+        checkOnlySuperAdminCanDo();
 
         if (!adminCreateDTO.checkParam()) {
             throw new BizException("参数不合法");
@@ -98,11 +96,26 @@ public class AdminInfoServiceImpl extends ServiceImpl<AdminInfoMapper, AdminInfo
 
     @Override
     public AdminBaseResponse getAdminList(int current, int size) {
-        if (!AdminInfoContext.get().getId().equals(SUPER_ADMIN_ID)) {
-            throw new BizException("无权限");
-        }
+        checkOnlySuperAdminCanDo();
 
         return AdminBaseResponse.success(AdminInfoListVo.build(adminGateway.selectPage(new Page<>(current, size),
                 new QueryWrapper<AdminInfo>().notIn("id", SUPER_ADMIN_ID).orderByAsc("id"))));
+    }
+
+    @Override
+    public AdminBaseResponse deleteAdmin(Long adminId) {
+        checkOnlySuperAdminCanDo();
+
+        if(!adminGateway.deleteById(adminId)){
+            throw new BizException("服务异常");
+        }
+
+        return AdminBaseResponse.success();
+    }
+
+    private void checkOnlySuperAdminCanDo(){
+        if (!AdminInfoContext.get().getId().equals(SUPER_ADMIN_ID)) {
+            throw new BizException("无权限");
+        }
     }
 }
