@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员列表</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+<h1>管理员列表</h1>
+<table id="adminTable">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>用户名</th>
+        <th>创建时间</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- 动态插入管理员信息 -->
+    </tbody>
+</table>
+
+<script>
+    const apiUrl = 'http://127.0.0.1/api/admin';
+    let currentPage = 1;
+    const pageSize = 20;
+
+    async function loadAdmins() {
+        const response = await fetch(`${apiUrl}?current=${currentPage}&size=${pageSize}`, {
+            headers: {
+                'Authorization': localStorage.getItem('adminAuthorization'),
+                'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+            }
+        });
+
+        if (!response.ok) {
+            console.error('Failed to fetch admin data');
+            return;
+        }
+
+        const responseData = await response.json();
+
+        if (responseData.code === "200" && responseData.data && responseData.data.adminInfos) {
+            const adminInfos = responseData.data.adminInfos;
+            const tbody = document.querySelector('#adminTable tbody');
+            adminInfos.forEach(admin => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                        <td>${admin.id}</td>
+                        <td>${admin.username}</td>
+                        <td>${admin.createTime}</td>
+                        <td><button onclick="deleteAdmin(${admin.id})">删除</button></td>
+                    `;
+                tbody.appendChild(row);
+            });
+
+            // 增加页数
+            currentPage++;
+        } else {
+            console.error('Error in response data', responseData);
+        }
+    }
+
+    function deleteAdmin(adminId) {
+        fetch(`${apiUrl}/delete/${adminId}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': localStorage.getItem('adminAuthorization'),
+                'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+            }
+        })
+            .then(response => response.json())
+            .then(responseData => {
+                if (responseData.code === "200") {
+                    alert(`管理员 ${adminId} 删除成功`);
+                    // 刷新页面
+                    location.reload();
+                } else {
+                    console.error('Failed to delete admin', responseData);
+                    alert('删除失败，服务器返回错误');
+                }
+            })
+            .catch(error => {
+                console.error('Error during deletion', error);
+                alert('删除失败，请检查网络连接');
+            });
+    }
+
+    function handleScroll() {
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight) {
+            loadAdmins();
+        }
+    }
+
+    window.addEventListener('scroll', handleScroll);
+
+    // 初始化加载
+    loadAdmins();
+</script>
+</body>
+
+</html>
