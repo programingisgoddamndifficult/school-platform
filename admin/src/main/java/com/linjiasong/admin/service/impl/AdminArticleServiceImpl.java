@@ -35,9 +35,12 @@ public class AdminArticleServiceImpl implements AdminArticleService {
     @Override
     public AdminBaseResponse getCheckArticleListFirst() {
         RList<String> list = redissonClient.getList(RedisKeyEnum.ARTICLE_CHECK_LIST.getKey());
+        if (list == null || list.isEmpty()) {
+            throw new BizException("暂无新的文章待审核");
+        }
         ArticleCheckVO articleCheckVO = JSON.parseObject(list.getFirst(), ArticleCheckVO.class);
         if (articleCheckVO == null) {
-            throw new BizException("暂无新的文章待审核");
+            throw new BizException("服务异常，请稍后重试");
         }
         return AdminBaseResponse.success(articleCheckVO);
     }
