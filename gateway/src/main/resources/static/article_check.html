@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Check</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+
+        .article {
+            max-width: 600px;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .tag {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .ban-button {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+
+        .approve-button {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+
+        .return-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="article">
+    <h1 id="title">Title will appear here</h1>
+    <p id="context">Context will appear here</p>
+    <p class="tag" id="tag">Tag will appear here</p>
+    <div class="button-container">
+        <button class="ban-button" onclick="handleAction(true)">封禁</button>
+        <button class="approve-button" onclick="handleAction(false)">通过</button>
+    </div>
+</div>
+
+<button class="return-button" onclick="returnToAdminIndex()">返回</button>
+
+<script>
+    // Check for authorization on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const authorization = localStorage.getItem('adminAuthorization');
+
+        // Redirect to login page if no authorization token is found
+        if (!authorization) {
+            window.location.href = 'admin_login.html';
+        } else {
+            // Fetch the article if authorization token is available
+            fetchArticle();
+        }
+    });
+
+    let articleId; // Declare this variable to store the article ID
+
+    function mapTag(tag) {
+        switch (tag) {
+            case 1:
+                return '交友';
+            case 2:
+                return '恋爱';
+            case 3:
+                return '二手';
+            case 4:
+                return '代课';
+            case 5:
+                return '提问';
+            case 6:
+                return '分享';
+            default:
+                return '未知';
+        }
+    }
+
+    async function fetchArticle() {
+        const authorization = localStorage.getItem('adminAuthorization');
+        try {
+            const response = await fetch('http://127.0.0.1/api/admin/article', {
+                headers: {
+                    'Authorization': authorization,
+                    'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
+                }
+            });
+            const data = await response.json();
+            if (data.code === "200") {
+                document.getElementById('title').innerText = data.data.title;
+                document.getElementById('context').innerText = data.data.context;
+                document.getElementById('tag').innerText = '类型： ' + mapTag(data.data.tag);
+                articleId = data.data.id; // Assign article ID
+            } else if (data.code === "400") {
+                document.getElementById('title').innerText = "暂无新的文章待审核";
+                document.getElementById('context').innerText = "";
+                document.getElementById('tag').innerText = "";
+            } else {
+                alert("Failed to load article.");
+            }
+        } catch (e) {
+            console.error("Error fetching article: ", e);
+            alert("Error fetching article data.");
+        }
+    }
+
+    async function handleAction(doBan) {
+        if (!articleId) return; // Ensure articleId is available
+
+        const authorization = localStorage.getItem('adminAuthorization');
+        try {
+            const response = await fetch('http://127.0.0.1/api/admin/article', {
+                method: 'POST',
+                headers: {
+                    'Authorization': authorization,
+                    'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    articleId: articleId,
+                    doBan: doBan
+                })
+            });
+            const result = await response.json();
+            if (result.code === "200") {
+                location.reload(); // Refresh the page
+            } else {
+                alert("Failed to update article status.");
+            }
+        } catch (e) {
+            console.error("Error updating article: ", e);
+            alert("Error updating article status.");
+        }
+    }
+
+    function returnToAdminIndex() {
+        window.location.href = 'admin_index.html';
+    }
+</script>
+
+</body>
+</html>
