@@ -1,94 +1,122 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>用户观看历史文章历史记录</title>
+  <title>用户观看历史记录</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    /* 全局重置 */
+    * {
       margin: 0;
       padding: 0;
-      background-color: #f4f4f4;
+      box-sizing: border-box;
     }
-
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+      padding-bottom: 40px;
+    }
     header {
-      background-color: #333;
-      color: white;
+      background: linear-gradient(135deg, #74ebd5, #acb6e5);
+      color: #fff;
       text-align: center;
       padding: 20px;
+      font-size: 24px;
+      font-weight: 500;
     }
-
-    .article-list {
-      list-style-type: none;
-      padding: 0;
-      margin: 20px;
+    .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 0 20px;
     }
-
-    .article-item {
-      background-color: white;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 15px;
-      margin-bottom: 15px;
-    }
-
-    .article-item h3 {
-      margin-top: 0;
-    }
-
-    .article-item p {
-      color: #666;
-    }
-
-    .article-item button {
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 3px;
-      cursor: pointer;
-      margin-right: 10px;
-    }
-
-    .article-item button:hover {
-      background-color: #0056b3;
-    }
-
-    .delete-button {
-      background-color: #dc3545;
-    }
-
-    .delete-button:hover {
-      background-color: #c82333;
-    }
-
+    /* 删除所有记录按钮 */
     #delete-all-button {
       display: block;
       margin: 20px auto;
       background-color: #dc3545;
-      color: white;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    #delete-all-button:hover {
+      background-color: #c82333;
+    }
+    /* 文章列表采用卡片式布局 */
+    .article-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      list-style: none;
+      padding: 0;
+      margin-bottom: 40px;
+    }
+    .article-item {
+      background-color: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      transition: transform 0.2s, border 0.3s;
+    }
+    .article-item:hover {
+      transform: translateY(-4px);
+      border: 2px solid #74c0fc;
+    }
+    .article-item h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #2b2d42;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .article-item p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 8px;
+    }
+    .article-item p:last-child {
+      margin-bottom: 0;
+    }
+    .article-item button {
+      background-color: #74c0fc;
+      color: #fff;
       border: none;
       padding: 8px 15px;
-      border-radius: 3px;
+      border-radius: 4px;
       cursor: pointer;
+      margin-right: 10px;
+      transition: background-color 0.3s;
+      font-size: 14px;
     }
-
-    #delete-all-button:hover {
+    .article-item button:hover {
+      background-color: #4dabf7;
+    }
+    .article-item .delete-button {
+      background-color: #dc3545;
+    }
+    .article-item .delete-button:hover {
       background-color: #c82333;
     }
   </style>
 </head>
-
 <body>
 <header>
   <h1>用户观看历史记录</h1>
 </header>
-<button id="delete-all-button">删除所有记录</button>
-<ul class="article-list">
-  <!-- 这里会通过 JavaScript 动态添加文章项 -->
-</ul>
+<div class="container">
+  <button id="delete-all-button">删除所有记录</button>
+  <ul class="article-list">
+    <!-- 文章记录由 JavaScript 动态添加 -->
+  </ul>
+</div>
+
 <script>
   // 定义文章类型映射
   const tagMap = {
@@ -111,10 +139,10 @@
     'Content-Type': 'application/json'
   };
 
-  // 存储所有文章记录的 id
+  // 存储所有记录的 id
   let allRecordIds = [];
 
-  // 发起请求
+  // 发起请求获取观看历史记录
   fetch(apiUrl, {
     method: 'GET',
     headers: headers
@@ -135,30 +163,30 @@
 
                 const title = document.createElement('h3');
                 title.textContent = article.articleTitle;
+                articleItem.appendChild(title);
 
                 const watchTime = document.createElement('p');
                 watchTime.textContent = `观看时间：${article.watchTime}`;
+                articleItem.appendChild(watchTime);
 
                 const tag = document.createElement('p');
                 const tagText = tagMap[article.tag] || '未知类型';
                 tag.textContent = `文章类型：${tagText}`;
+                articleItem.appendChild(tag);
 
                 const viewButton = document.createElement('button');
                 viewButton.textContent = '查看文章';
-
-                // 为查看文章按钮添加点击事件监听器
                 viewButton.addEventListener('click', function () {
                   const articleId = article.articleId;
                   const authorization = localStorage.getItem('authorization');
                   const url = `article_detail.html?articleId=${articleId}&authorization=${authorization}`;
                   window.location.href = url;
                 });
+                articleItem.appendChild(viewButton);
 
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = '删除记录';
                 deleteButton.classList.add('delete-button');
-
-                // 为删除记录按钮添加点击事件监听器
                 deleteButton.addEventListener('click', function () {
                   const recordId = article.id;
                   const deleteData = {
@@ -177,10 +205,10 @@
                           })
                           .then(deleteResponse => {
                             if (deleteResponse.code === '200') {
-                              // 删除成功，从页面中移除该文章项
+                              // 删除成功，从页面中移除该记录
                               articleItem.remove();
                               // 从 allRecordIds 中移除该 id
-                              allRecordIds = allRecordIds.filter(id => id!== recordId);
+                              allRecordIds = allRecordIds.filter(id => id !== recordId);
                               console.log('删除记录成功');
                             } else {
                               console.error('删除记录失败:', deleteResponse.msg);
@@ -190,11 +218,6 @@
                             console.error('删除记录请求出错:', error);
                           });
                 });
-
-                articleItem.appendChild(title);
-                articleItem.appendChild(watchTime);
-                articleItem.appendChild(tag);
-                articleItem.appendChild(viewButton);
                 articleItem.appendChild(deleteButton);
 
                 articleList.appendChild(articleItem);
@@ -207,7 +230,7 @@
             console.error('请求出错:', error);
           });
 
-  // 为删除所有记录按钮添加点击事件监听器
+  // 删除所有记录
   const deleteAllButton = document.getElementById('delete-all-button');
   deleteAllButton.addEventListener('click', function () {
     if (allRecordIds.length === 0) {
@@ -230,7 +253,7 @@
             })
             .then(deleteResponse => {
               if (deleteResponse.code === '200') {
-                // 删除成功，清空文章列表
+                // 删除成功，清空记录列表
                 const articleList = document.querySelector('.article-list');
                 articleList.innerHTML = '';
                 allRecordIds = [];
@@ -245,5 +268,4 @@
   });
 </script>
 </body>
-
 </html>

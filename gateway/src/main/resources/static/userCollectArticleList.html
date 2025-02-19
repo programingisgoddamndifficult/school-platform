@@ -1,75 +1,99 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>用户收藏的文章列表</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" />
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* 全局重置 */
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            box-sizing: border-box;
         }
-
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding-bottom: 40px;
+        }
         header {
-            background-color: #333;
-            color: white;
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            color: #fff;
             text-align: center;
             padding: 20px;
+            font-size: 24px;
+            font-weight: 500;
         }
-
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        /* 文章列表采用网格卡片布局 */
         .article-list {
-            list-style-type: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            list-style: none;
             padding: 0;
-            margin: 20px;
+            margin-bottom: 40px;
         }
-
         .article-item {
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 15px;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s, border 0.3s;
         }
-
+        .article-item:hover {
+            transform: translateY(-4px);
+            border: 2px solid #74c0fc;
+        }
         .article-item h3 {
-            margin-top: 0;
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #2b2d42;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
-
         .article-item p {
-            color: #666;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
         }
-
+        .article-item p:last-child {
+            margin-bottom: 0;
+        }
         .article-item button {
-            background-color: #007BFF;
-            color: white;
+            background-color: #74c0fc;
+            color: #fff;
             border: none;
             padding: 8px 15px;
-            border-radius: 3px;
+            border-radius: 4px;
             cursor: pointer;
             margin-right: 10px;
+            transition: background-color 0.3s;
+            font-size: 14px;
         }
-
         .article-item button:hover {
-            background-color: #0056b3;
+            background-color: #4dabf7;
         }
-
-        .delete-button {
+        .article-item .delete-button {
             background-color: #dc3545;
         }
-
-        .delete-button:hover {
+        .article-item .delete-button:hover {
             background-color: #c82333;
         }
-
         .user-info {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
         }
-
         .user-info img {
             width: 30px;
             height: 30px;
@@ -78,14 +102,15 @@
         }
     </style>
 </head>
-
 <body>
 <header>
     <h1>用户收藏的文章列表</h1>
 </header>
-<ul class="article-list">
-    <!-- 这里会通过 JavaScript 动态添加文章项 -->
-</ul>
+<div class="container">
+    <ul class="article-list">
+        <!-- 文章项通过 JavaScript 动态添加 -->
+    </ul>
+</div>
 <script>
     // 定义文章类型映射
     const tagMap = {
@@ -112,7 +137,7 @@
     const pageSize = 20;
     let isLoading = false;
 
-    // 发起请求
+    // 发起请求加载数据
     function fetchArticles() {
         if (isLoading) return;
         isLoading = true;
@@ -135,11 +160,12 @@
                         const articleItem = document.createElement('li');
                         articleItem.classList.add('article-item');
 
+                        // 用户信息
                         const userInfoDiv = document.createElement('div');
                         userInfoDiv.classList.add('user-info');
 
                         const userImage = document.createElement('img');
-                        userImage.src = article.userInfo.image || 'default_avatar.jpg'; // 如果没有头像，使用默认头像
+                        userImage.src = article.userInfo.image || 'default_avatar.jpg';
                         userImage.alt = article.userInfo.username;
 
                         const username = document.createElement('span');
@@ -148,20 +174,21 @@
                         userInfoDiv.appendChild(userImage);
                         userInfoDiv.appendChild(username);
 
+                        // 文章标题
                         const title = document.createElement('h3');
                         title.textContent = article.articleTitle;
 
                         const collectTime = document.createElement('p');
                         collectTime.textContent = `喜欢时间：${article.collectTime}`;
 
+                        // 文章类型
                         const tag = document.createElement('p');
                         const tagText = tagMap[article.tag] || '未知类型';
                         tag.textContent = `文章类型：${tagText}`;
 
+                        // 查看文章按钮
                         const viewButton = document.createElement('button');
                         viewButton.textContent = '查看文章';
-
-                        // 为查看文章按钮添加点击事件监听器
                         viewButton.addEventListener('click', function () {
                             const articleId = article.articleId;
                             const authorization = localStorage.getItem('authorization');
@@ -169,11 +196,10 @@
                             window.location.href = url;
                         });
 
+                        // 删除记录按钮
                         const deleteButton = document.createElement('button');
                         deleteButton.textContent = '删除记录';
                         deleteButton.classList.add('delete-button');
-
-                        // 为删除记录按钮添加点击事件监听器
                         deleteButton.addEventListener('click', function () {
                             const recordId = article.articleId;
                             const deleteArticleUrl = deleteUrl.replace('{articleId}', recordId);
@@ -192,8 +218,8 @@
                                         // 删除成功，从页面中移除该文章项
                                         articleItem.remove();
                                         console.log('删除记录成功');
-                                        // 刷新页面
-                                        location.reload();
+                                        // 可选：刷新页面或更新记录
+                                        // location.reload();
                                     } else {
                                         console.error('删除记录失败:', deleteResponse.msg);
                                     }
@@ -225,16 +251,13 @@
             });
     }
 
-    // 初始化加载
+    // 初始加载
     fetchArticles();
 
-    // 监听滚动事件
+    // 监听滚动事件，实现无限加载
     window.addEventListener('scroll', function () {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-        const scrollHeight = Math.max(
-            document.documentElement.scrollHeight,
-            document.body.scrollHeight
-        );
+        const scrollHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
         const clientHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
         if (scrollTop + clientHeight >= scrollHeight) {
@@ -243,5 +266,4 @@
     });
 </script>
 </body>
-
 </html>

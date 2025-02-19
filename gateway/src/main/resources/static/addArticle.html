@@ -1,85 +1,170 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>发布文章</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" />
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
+        /* 全局重置 */
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding-bottom: 40px;
+        }
+        header {
+            width: 100%;
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+            font-size: 24px;
+            font-weight: 500;
+        }
+        /* 主体容器 */
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: #fff;
+            margin: 30px auto;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
         h1 {
             text-align: center;
-            width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            font-size: 28px;
+            color: #2b2d42;
         }
         form {
-            width: 60%;
-            max-width: 500px;
+            width: 100%;
         }
         label {
             display: block;
-            margin-top: 10px;
+            margin-top: 15px;
+            color: #555;
+            font-weight: 500;
         }
         input,
         textarea,
         select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-top: 5px;
             margin-bottom: 15px;
-            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
         }
         textarea {
             min-height: 150px;
+            resize: vertical;
         }
-        button {
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
+        button[type="submit"],
+        #askButton {
+            padding: 12px 20px;
+            background-color: #74c0fc;
+            color: #fff;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
         }
-        button:hover {
-            background-color: #0056b3;
+        button[type="submit"]:hover,
+        #askButton:hover {
+            background-color: #4dabf7;
         }
+        #responseMessage {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #e03131;
+        }
+        /* 右侧 AI 提问区域 */
         .right-side {
             position: fixed;
-            top: 20px;
+            top: 80px;
             right: 20px;
             width: 300px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .right-side span {
+            font-size: 14px;
+            color: #555;
+        }
+        .right-side label {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .right-side textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .right-side button {
+            margin-top: 10px;
+            width: 100%;
+        }
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .right-side {
+                position: static;
+                width: 90%;
+                margin: 20px auto;
+            }
+            body {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
-<h1>发布文章</h1>
-<form id="articleForm">
-    <label for="title">文章标题：</label>
-    <input type="text" id="title" name="title" required>
-    <label for="tag">文章类型：</label>
-    <select id="tag" name="tag">
-        <option value="1">交友</option>
-        <option value="2">恋爱</option>
-        <option value="3">二手</option>
-        <option value="4">代课</option>
-        <option value="5">提问</option>
-        <option value="6">分享</option>
-    </select>
-    <label for="context">文章内容：</label>
-    <textarea id="context" name="context" required></textarea>
-    <label for="isOpen">文章权限：</label>
-    <select id="isOpen" name="isOpen">
-        <option value="1">开放</option>
-        <option value="0">私密</option>
-    </select>
-    <button type="submit">保存文章</button>
-</form>
-<div id="responseMessage"></div>
+<header>校园论坛 - 发布文章</header>
+<div class="container">
+    <h1>发布文章</h1>
+    <form id="articleForm">
+        <label for="title">文章标题：</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="tag">文章类型：</label>
+        <select id="tag" name="tag">
+            <option value="1">交友</option>
+            <option value="2">恋爱</option>
+            <option value="3">二手</option>
+            <option value="4">代课</option>
+            <option value="5">提问</option>
+            <option value="6">分享</option>
+        </select>
+
+        <label for="context">文章内容：</label>
+        <textarea id="context" name="context" required></textarea>
+
+        <label for="isOpen">文章权限：</label>
+        <select id="isOpen" name="isOpen">
+            <option value="1">开放</option>
+            <option value="0">私密</option>
+        </select>
+
+        <button type="submit">保存文章</button>
+    </form>
+    <div id="responseMessage"></div>
+</div>
+
 <div class="right-side">
     <span>可以对我提问帮你找到写作思绪噢～</span>
     <label for="question">提问：</label>
@@ -88,6 +173,7 @@
     <label for="answer">回答：</label>
     <textarea id="answer" name="answer" readonly></textarea>
 </div>
+
 <script>
     document.getElementById('articleForm').addEventListener('submit', function (event) {
         event.preventDefault();
@@ -122,6 +208,7 @@
         };
         xhr.send(JSON.stringify(data));
     });
+
     document.getElementById('askButton').addEventListener('click', function () {
         const question = document.getElementById('question').value;
         const xhr = new XMLHttpRequest();

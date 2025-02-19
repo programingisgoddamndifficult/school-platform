@@ -2,181 +2,186 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Article Detail</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>文章详情</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    /* 全局样式重置与基础样式 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-
-    h1 {
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+      padding-bottom: 40px;
+    }
+    header {
+      background: linear-gradient(135deg, #74ebd5, #acb6e5);
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+      font-size: 24px;
+      font-weight: 500;
+    }
+    /* 主容器 */
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 30px 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    /* 文章标题 */
+    .article-title {
       font-size: 2em;
-      max-width: 70%;
-      margin: 0 auto 10px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      margin-bottom: 10px;
+      word-break: break-all;
       cursor: pointer;
     }
-
-    h1:hover {
-      white-space: normal;
-      overflow: visible;
+    .article-title:hover {
+      opacity: 0.9;
     }
-
-    #author-info {
+    /* 作者信息 */
+    .author-info {
       display: flex;
-      justify-content: center;
       align-items: center;
       margin-bottom: 20px;
     }
-
-    #author-avatar {
-      width: 30px;
-      height: 30px;
+    .author-avatar {
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background-color: #ccc;
       margin-right: 10px;
     }
-
-    #article-content {
-      text-align: center;
+    /* 文章内容 */
+    .article-content {
+      font-size: 1.1em;
+      line-height: 1.8;
       margin-bottom: 20px;
-      max-width: 70%;
-      margin-left: auto;
-      margin-right: auto;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 10;
-      -webkit-box-orient: vertical;
-    }
-
-    #article-stats {
-      position: absolute;
-      left: 20px;
-      top: 150px;
       text-align: left;
-      border-right: 1px dashed #ccc;
-      padding-right: 20px;
+      word-break: break-word;
     }
-
-    #create-time {
-      text-align: right;
-      font-size: 0.8em;
-      width: 70%;
+    /* 文章统计区 */
+    .article-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+      margin-bottom: 10px;
     }
-
     .stat-item {
       display: flex;
       align-items: center;
-      margin-bottom: 10px;
+      gap: 5px;
     }
-
-    .stat-icon {
-      margin-right: 5px;
-    }
-
-    /* 新增按钮样式 */
     .like-button,
     .collect-button {
       border: none;
       background: none;
       cursor: pointer;
       font-size: 16px;
+      outline: none;
     }
-
     .like-button.liked {
       color: red;
     }
-
     .collect-button.collected {
       color: gold;
     }
-
-    /* 评论框和评论按钮样式 */
+    .create-time {
+      text-align: right;
+      font-size: 0.9em;
+      color: #888;
+      margin-bottom: 20px;
+    }
+    /* 评论区域 */
+    .comment-container {
+      margin-top: 20px;
+    }
     #comment-container {
       display: flex;
       align-items: center;
-      width: 70%;
+      gap: 10px;
       margin-bottom: 20px;
     }
-
     #comment-box {
-      border: 1px solid #ccc;
-      border-radius: 20px;
-      padding: 10px;
       flex: 1;
-      margin-right: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
       outline: none;
     }
-
     #comment-button {
-      border: none;
-      background-color: #007BFF;
-      color: white;
-      border-radius: 20px;
       padding: 10px 20px;
+      border: none;
+      background-color: #74c0fc;
+      color: #fff;
+      border-radius: 20px;
       cursor: pointer;
+      transition: background-color 0.3s;
     }
-
-    /* 评论区样式 */
+    #comment-button:hover {
+      background-color: #4dabf7;
+    }
     #comment-section {
-      width: 70%;
-      text-align: left;
-      font-size: 0.9em;
+      margin-top: 10px;
     }
-
     .comment-item {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
+      gap: 10px;
       margin-bottom: 15px;
     }
-
     .comment-avatar {
-      width: 30px;
-      height: 30px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background-color: #ccc;
-      margin-right: 10px;
+      flex-shrink: 0;
     }
-
     .comment-info {
-      display: flex;
-      flex-direction: column;
+      background-color: #f0f0f0;
+      border-radius: 8px;
+      padding: 10px;
+      flex: 1;
     }
-
     .comment-author {
       font-weight: bold;
+      margin-bottom: 5px;
     }
-
     .comment-time {
       font-size: 0.8em;
       color: #888;
+      margin-top: 5px;
     }
-
-    /* 新增智能总结按钮样式 */
-    #ai-summary-container {
+    /* AI智能总结 */
+    .ai-summary-container {
       position: absolute;
       top: 20px;
       right: 20px;
       text-align: right;
     }
-
     #ai-summary-button {
-      background-color: #007BFF;
-      color: white;
+      background-color: #74c0fc;
+      color: #fff;
       border: none;
       padding: 10px 20px;
       border-radius: 20px;
       cursor: pointer;
+      transition: background-color 0.3s;
     }
-
+    #ai-summary-button:hover {
+      background-color: #4dabf7;
+    }
     /* 弹窗样式 */
     #summary-modal {
       display: none;
@@ -184,25 +189,14 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background-color: white;
-      padding: 20px;
+      background-color: #fff;
+      padding: 20px 30px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
       z-index: 1000;
-      width: 50%;
+      width: 80%;
       max-width: 600px;
     }
-
-    #summary-modal h2 {
-      margin-top: 0;
-      text-align: center;
-    }
-
-    #summary-modal-content {
-      max-height: 400px;
-      overflow-y: auto;
-    }
-
     #summary-modal-close {
       position: absolute;
       top: 10px;
@@ -210,48 +204,61 @@
       cursor: pointer;
       font-size: 20px;
     }
+    #summary-modal h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+    #summary-modal-content {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-top: 10px;
+    }
   </style>
 </head>
 
 <body>
-<h1 id="article-title"></h1>
-<div id="author-info">
-  <div id="author-avatar"></div>
-  <span id="author-name"></span>
-</div>
-<div id="article-content"></div>
-<div id="article-stats">
-  <div class="stat-item">
-    <button class="like-button" id="like-button">
-      <span class="stat-icon">❤️</span>
-      <span id="likes-num"></span>
-    </button>
+<header>校园论坛 - 文章详情</header>
+<div class="container">
+  <h1 class="article-title" id="article-title"></h1>
+  <div class="author-info" id="author-info">
+    <div class="author-avatar" id="author-avatar"></div>
+    <span id="author-name"></span>
   </div>
-  <div class="stat-item">
-    <span class="stat-icon">👁️</span>
-    <span id="read-num"></span>
+  <div class="article-content" id="article-content"></div>
+  <div class="article-stats">
+    <div class="stat-item">
+      <button class="like-button" id="like-button">
+        <span class="stat-icon">❤️</span>
+        <span id="likes-num"></span>
+      </button>
+    </div>
+    <div class="stat-item">
+      <span class="stat-icon">👁️</span>
+      <span id="read-num"></span>
+    </div>
+    <div class="stat-item">
+      <button class="collect-button" id="collect-button">
+        <span class="stat-icon">⭐</span>
+        <span id="collect-num"></span>
+      </button>
+    </div>
   </div>
-  <div class="stat-item">
-    <button class="collect-button" id="collect-button">
-      <span class="stat-icon">⭐</span>
-      <span id="collect-num"></span>
-    </button>
-  </div>
-</div>
-<div id="create-time"></div>
-<div id="comment-container">
-  <input type="text" id="comment-box" placeholder="请输入评论内容">
-  <button id="comment-button">评论</button>
-</div>
-<div id="comment-section"></div>
+  <div class="create-time" id="create-time"></div>
 
-<!-- 新增智能总结按钮和提示文字 -->
-<div id="ai-summary-container">
-  <p>文字太多？那就让AI帮你总结吧</p>
-  <button id="ai-summary-button">智能总结</button>
+  <div id="comment-container">
+    <input type="text" id="comment-box" placeholder="请输入评论内容">
+    <button id="comment-button">评论</button>
+  </div>
+  <div id="comment-section"></div>
+
+  <!-- AI智能总结 -->
+  <div class="ai-summary-container">
+    <p style="font-size: 0.9em; color: #555;">文字太多？让AI帮你总结</p>
+    <button id="ai-summary-button">智能总结</button>
+  </div>
 </div>
 
-<!-- 新增弹窗 -->
+<!-- 弹窗 -->
 <div id="summary-modal">
   <div id="summary-modal-close">×</div>
   <h2>智能总结</h2>
@@ -264,7 +271,7 @@
   const articleId = urlParams.get('articleId');
   const authorization = localStorage.getItem('authorization')
 
-  if (!articleId ||!authorization) {
+  if (!articleId || !authorization) {
     alert('缺少必要参数，请重新访问。');
     window.location.href = 'index.html';
   } else {
@@ -414,7 +421,7 @@
       alert('评论内容不能超过100个字符');
       return;
     }
-    if (comment!== '') {
+    if (comment !== '') {
       fetch('http://127.0.0.1/api/user/article/comment', {
         method: 'POST',
         headers: {

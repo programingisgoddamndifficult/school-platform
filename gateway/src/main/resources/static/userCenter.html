@@ -5,39 +5,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>个人中心</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" />
     <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
         }
-
-        h1 {
-            font-size: 36px;
+        /* 头部区域 */
+        header {
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+            font-size: 24px;
+            font-weight: 500;
+        }
+        /* 个人中心容器 */
+        .container {
+            max-width: 400px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .container h1 {
+            font-size: 28px;
             margin-bottom: 30px;
+            color: #2b2d42;
         }
-
-        button {
-            width: 200px;
+        .container button {
+            width: 100%;
             padding: 15px;
-            margin: 10px;
-            font-size: 18px;
+            margin: 10px 0;
+            font-size: 16px;
             border: none;
             border-radius: 5px;
-            background-color: #007BFF;
-            color: white;
+            background-color: #74c0fc;
+            color: #fff;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
-
-        button:hover {
-            background-color: #0056b3;
+        .container button:hover {
+            background-color: #4dabf7;
         }
-
-        /* 弹窗样式 */
+        /* 返回首页按钮单独样式 */
+        .container button.return {
+            background-color: #ccc;
+            color: #333;
+        }
+        .container button.return:hover {
+            background-color: #b3b3b3;
+        }
+        /* 注销弹窗 */
         .popup {
             display: none;
             position: fixed;
@@ -48,44 +80,73 @@
             background-color: rgba(0, 0, 0, 0.5);
             justify-content: center;
             align-items: center;
+            z-index: 1000;
         }
-
         .popup-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            background-color: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             text-align: center;
+            position: relative;
+            max-width: 320px;
+            width: 90%;
         }
-
+        .popup-content p {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #333;
+        }
         .countdown {
-            margin-top: 10px;
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 15px;
         }
-
         .button-group {
-            margin-top: 20px;
+            display: none;
+            gap: 10px;
+            justify-content: center;
+        }
+        .button-group button {
+            width: 100px;
+            padding: 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button-group button.confirm {
+            background-color: #e03131;
+            color: #fff;
+        }
+        .button-group button.cancel {
+            background-color: #74c0fc;
+            color: #fff;
         }
     </style>
 </head>
 
 <body>
-<h1>个人中心</h1>
-<button onclick="window.location.href='userInfo.html'">个人信息</button>
-<button onclick="window.location.href='userArticle.html'">个人文章</button>
-<button onclick="window.location.href='userArticleHistory.html'">观看历史</button>
-<button onclick="window.location.href='userLikeArticleList.html'">我的喜欢</button>
-<button onclick="window.location.href='userCollectArticleList.html'">我的收藏</button>
-<button onclick="window.location.href='index.html'">返回首页</button>
-<button onclick="showPopup()">注销账户</button>
+<header>校园论坛 - 个人中心</header>
+<div class="container">
+    <h1>个人中心</h1>
+    <button onclick="window.location.href='userInfo.html'">个人信息</button>
+    <button onclick="window.location.href='userArticle.html'">个人文章</button>
+    <button onclick="window.location.href='userArticleHistory.html'">观看历史</button>
+    <button onclick="window.location.href='userLikeArticleList.html'">我的喜欢</button>
+    <button onclick="window.location.href='userCollectArticleList.html'">我的收藏</button>
+    <button class="return" onclick="window.location.href='index.html'">返回首页</button>
+    <button onclick="showPopup()">注销账户</button>
+</div>
 
-<!-- 弹窗 -->
+<!-- 注销弹窗 -->
 <div class="popup" id="popup">
     <div class="popup-content">
-        <p>用户注销后无法恢复或者找回，请问是否确认注销</p>
+        <p>用户注销后无法恢复或找回，请问是否确认注销？</p>
         <div class="countdown" id="countdown">倒计时：10秒</div>
-        <div class="button-group" id="buttonGroup" style="display: none;">
-            <button onclick="confirmDelete()">确认</button>
-            <button onclick="hidePopup()">取消</button>
+        <div class="button-group" id="buttonGroup">
+            <button class="confirm" onclick="confirmDelete()">确认</button>
+            <button class="cancel" onclick="hidePopup()">取消</button>
         </div>
     </div>
 </div>
@@ -110,12 +171,11 @@
         }, 1000);
     }
 
-
     var token = localStorage.getItem('authorization');
     const authorizationToken = token;
+
     function confirmDelete() {
-        // 这里可以添加更多逻辑，比如检查用户登录状态等
-        // 发起请求
+        // 发起注销请求
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'http://127.0.0.1/api/user/delete', true);
         xhr.setRequestHeader('Authorization', authorizationToken);
@@ -124,10 +184,9 @@
             if (xhr.readyState === 4 && xhr.status === 200) {
                 const response = JSON.parse(xhr.responseText);
                 if (response.code === '200') {
-                    // 注销成功，可进行页面跳转等操作
                     alert('注销成功');
                     localStorage.removeItem('authorization');
-                    window.location.href = 'login.html';// 假设跳转到登录页面
+                    window.location.href = 'login.html';
                 } else {
                     alert('注销失败：' + response.msg);
                 }

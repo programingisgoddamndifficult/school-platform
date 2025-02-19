@@ -1,77 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup Page</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>校园论坛 - 注册</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" />
     <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        /* 全局重置 */
+        * {
             margin: 0;
-            background-color: #f4f4f4;
+            padding: 0;
+            box-sizing: border-box;
         }
-
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        /* 头部区域 */
+        header {
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+            font-size: 28px;
+            font-weight: 500;
+        }
+        /* 注册容器 */
         .signup-container {
             background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            max-width: 90%;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-
-        label {
+        .signup-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2b2d42;
+        }
+        form label {
             display: block;
             margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
         }
-
-        input {
+        form input {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
         }
-
-        button {
-            padding: 10px 15px;
-            background-color: #007bff;
+        form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #74c0fc;
             color: #fff;
             border: none;
-            border-radius: 3px;
+            border-radius: 4px;
             cursor: pointer;
+            font-size: 15px;
+            transition: background-color 0.3s;
         }
-
-        button:hover {
-            background-color: #0056b3;
+        form button:hover {
+            background-color: #4dabf7;
         }
-
+        /* 响应式 */
+        @media (max-width: 480px) {
+            .signup-container {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+        /* 响应结果区域 */
         .response-container {
-            margin-top: 20px;
+            margin-top: 15px;
             padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             background-color: #f9f9f9;
             display: none;
+            font-size: 14px;
+            color: #555;
         }
     </style>
 </head>
-
 <body>
+<!-- 头部区域 -->
+<header>
+    校园论坛
+</header>
+
+<!-- 注册容器 -->
 <div class="signup-container">
-    <h2>Signup</h2>
+    <h2>用户注册</h2>
     <form id="signupForm">
-        <label for="username">Username:</label>
+        <label for="username">用户名</label>
         <input type="text" id="username" required>
-        <label for="password">Password:</label>
+        <label for="password">密码</label>
         <input type="password" id="password" required>
-        <label for="phone">Phone:</label>
+        <label for="phone">手机号</label>
         <input type="text" id="phone" required>
-        <label for="email">Email:</label>
-        <input type="email" id="email"> <!-- 移除 required 属性 -->
-        <button type="submit">Signup</button>
+        <label for="email">邮箱</label>
+        <input type="email" id="email">
+        <button type="submit">注册</button>
     </form>
     <div id="response-container" class="response-container"></div>
 </div>
@@ -85,7 +125,7 @@
         var email = document.getElementById('email').value;
         // 检查 email 输入框是否为空
         if (email === '') {
-            email = null; // 或 email = '';
+            email = null;
         }
 
         var data = {
@@ -121,5 +161,4 @@
     });
 </script>
 </body>
-
 </html>
