@@ -1,6 +1,7 @@
 package com.linjiasong.user.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.linjiasong.user.constant.UserInfoContext;
 import com.linjiasong.user.entity.UserInfo;
 import com.linjiasong.user.entity.dto.*;
@@ -12,9 +13,14 @@ import com.linjiasong.user.point.dto.PointArticleDTO;
 import com.linjiasong.user.point.service.PointService;
 import com.linjiasong.user.point.enums.PointTypeEnum;
 import com.linjiasong.user.service.UserArticleService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,6 +30,7 @@ import java.util.stream.Collectors;
  * @date 2025/01/15 21:16
  */
 @Service
+@Slf4j
 public class UserArticleServiceImpl implements UserArticleService {
 
     @Autowired
@@ -34,6 +41,9 @@ public class UserArticleServiceImpl implements UserArticleService {
 
     @Autowired
     PointService pointService;
+
+    private static final String BREAKER = "userCircuitBreaker";
+    private static final String INDEX_FALLBACK_METHOD_NAME = "getUserArticleBasicFallBack";
 
     @Override
     public UserBaseResponse<?> getUserArticleBasic(int current, int size) {
@@ -130,9 +140,21 @@ public class UserArticleServiceImpl implements UserArticleService {
         return articleServiceClient.deleteUserWatch(articleDeleteUserWatchDTO);
     }
 
+    @CircuitBreaker(name = BREAKER, fallbackMethod = INDEX_FALLBACK_METHOD_NAME)
     @Override
     public UserBaseResponse<?> getArticleList(ArticlePageSelectDTO articlePageSelectDTO) {
         return articleServiceClient.getIndexArticle(articlePageSelectDTO);
+    }
+
+    public UserBaseResponse<?> getUserArticleBasicFallBack(ArticlePageSelectDTO articlePageSelectDTO, Throwable throwable) {
+        log.info("getUserArticleBasicFallBack = {}", throwable.getMessage());
+        Page<Object> page = new Page<>();
+        page.setCurrent(articlePageSelectDTO.getCurrent());
+        page.setPages(1);
+        page.setRecords(new ArrayList<>());
+        page.setTotal(0);
+        page.setSize(articlePageSelectDTO.getSize());
+        return UserBaseResponse.success(page);
     }
 
     @Override
