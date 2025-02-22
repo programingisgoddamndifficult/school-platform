@@ -6,6 +6,7 @@ import com.linjiasong.user.constant.RedisKeyEnum;
 import com.linjiasong.user.constant.UserInfoContext;
 import com.linjiasong.user.entity.UserInfo;
 import com.linjiasong.user.entity.dto.UserInfoDTO;
+import com.linjiasong.user.entity.dto.UserInfoUpdateDTO;
 import com.linjiasong.user.entity.dto.UserLoginDTO;
 import com.linjiasong.user.entity.vo.UserInfoVo;
 import com.linjiasong.user.excepiton.BizException;
@@ -136,6 +137,11 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         return UserBaseResponse.success();
     }
 
+    @Override
+    public UserBaseResponse<?> updateUserInfo(UserInfoUpdateDTO updateDTO) {
+        return null;
+    }
+
     private void checkUserLoginParam(UserLoginDTO userLoginDTO) {
         if (userLoginDTO == null || userLoginDTO.getLoginType() == null) {
             throw new BizException("入参异常");
@@ -196,4 +202,12 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             throw new BizException("注册失败，邮箱号码重复");
         }
     }
+
+    private void checkUpdateInfo(UserInfoUpdateDTO updateDTO){
+        if (updateDTO == null) {
+            throw new BizException("修改失败,请传递参数");
+        }
+
+    }
+
 }

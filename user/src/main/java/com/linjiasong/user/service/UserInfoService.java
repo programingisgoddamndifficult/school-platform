@@ -3,6 +3,7 @@ package com.linjiasong.user.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.linjiasong.user.entity.UserInfo;
 import com.linjiasong.user.entity.dto.UserInfoDTO;
+import com.linjiasong.user.entity.dto.UserInfoUpdateDTO;
 import com.linjiasong.user.entity.dto.UserLoginDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
 import jakarta.servlet.http.HttpServletResponse;
@@ -51,4 +52,13 @@ public interface UserInfoService extends IService<UserInfo> {
      * @return UserBaseResponse
      */
     UserBaseResponse<?> userDelete();
+
+    /**
+     * TODO 用户更新信息
+     * 用户信息更新
+     * @param updateDTO UserInfoUpdateDTO
+     * @return UserBaseResponse
+     */
+    UserBaseResponse<?> updateUserInfo(UserInfoUpdateDTO updateDTO);
+
 }
