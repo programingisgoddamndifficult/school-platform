@@ -1,11 +1,9 @@
 package com.linjiasong.user.controller;
 
-import com.linjiasong.user.entity.dto.ArticleCreateDTO;
-import com.linjiasong.user.entity.dto.ArticleUpdateDTO;
 import com.linjiasong.user.entity.dto.UserInfoDTO;
+import com.linjiasong.user.entity.dto.UserInfoUpdateDTO;
 import com.linjiasong.user.entity.dto.UserLoginDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
-import com.linjiasong.user.service.UserArticleService;
 import com.linjiasong.user.service.UserInfoService;
 import com.linjiasong.user.service.UserLikeService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -60,5 +58,10 @@ public class UserController {
     @PostMapping("/delete")
     public UserBaseResponse<?> delete() {
         return userInfoService.userDelete();
+    }
+
+    @PostMapping("/update")
+    public UserBaseResponse<?> update(@RequestBody UserInfoUpdateDTO updateDTO) {
+        return userInfoService.updateUserInfo(updateDTO);
     }
 }

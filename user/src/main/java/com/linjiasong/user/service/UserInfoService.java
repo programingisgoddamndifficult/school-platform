@@ -16,6 +16,7 @@ public interface UserInfoService extends IService<UserInfo> {
 
     /**
      * 用户注册
+     *
      * @param userInfo 用户注册DTO
      * @return UserBaseResponse
      */
@@ -23,6 +24,7 @@ public interface UserInfoService extends IService<UserInfo> {
 
     /**
      * 用户登陆
+     *
      * @param userLoginDTO dto
      * @return UserBaseResponse
      */
@@ -30,18 +32,21 @@ public interface UserInfoService extends IService<UserInfo> {
 
     /**
      * 用户登出
+     *
      * @return UserBaseResponse
      */
     UserBaseResponse<?> loginOut();
 
     /**
      * 获取用户信息
+     *
      * @return UserBaseResponse
      */
     UserBaseResponse<?> getUserInfo();
 
     /**
      * 封禁用户
+     *
      * @param userId userId
      * @return UserBaseResponse
      */
@@ -49,13 +54,14 @@ public interface UserInfoService extends IService<UserInfo> {
 
     /**
      * 用户注销
+     *
      * @return UserBaseResponse
      */
     UserBaseResponse<?> userDelete();
 
     /**
-     * TODO 用户更新信息
      * 用户信息更新
+     *
      * @param updateDTO UserInfoUpdateDTO
      * @return UserBaseResponse
      */

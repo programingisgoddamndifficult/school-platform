@@ -25,4 +25,6 @@ public interface UserGateway {
     boolean userDelete();
 
     List<UserInfo> selectByIds(List<Long> ids);
+
+    boolean updateById(UserInfo userInfo);
 }

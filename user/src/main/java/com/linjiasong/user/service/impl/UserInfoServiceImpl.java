@@ -139,7 +139,13 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
     @Override
     public UserBaseResponse<?> updateUserInfo(UserInfoUpdateDTO updateDTO) {
-        return null;
+        UserInfo userInfo = checkUpdateInfo(updateDTO);
+
+        if (!userGateway.updateById(userInfo)) {
+            throw new BizException("系统异常");
+        }
+
+        return UserBaseResponse.success();
     }
 
     private void checkUserLoginParam(UserLoginDTO userLoginDTO) {
@@ -203,11 +209,32 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
     }
 
-    private void checkUpdateInfo(UserInfoUpdateDTO updateDTO){
-        if (updateDTO == null) {
+    private UserInfo checkUpdateInfo(UserInfoUpdateDTO updateDTO) {
+        if (updateDTO == null || updateDTO.getId() == null ||
+                updateDTO.getUsername() == null) {
             throw new BizException("修改失败,请传递参数");
         }
 
+        UserInfo userInfo = userGateway.selectById(updateDTO.getId());
+
+        //若与数据库中username不相等才判断
+        if (!userInfo.getUsername().equals(updateDTO.getUsername())) {
+            UserInfo userInfoByUsername = userGateway.selectByUsername(updateDTO.getUsername());
+            if (userInfoByUsername != null) {
+                throw new BizException("注册失败，用户名重复");
+            }
+            userInfo.setUsername(updateDTO.getUsername());
+        }
+
+        if (updateDTO.getEmail() != null) {
+            UserInfo userInfoByEmail = userGateway.selectByEmail(updateDTO.getEmail());
+            if (userInfoByEmail != null) {
+                throw new BizException("注册失败，邮箱号码重复");
+            }
+            userInfo.setEmail(updateDTO.getEmail());
+        }
+
+        return userInfo;
     }
 
 }

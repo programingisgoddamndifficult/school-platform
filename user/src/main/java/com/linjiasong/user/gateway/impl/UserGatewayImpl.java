@@ -71,4 +71,9 @@ public class UserGatewayImpl implements UserGateway {
     public List<UserInfo> selectByIds(List<Long> ids) {
         return userInfoMapper.selectBatchIds(ids);
     }
+
+    @Override
+    public boolean updateById(UserInfo userInfo) {
+        return userInfoMapper.updateById(userInfo) > 0;
+    }
 }
