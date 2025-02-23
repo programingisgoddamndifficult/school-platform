@@ -106,7 +106,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
     @Override
     public UserBaseResponse<?> getUserInfo() {
-        UserInfo userInfo = UserInfoContext.get();
+        UserInfo userInfo = userGateway.selectById(UserInfoContext.get().getId());
         return UserBaseResponse.builder().code("200").msg("success").data(UserInfoVo.build(userInfo, userLikeGateway.getLikeNums(userInfo.getId()))).build();
     }
 
@@ -143,10 +143,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Override
     public UserBaseResponse<?> updateUserInfo(UserInfoUpdateDTO updateDTO) {
         UserInfo userInfo = checkUpdateInfo(updateDTO);
-
-        if (userInfo.getId().equals(UserInfoContext.get().getId())) {
-            throw new BizException("无权限");
-        }
 
         if (!userGateway.updateById(userInfo)) {
             throw new BizException("系统异常");
@@ -239,12 +235,11 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     }
 
     private UserInfo checkUpdateInfo(UserInfoUpdateDTO updateDTO) {
-        if (updateDTO == null || updateDTO.getId() == null ||
-                updateDTO.getUsername() == null) {
+        if (updateDTO == null || updateDTO.getUsername() == null) {
             throw new BizException("修改失败,请传递参数");
         }
 
-        UserInfo userInfo = userGateway.selectById(updateDTO.getId());
+        UserInfo userInfo = userGateway.selectById(UserInfoContext.get().getId());
 
         //若与数据库中username不相等才判断
         if (!userInfo.getUsername().equals(updateDTO.getUsername())) {
@@ -257,10 +252,14 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
         if (updateDTO.getEmail() != null) {
             UserInfo userInfoByEmail = userGateway.selectByEmail(updateDTO.getEmail());
-            if (userInfoByEmail != null) {
+            if (userInfoByEmail != null && !userInfoByEmail.getId().equals(userInfo.getId())) {
                 throw new BizException("注册失败，邮箱号码重复");
             }
-            userInfo.setEmail(updateDTO.getEmail());
+            userInfo.setEmail(DESUtil.encrypt(updateDTO.getEmail()));
+        }
+
+        if(!userGateway.updateById(userInfo)){
+            throw new BizException("服务异常");
         }
 
         return userInfo;
