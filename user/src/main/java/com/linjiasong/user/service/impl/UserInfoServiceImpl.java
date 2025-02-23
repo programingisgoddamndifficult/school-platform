@@ -3,6 +3,7 @@ package com.linjiasong.user.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.linjiasong.user.constant.RedisKeyEnum;
+import com.linjiasong.user.constant.ThreadPoolContext;
 import com.linjiasong.user.constant.UserInfoContext;
 import com.linjiasong.user.entity.UserInfo;
 import com.linjiasong.user.entity.dto.UserInfoDTO;
@@ -29,6 +30,8 @@ import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * @author linjiasong
@@ -141,10 +144,36 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     public UserBaseResponse<?> updateUserInfo(UserInfoUpdateDTO updateDTO) {
         UserInfo userInfo = checkUpdateInfo(updateDTO);
 
+        if (userInfo.getId().equals(UserInfoContext.get().getId())) {
+            throw new BizException("无权限");
+        }
+
         if (!userGateway.updateById(userInfo)) {
             throw new BizException("系统异常");
         }
 
+        return UserBaseResponse.success();
+    }
+
+    @Override
+    public UserBaseResponse<?> updatePassword(Map<String,String> map) {
+        if (map == null){
+            throw new BizException("参数异常");
+        }
+
+        String password = map.get("password");
+        if (password == null || password.isBlank()) {
+            throw new BizException("参数异常");
+        }
+
+        UserInfo userInfo = userGateway.selectById(UserInfoContext.get().getId());
+        userInfo.setPassword(MD5Util.md5Digest(password));
+
+        if (!userGateway.updateById(userInfo)) {
+            throw new BizException("参数异常");
+        }
+
+        updatePasswordLogOut(userInfo.getId());
         return UserBaseResponse.success();
     }
 
@@ -237,4 +266,10 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         return userInfo;
     }
 
+    private void updatePasswordLogOut(Long userId){
+        ThreadPoolContext.execute(()->{
+            RBucket<String> bucket = redissonClient.getBucket(String.format(RedisKeyEnum.USER_LOGIN.getKey(), userId));
+            bucket.delete();
+        });
+    }
 }

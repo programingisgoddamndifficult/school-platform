@@ -8,6 +8,8 @@ import com.linjiasong.user.entity.dto.UserLoginDTO;
 import com.linjiasong.user.excepiton.UserBaseResponse;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.Map;
+
 /**
  * @author linjiasong
  * @date 2025/1/13 下午4:33
@@ -67,4 +69,11 @@ public interface UserInfoService extends IService<UserInfo> {
      */
     UserBaseResponse<?> updateUserInfo(UserInfoUpdateDTO updateDTO);
 
+    /**
+     * 用户修改密码
+     *
+     * @param map Map<String,String>
+     * @return UserBaseResponse
+     */
+    UserBaseResponse<?> updatePassword(Map<String, String> map);
 }

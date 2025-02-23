@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 /**
  * @author linjiasong
  * @date 2025/1/13 下午6:10
@@ -63,5 +65,10 @@ public class UserController {
     @PostMapping("/update")
     public UserBaseResponse<?> update(@RequestBody UserInfoUpdateDTO updateDTO) {
         return userInfoService.updateUserInfo(updateDTO);
+    }
+
+    @PostMapping("/update/pwd")
+    public UserBaseResponse<?> update(@RequestBody Map<String, String> map) {
+        return userInfoService.updatePassword(map);
     }
 }
