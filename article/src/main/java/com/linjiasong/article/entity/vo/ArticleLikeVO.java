@@ -71,7 +71,12 @@ public class ArticleLikeVO {
         Map<Long, ArticleBasicInfo> articleBasicInfoMap = articleBasicInfoList.stream().collect(Collectors.toMap(ArticleBasicInfo::getId, articleBasicInfo -> articleBasicInfo));
 
         List<LikeData> likeDataList = new ArrayList<>();
-        articleLikeMap.forEach((articleId, articleLike) -> likeDataList.add(build(articleBasicInfoMap.get(articleId), articleLike)));
+        articleLikeMap.forEach((articleId, articleLike) -> {
+            ArticleBasicInfo articleBasicInfo = articleBasicInfoMap.get(articleId);
+            if (articleBasicInfo != null) {
+                likeDataList.add(build(articleBasicInfo, articleLike));
+            }
+        });
 
         return likeDataList;
     }
